@@ -161,20 +161,11 @@ public class GuideView extends FrameLayout {
 
     private Point resolveMessageViewLocation() {
 
-        //set message view right
-        if (rect.left > getWidth() / 2) {
-            if (mGravity == Gravity.CENTER) {
-                x = getWidth() / 2 - mMessageView.getWidth() / 2;
-            } else
-                x = (int) (rect.right) - mMessageView.getWidth();
-        }
-        //set message view left
-        else if (rect.left < getWidth() / 2) {
-            if (mGravity == Gravity.CENTER) {
-                x = getWidth() / 2 - mMessageView.getWidth() / 2;
-            } else
-                x = (int) (rect.right) - mMessageView.getWidth();
-        }
+        if (mGravity == Gravity.CENTER) {
+            x = getWidth() / 2 - mMessageView.getWidth() / 2;
+        } else
+            x = (int) (rect.right) - mMessageView.getWidth();
+
 
         if (x + mMessageView.getWidth() > getWidth())
             x -= (getWidth() - mMessageView.getWidth());
