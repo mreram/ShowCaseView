@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import parvane.ir.eram.showcaseviewlib.GuideView;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -20,9 +22,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final GuideView guideView = new GuideView(this, view);
+        GuideView guideView = new GuideView(this, view);
         guideView.setTitle("Guide Title Text");
-        guideView.setContentText("Guide Description Text .....");
+        guideView.setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....");
+        guideView.setGravity(GuideView.Gravity.AUTO);
         guideView.show();
     }
 }

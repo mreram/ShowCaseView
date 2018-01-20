@@ -1,4 +1,4 @@
-package ir.smartdevelop.eram.showcaseview;
+package parvane.ir.eram.showcaseviewlib;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,22 +22,40 @@ import android.widget.FrameLayout;
  */
 
 public class GuideView extends FrameLayout {
-    private  float density;
-    View target;
-    GuideMessageView mMessageView;
 
-    RectF rect;
+
+    private float density;
+    private View target;
+    private RectF rect;
+    private GuideMessageView mMessageView;
+    private boolean isTop;
+    private Gravity mGravity;
+    int marginGuide;
+
+    final Paint paintLine = new Paint();
+    final Paint paintCircle = new Paint();
+    final Paint paintCircleInner = new Paint();
+    final Paint mPaint = new Paint();
+    final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+
+
+    public enum Gravity {
+        AUTO, CENTER
+    }
 
     public GuideView(Context context, View view) {
         super(context);
         setWillNotDraw(false);
+        mGravity = Gravity.AUTO;
         this.target = view;
         density = context.getResources().getDisplayMetrics().density;
 
         int[] locationTarget = new int[2];
         target.getLocationOnScreen(locationTarget);
         rect = new RectF(locationTarget[0], locationTarget[1] - getStatusBarHeight(),
-                locationTarget[0] + target.getWidth(), locationTarget[1] + target.getHeight() - getStatusBarHeight());
+                locationTarget[0] + target.getWidth(),
+                locationTarget[1] + target.getHeight() - getStatusBarHeight());
 
         mMessageView = new GuideMessageView(getContext());
         final int padding = (int) (5 * density);
@@ -63,23 +81,49 @@ public class GuideView extends FrameLayout {
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        float lineWidth = 3 * density;
+        float strokeCircleWidth = 3 * density;
+        float circleSize = 6 * density;
+        float circleInnerSize = 4.5f * density;
 
-        Paint mPaint = new Paint();
-        mPaint.setColor(0x55000000);
+
+        mPaint.setColor(0x99000000);
         mPaint.setStyle(Paint.Style.FILL);
         canvas.drawRect(canvas.getClipBounds(), mPaint);
 
-        Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+        paintLine.setStyle(Paint.Style.FILL);
+        paintLine.setColor(Color.WHITE);
+        paintLine.setStrokeWidth(lineWidth);
+
+        paintCircle.setStyle(Paint.Style.STROKE);
+        paintCircle.setColor(Color.WHITE);
+        paintCircle.setStrokeCap(Paint.Cap.ROUND);
+        paintCircle.setStrokeWidth(strokeCircleWidth);
+
+        paintCircleInner.setStyle(Paint.Style.FILL);
+        paintCircleInner.setColor(0xffcccccc);
+
+        marginGuide = (int) (isTop ? 15 * density : -15 * density);
+
+        float yLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
+        float xLine = (rect.left / 2 + rect.right / 2);
+        float cx = (target.getLeft() / 2 + target.getRight() / 2);
+
+        canvas.drawLine(xLine, yLineAndCircle, xLine,
+                y + 50 * density
+                , paintLine);
+
+        canvas.drawCircle(cx, yLineAndCircle, circleSize, paintCircle);
+        canvas.drawCircle(cx, yLineAndCircle, circleInnerSize, paintCircleInner);
+
+
         targetPaint.setXfermode(XFERMODE_CLEAR);
-        canvas.drawRoundRect(rect, 5, 5, targetPaint);
+        canvas.drawRoundRect(rect, 15, 15, targetPaint);
 
     }
-
 
     public int getStatusBarHeight() {
         int result = 0;
@@ -107,40 +151,56 @@ public class GuideView extends FrameLayout {
     }
 
     void setMessageLocation(Point p) {
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mMessageView.getLayoutParams();
-        params.leftMargin = p.x;
-        params.topMargin = p.y;
+        mMessageView.setX(p.x);
+        mMessageView.setY(p.y);
         requestLayout();
     }
 
+    int x = 0;
+    int y = 0;
+
     private Point resolveMessageViewLocation() {
-        int x=0;
-        int y=0;
-        if (rect.left > getWidth() / 2)
-            x = (int) (rect.left / 2 - mMessageView.getWidth() / 2);
-        else
-            x = (int) (rect.left/2 + (getWidth() - rect.left) / 2 - mMessageView.getWidth() / 2);
+
+        //set message view right
+        if (rect.left > getWidth() / 2) {
+            if (mGravity == Gravity.CENTER) {
+                x = getWidth() / 2 - mMessageView.getWidth() / 2;
+            } else
+                x = (int) (rect.right) - mMessageView.getWidth();
+        }
+        //set message view left
+        else if (rect.left < getWidth() / 2) {
+            if (mGravity == Gravity.CENTER) {
+                x = getWidth() / 2 - mMessageView.getWidth() / 2;
+            } else
+                x = (int) (rect.right) - mMessageView.getWidth();
+        }
 
         if (x + mMessageView.getWidth() > getWidth())
-            x -= (x + mMessageView.getWidth() - getWidth());
+            x -= (getWidth() - mMessageView.getWidth());
         if (x < 0)
             x = 0;
 
-        y= 0;
-        if (rect.top > getHeight() / 2)
-            y = (int) (rect.top / 2 - mMessageView.getHeight() / 2);
-        else
-            y = (int) ( (getHeight() - rect.top) / 2 - mMessageView.getHeight() / 2);
+        //set message view bottom
+        if (rect.top > getHeight() / 2) {
+            isTop = false;
+            y = (int) (rect.top - mMessageView.getHeight() - 50 * density);
+        }
+        //set message view top
+        else {
+            isTop = true;
+            y = (int) (rect.bottom + mMessageView.getHeight() - 50 * density);
+        }
 
-        if (y + mMessageView.getHeight() > getHeight())
-            y -= (y + mMessageView.getHeight() - getHeight());
         if (y < 0)
             y = 0;
+
 
         return new Point(x, y);
     }
 
     CustomDialog dialog;
+
     public void show() {
         this.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
@@ -153,17 +213,17 @@ public class GuideView extends FrameLayout {
 
     }
 
-    public class CustomDialog  extends Dialog {
+    public class CustomDialog extends Dialog {
 
-        public CustomDialog(Context context) {
-            super(context);
+        CustomDialog(Context context, int resId) {
+            super(context, resId);
             this.requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
+        }
+    }
 
-        }
-        CustomDialog(Context context,int resid) {
-            super(context,resid);
-        }
+    public void setGravity(Gravity gravity) {
+        this.mGravity = gravity;
     }
 
     public void setTitle(String str) {
