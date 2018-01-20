@@ -1,8 +1,8 @@
 # ShowCaseView
 <p align="center">
-<img src="./screenshots/Screenshot_2018-01-21-00-51-52.png" width="300"/>
-<img src="./screenshots/Screenshot_2018-01-21-00-52-43.png" width="300"/>
-<img src="./screenshots/Screenshot_2018-01-21-00-51-21.png" width="300"/>
+<img src="./screenshots/Screenshot_2018-01-21-00-51-52.png" width="100"/>
+<img src="./screenshots/Screenshot_2018-01-21-00-52-43.png" width="100"/>
+<img src="./screenshots/Screenshot_2018-01-21-00-51-21.png" width="100"/>
 </p>
 Sample usage in your activity:
 
