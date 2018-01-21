@@ -16,8 +16,6 @@ Sample usage in your activity:
              .build()
              .show();
 
-
-
 ## Installation
 	
 maven:
@@ -35,7 +33,7 @@ maven:
 <dependency>
    <groupId>com.github.mreram</groupId>
    <artifactId>ShowCaseView</artifactId>
-   <version>1.0.0</version>
+   <version>1.0.1</version>
 </dependency>
 ```
 gradle:
@@ -51,5 +49,47 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-compile 'com.github.mreram:ShowCaseView:1.0.0'
+compile 'com.github.mreram:ShowCaseView:1.0.1'
 ```
+## Change type face font
+
+ 	 new GuideView.Builder(this)
+                .setTitle("Guide Title Text")
+                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setTargetView(view)
+                .setContentTypeFace(Typeface)//optional
+                .setTitleTypeFace(Typeface)//optional
+                .build()
+                .show();
+  
+## Change title font size
+
+   	new GuideView.Builder(this)
+                .setTitle("Guide Title Text")
+                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setTargetView(view)
+                .setContentTextSize(12)//optional
+                .setTitleTextSize(14)//optional
+                .build()
+                .show();
+		
+## Change Gravity
+
+	new GuideView.Builder(this)
+             .setTitle("Guide Title Text")
+             .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+             .setGravity(GuideView.Gravity.CENTER)//optional
+             .setTargetView(view) 
+             .build()
+             .show();
+	     
+	     
+## use Spannable for Content
+	
+	 new GuideView.Builder(this)
+                .setTitle("Guide Title Text")
+                .setTargetView(view)
+                .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
+                .build()
+                .show();
+
