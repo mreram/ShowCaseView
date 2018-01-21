@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "parvane.ir.eram.showcaseview"
+        applicationId "smartdevelop.ir.eram.showcaseview"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1

@@ -1,7 +1,6 @@
 package smartdevelop.ir.eram.showcaseviewlib;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,7 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
+import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 
 /**
@@ -38,6 +37,7 @@ public class GuideView extends FrameLayout {
     private Gravity mGravity;
     int marginGuide;
 
+    final int ANIMATION_DURATION = 600;
     final Paint emptyPaint = new Paint();
     final Paint paintLine = new Paint();
     final Paint paintCircle = new Paint();
@@ -89,7 +89,6 @@ public class GuideView extends FrameLayout {
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -103,7 +102,7 @@ public class GuideView extends FrameLayout {
             float circleInnerSize = 4.5f * density;
 
 
-            mPaint.setColor(0x99000000);
+            mPaint.setColor(0xdd000000);
             mPaint.setStyle(Paint.Style.FILL);
             mPaint.setAntiAlias(true);
             tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
@@ -125,16 +124,17 @@ public class GuideView extends FrameLayout {
 
             marginGuide = (int) (isTop ? 15 * density : -15 * density);
 
-            float yLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
+            float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
             float xLine = (rect.left / 2 + rect.right / 2);
             float cx = (target.getLeft() / 2 + target.getRight() / 2);
+            float stopY = (y + INDICATOR_HEIGHT * density);
 
-            tempCanvas.drawLine(xLine, yLineAndCircle, xLine,
-                    y + INDICATOR_HEIGHT * density
+            tempCanvas.drawLine(xLine, startYLineAndCircle, xLine,
+                    stopY
                     , paintLine);
 
-            tempCanvas.drawCircle(cx, yLineAndCircle, circleSize, paintCircle);
-            tempCanvas.drawCircle(cx, yLineAndCircle, circleInnerSize, paintCircleInner);
+            tempCanvas.drawCircle(cx, startYLineAndCircle, circleSize, paintCircle);
+            tempCanvas.drawCircle(cx, startYLineAndCircle, circleInnerSize, paintCircleInner);
 
 
             targetPaint.setXfermode(XFERMODE_CLEAR);
@@ -142,7 +142,6 @@ public class GuideView extends FrameLayout {
 
             tempCanvas.drawRoundRect(rect, 15, 15, targetPaint);
             canvas.drawBitmap(bitmap, 0, 0, emptyPaint);
-
         }
     }
 
@@ -156,6 +155,10 @@ public class GuideView extends FrameLayout {
     }
 
     public void dismiss() {
+        AlphaAnimation startAnimation = new AlphaAnimation(1f, 0f);
+        startAnimation.setDuration(ANIMATION_DURATION);
+        startAnimation.setFillAfter(true);
+        this.startAnimation(startAnimation);
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(this);
     }
 
@@ -222,7 +225,10 @@ public class GuideView extends FrameLayout {
         this.setClickable(false);
 
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
-
+        AlphaAnimation startAnimation = new AlphaAnimation(0.2f, 1.0f);
+        startAnimation.setDuration(ANIMATION_DURATION);
+        startAnimation.setFillAfter(true);
+        this.startAnimation(startAnimation);
 
     }
 
@@ -258,7 +264,6 @@ public class GuideView extends FrameLayout {
     }
 
 
-
     public static class Builder {
         private View targetView;
         private String title, contentText;
@@ -267,7 +272,7 @@ public class GuideView extends FrameLayout {
         private int titleTextSize;
         private int contentTextSize;
         private Spannable contentSpan;
-        private Typeface titleTypeFace,contentTypeFace;
+        private Typeface titleTypeFace, contentTypeFace;
 
         public Builder(Context context) {
             this.context = context;
@@ -342,10 +347,10 @@ public class GuideView extends FrameLayout {
                 guideView.setContentTextSize(contentTextSize);
             if (contentSpan != null)
                 guideView.setContentSpan(contentSpan);
-            if(titleTypeFace!=null){
+            if (titleTypeFace != null) {
                 guideView.setTitleTypeFace(titleTypeFace);
             }
-            if(contentTypeFace!=null){
+            if (contentTypeFace != null) {
                 guideView.setContentTypeFace(contentTypeFace);
             }
             return guideView;
