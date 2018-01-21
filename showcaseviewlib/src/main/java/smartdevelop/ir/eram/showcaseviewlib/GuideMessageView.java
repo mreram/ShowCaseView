@@ -1,10 +1,12 @@
-package parvane.ir.eram.showcaseviewlib;
+package smartdevelop.ir.eram.showcaseviewlib;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
+import android.text.Spannable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -72,6 +74,25 @@ class GuideMessageView extends LinearLayout {
         mContentTextView.setText(content);
     }
 
+    public void setContentSpan(Spannable content) {
+        mContentTextView.setText(content);
+    }
+
+    public void setContentTypeFace(Typeface typeFace){
+        mContentTextView.setTypeface(typeFace);
+    }
+
+    public void setTitleTypeFace(Typeface typeFace){
+        mTitleTextView.setTypeface(typeFace);
+    }
+
+    public void setTitleTextSize(int size){
+        mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,size);
+    }
+
+    public void setContentTextSize(int size){
+        mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,size);
+    }
 
     public void setColor(int color) {
 

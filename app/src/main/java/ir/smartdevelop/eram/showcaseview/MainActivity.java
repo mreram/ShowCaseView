@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import parvane.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,14 +18,18 @@ public class MainActivity extends AppCompatActivity {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this,"Clicked!",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Clicked!", Toast.LENGTH_LONG).show();
             }
         });
 
-        GuideView guideView = new GuideView(this, view);
-        guideView.setTitle("Guide Title Text");
-        guideView.setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....");
-        guideView.setGravity(GuideView.Gravity.AUTO);
-        guideView.show();
+        new GuideView.Builder(this)
+                .setTitle("Guide Title Text")
+                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setGravity(GuideView.Gravity.AUTO)
+                .setTargetView(view)
+                .build()
+                .show();
+
+
     }
 }

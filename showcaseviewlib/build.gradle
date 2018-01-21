@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.mreram'
 android {
     compileSdkVersion 26
 
@@ -23,6 +24,18 @@ android {
     }
 
 }
+
+task makeShowCaseView(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('build/outputs/')
+    include('classes.jar')
+    rename ('classes.jar', 'showCaseViewLib.jar')
+    into('release/') //you can change this directory where you want to copy your .jar
+}
+task clearJar(type: Delete) {
+    delete 'build/libs/showCaseViewLib.jar'
+}
+makeShowCaseView.dependsOn(clearJar, build)
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
