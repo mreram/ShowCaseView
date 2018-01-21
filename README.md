@@ -51,7 +51,7 @@ allprojects {
 ```groovy	
 compile 'com.github.mreram:ShowCaseView:1.0.1'
 ```
-## Change type face font
+## Change type face
 
  	 new GuideView.Builder(this)
                 .setTitle("Guide Title Text")
@@ -62,7 +62,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.1'
                 .build()
                 .show();
   
-## Change title font size
+## Change title and Content text size
 
    	new GuideView.Builder(this)
                 .setTitle("Guide Title Text")
