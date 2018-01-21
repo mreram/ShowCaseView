@@ -226,10 +226,6 @@ public class GuideView extends FrameLayout {
 
     }
 
-    public void setGravity(Gravity gravity) {
-        this.mGravity = gravity;
-    }
-
     public void setTitle(String str) {
         mMessageView.setTitle(str);
     }
@@ -243,12 +239,12 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentSpan(span);
     }
 
-    public void setTitleTypeFace(Typeface span) {
-        mMessageView.setTitleTypeFace(span);
+    public void setTitleTypeFace(Typeface typeFace) {
+        mMessageView.setTitleTypeFace(typeFace);
     }
 
-    public void setContentTypeFace(Typeface span) {
-        mMessageView.setContentTypeFace(span);
+    public void setContentTypeFace(Typeface typeFace) {
+        mMessageView.setContentTypeFace(typeFace);
     }
 
 
@@ -258,17 +254,9 @@ public class GuideView extends FrameLayout {
 
 
     public void setContentTextSize(int size) {
-        mMessageView.setTitleTextSize(size);
+        mMessageView.setContentTextSize(size);
     }
 
-    public class CustomDialog extends Dialog {
-
-        CustomDialog(Context context, int resId) {
-            super(context, resId);
-            this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            this.getWindow().getDecorView().setBackgroundColor(Color.TRANSPARENT);
-        }
-    }
 
 
     public static class Builder {
@@ -279,6 +267,7 @@ public class GuideView extends FrameLayout {
         private int titleTextSize;
         private int contentTextSize;
         private Spannable contentSpan;
+        private Typeface titleTypeFace,contentTypeFace;
 
         public Builder(Context context) {
             this.context = context;
@@ -306,6 +295,16 @@ public class GuideView extends FrameLayout {
 
         public Builder setContentSpan(Spannable span) {
             this.contentSpan = span;
+            return this;
+        }
+
+        public Builder setContentTypeFace(Typeface typeFace) {
+            this.contentTypeFace = typeFace;
+            return this;
+        }
+
+        public Builder setTitleTypeFace(Typeface typeFace) {
+            this.titleTypeFace = typeFace;
             return this;
         }
 
@@ -343,6 +342,12 @@ public class GuideView extends FrameLayout {
                 guideView.setContentTextSize(contentTextSize);
             if (contentSpan != null)
                 guideView.setContentSpan(contentSpan);
+            if(titleTypeFace!=null){
+                guideView.setTitleTypeFace(titleTypeFace);
+            }
+            if(contentTypeFace!=null){
+                guideView.setContentTypeFace(contentTypeFace);
+            }
             return guideView;
         }
 
