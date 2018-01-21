@@ -9,7 +9,7 @@ Sample usage in your activity:
      new GuideView.Builder(this)
              .setTitle("Guide Title Text")
              .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-             .setGravity(GuideView.Gravity.CENTER)//optional
+             .setGravity(GuideView.Gravity.AUTO)//optional
              .setTargetView(view)
              .setContentTextSize(12)//optional
              .setTitleTextSize(14)//optional
