@@ -1,4 +1,6 @@
 # ShowCaseView
+
+[![APK](https://img.shields.io/badge/APK-Demo-brightgreen.svg)](https://github.com/mreram/ShowCaseView/raw/demo-flatShowCaseView.apk)
 [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlatShowCaseView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6713)
 
 <p align="center">
