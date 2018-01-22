@@ -125,16 +125,16 @@ public class GuideView extends FrameLayout {
             marginGuide = (int) (isTop ? 15 * density : -15 * density);
 
             float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
-            float xLine = (rect.left / 2 + rect.right / 2);
-            float cx = (target.getLeft() / 2 + target.getRight() / 2);
+
+            float x = (rect.left  / 2 + rect.right / 2);
             float stopY = (y + INDICATOR_HEIGHT * density);
 
-            tempCanvas.drawLine(xLine, startYLineAndCircle, xLine,
+            tempCanvas.drawLine(x, startYLineAndCircle, x,
                     stopY
                     , paintLine);
 
-            tempCanvas.drawCircle(cx, startYLineAndCircle, circleSize, paintCircle);
-            tempCanvas.drawCircle(cx, startYLineAndCircle, circleInnerSize, paintCircleInner);
+            tempCanvas.drawCircle(x, startYLineAndCircle, circleSize, paintCircle);
+            tempCanvas.drawCircle(x, startYLineAndCircle, circleInnerSize, paintCircleInner);
 
 
             targetPaint.setXfermode(XFERMODE_CLEAR);
