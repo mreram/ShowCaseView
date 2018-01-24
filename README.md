@@ -7,7 +7,7 @@
 <img src="./screenshots/Screenshot_2018-01-24-16-41-38.png" width="200"/>
 <img src="./screenshots/Screenshot_2018-01-24-16-53-17.png" width="200"/>
 <img src="./screenshots/Screenshot_2018-01-24-16-52-03.png" width="200"/>
-<img src="./screenshots/Screenshot_2018-01-21-00-54-44.png" width="200"/>
+
 </p>
 Sample usage in your activity:
 
