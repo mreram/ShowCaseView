@@ -2,6 +2,8 @@ package smartdevelop.ir.eram.showcaseviewlib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,7 +29,7 @@ import android.widget.FrameLayout;
 public class GuideView extends FrameLayout {
 
 
-    private static final float INDICATOR_HEIGHT = 50;
+    private static final float INDICATOR_HEIGHT = 30;
 
     private float density;
     private View target;
@@ -37,7 +39,7 @@ public class GuideView extends FrameLayout {
     private Gravity mGravity;
     int marginGuide;
 
-    final int ANIMATION_DURATION = 600;
+    final int ANIMATION_DURATION = 400;
     final Paint emptyPaint = new Paint();
     final Paint paintLine = new Paint();
     final Paint paintCircle = new Paint();
@@ -45,7 +47,12 @@ public class GuideView extends FrameLayout {
     final Paint mPaint = new Paint();
     final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+    private boolean mIsShowing;
+    private GuideListener mGuideListener;
 
+    public interface GuideListener {
+        void onDismiss(View view);
+    }
 
     public enum Gravity {
         AUTO, CENTER
@@ -88,6 +95,19 @@ public class GuideView extends FrameLayout {
         });
     }
 
+    private int getNavigationBarSize() {
+        Resources resources = getContext().getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
+    }
+
+    private boolean isLandscape() {
+        int display_mode = getResources().getConfiguration().orientation;
+        return display_mode != Configuration.ORIENTATION_PORTRAIT;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -99,7 +119,7 @@ public class GuideView extends FrameLayout {
             float lineWidth = 3 * density;
             float strokeCircleWidth = 3 * density;
             float circleSize = 6 * density;
-            float circleInnerSize = 4.5f * density;
+            float circleInnerSize = 5f * density;
 
 
             mPaint.setColor(0xdd000000);
@@ -126,7 +146,7 @@ public class GuideView extends FrameLayout {
 
             float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
 
-            float x = (rect.left  / 2 + rect.right / 2);
+            float x = (rect.left / 2 + rect.right / 2);
             float stopY = (y + INDICATOR_HEIGHT * density);
 
             tempCanvas.drawLine(x, startYLineAndCircle, x,
@@ -145,21 +165,21 @@ public class GuideView extends FrameLayout {
         }
     }
 
-    public int getStatusBarHeight() {
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
+    public boolean isShowing() {
+        return mIsShowing;
     }
 
     public void dismiss() {
+
         AlphaAnimation startAnimation = new AlphaAnimation(1f, 0f);
         startAnimation.setDuration(ANIMATION_DURATION);
         startAnimation.setFillAfter(true);
         this.startAnimation(startAnimation);
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(this);
+        mIsShowing = false;
+        if(mGuideListener !=null){
+            mGuideListener.onDismiss(target);
+        }
     }
 
     @Override
@@ -190,15 +210,19 @@ public class GuideView extends FrameLayout {
     private Point resolveMessageViewLocation() {
 
         if (mGravity == Gravity.CENTER) {
-            x = getWidth() / 2 - mMessageView.getWidth() / 2;
+            x = (int) (rect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
         } else
             x = (int) (rect.right) - mMessageView.getWidth();
 
+        if (isLandscape()) {
+            x -= getNavigationBarSize();
+        }
 
         if (x + mMessageView.getWidth() > getWidth())
-            x -= (getWidth() - mMessageView.getWidth());
+            x = getWidth() - mMessageView.getWidth();
         if (x < 0)
             x = 0;
+
 
         //set message view bottom
         if (rect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
@@ -208,7 +232,7 @@ public class GuideView extends FrameLayout {
         //set message view top
         else {
             isTop = true;
-            y = (int) (rect.bottom + mMessageView.getHeight() - INDICATOR_HEIGHT * density);
+            y = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);
         }
 
         if (y < 0)
@@ -225,10 +249,11 @@ public class GuideView extends FrameLayout {
         this.setClickable(false);
 
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
-        AlphaAnimation startAnimation = new AlphaAnimation(0.2f, 1.0f);
+        AlphaAnimation startAnimation = new AlphaAnimation(0.0f, 1.0f);
         startAnimation.setDuration(ANIMATION_DURATION);
         startAnimation.setFillAfter(true);
         this.startAnimation(startAnimation);
+        mIsShowing = true;
 
     }
 
@@ -264,6 +289,7 @@ public class GuideView extends FrameLayout {
     }
 
 
+
     public static class Builder {
         private View targetView;
         private String title, contentText;
@@ -273,6 +299,7 @@ public class GuideView extends FrameLayout {
         private int contentTextSize;
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
+        private GuideListener guideListener;
 
         public Builder(Context context) {
             this.context = context;
@@ -305,6 +332,11 @@ public class GuideView extends FrameLayout {
 
         public Builder setContentTypeFace(Typeface typeFace) {
             this.contentTypeFace = typeFace;
+            return this;
+        }
+
+        public Builder setGuideListener(GuideListener guideListener) {
+            this.guideListener = guideListener;
             return this;
         }
 
@@ -352,6 +384,9 @@ public class GuideView extends FrameLayout {
             }
             if (contentTypeFace != null) {
                 guideView.setContentTypeFace(contentTypeFace);
+            }
+            if(guideListener !=null){
+                guideView.mGuideListener = guideListener;
             }
             return guideView;
         }

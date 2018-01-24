@@ -38,7 +38,7 @@ maven:
 <dependency>
    <groupId>com.github.mreram</groupId>
    <artifactId>ShowCaseView</artifactId>
-   <version>1.0.3</version>
+   <version>1.0.4</version>
 </dependency>
 ```
 gradle:
@@ -54,7 +54,7 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-compile 'com.github.mreram:ShowCaseView:1.0.3'
+compile 'com.github.mreram:ShowCaseView:1.0.4'
 ```
 ## Change type face
 
@@ -97,4 +97,20 @@ compile 'com.github.mreram:ShowCaseView:1.0.3'
                 .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
                 .build()
                 .show();
+                	     
+## Set Listener 
+	
+      new GuideView.Builder(MainActivity.this)
+                      .setTitle("Guide Title Text")
+                      .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                      .setGravity(GuideView.Gravity.CENTER)
+                      .setTargetView(view1)
+                      .setGuideListener(new GuideView.GuideListener() {
+                          @Override
+                          public void onDismiss(View view) {
+                             //TODO ...
+                          }
+                       })
+                       .build()
+                       .show();
 

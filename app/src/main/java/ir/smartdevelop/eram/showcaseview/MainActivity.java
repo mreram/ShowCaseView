@@ -9,45 +9,60 @@ import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private View view;
-    private ShowCaseTask showCaseTask;
+    private GuideView mGuideView;
+    private GuideView.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        view = findViewById(R.id.txt);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Clicked!", Toast.LENGTH_LONG).show();
-            }
-        });
+        final View view1 = findViewById(R.id.view1);
+        final View view2 = findViewById(R.id.view2);
+        final View view3 = findViewById(R.id.view3);
+        final View view4 = findViewById(R.id.view4);
+        final View view5 = findViewById(R.id.view5);
 
-        showCaseTask = new ShowCaseTask();
-        view.postDelayed(showCaseTask, 1000);
 
+        builder = new GuideView.Builder(MainActivity.this)
+                .setTitle("Guide Title Text")
+                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setGravity(GuideView.Gravity.CENTER)
+                .setTargetView(view1)
+                .setGuideListener(new GuideView.GuideListener() {
+                    @Override
+                    public void onDismiss(View view) {
+                        switch (view.getId()){
+                            case R.id.view1:
+                                builder.setTargetView(view2).build();
+                                break;
+                            case R.id.view2:
+                                builder.setTargetView(view3).build();
+                                break;
+                            case R.id.view3:
+                                builder.setTargetView(view4).build();
+                                break;
+                            case R.id.view4:
+                                builder.setTargetView(view5).build();
+                                break;
+                            case R.id.view5:
+                                return;
+                        }
+                        mGuideView = builder.build();
+                        mGuideView.show();
+                    }
+                });
+
+        mGuideView = builder.build();
+        mGuideView.show();
     }
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (showCaseTask != null)
-            view.removeCallbacks(showCaseTask);
+
     }
 
-    class ShowCaseTask implements Runnable {
 
-        @Override
-        public void run() {
-            new GuideView.Builder(MainActivity.this)
-                    .setTitle("Guide Title Text")
-                    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                    .setGravity(GuideView.Gravity.AUTO)
-                    .setTargetView(view)
-                    .build()
-                    .show();
-        }
-    }
 }

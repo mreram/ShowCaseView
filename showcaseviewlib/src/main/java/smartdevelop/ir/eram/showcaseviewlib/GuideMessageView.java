@@ -46,7 +46,7 @@ class GuideMessageView extends LinearLayout {
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
 
-        final int padding = (int) (10* density);
+        final int padding = (int) (10 * density);
         final int paddingBetween = (int) (3 * density);
 
         mTitleTextView = new TextView(context);
@@ -66,6 +66,10 @@ class GuideMessageView extends LinearLayout {
 
 
     public void setTitle(String title) {
+        if (title == null) {
+            removeView(mTitleTextView);
+            return;
+        }
         mTitleTextView.setText(title);
     }
 
@@ -78,20 +82,20 @@ class GuideMessageView extends LinearLayout {
         mContentTextView.setText(content);
     }
 
-    public void setContentTypeFace(Typeface typeFace){
+    public void setContentTypeFace(Typeface typeFace) {
         mContentTextView.setTypeface(typeFace);
     }
 
-    public void setTitleTypeFace(Typeface typeFace){
+    public void setTitleTypeFace(Typeface typeFace) {
         mTitleTextView.setTypeface(typeFace);
     }
 
-    public void setTitleTextSize(int size){
-        mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,size);
+    public void setTitleTextSize(int size) {
+        mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
-    public void setContentTextSize(int size){
-        mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,size);
+    public void setContentTextSize(int size) {
+        mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
     public void setColor(int color) {
@@ -103,6 +107,7 @@ class GuideMessageView extends LinearLayout {
     }
 
     int location[] = new int[2];
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -115,7 +120,6 @@ class GuideMessageView extends LinearLayout {
                 getPaddingTop(),
                 canvas.getWidth() - getPaddingRight(),
                 canvas.getHeight() - getPaddingBottom());
-
 
 
         canvas.drawRoundRect(mRect, 15, 15, mPaint);
