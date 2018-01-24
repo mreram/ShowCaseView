@@ -4,9 +4,9 @@
 [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlatShowCaseView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6713)
 
 <p align="center">
-<img src="./screenshots/Screenshot_2018-01-21-00-51-52.png" width="200"/>
-<img src="./screenshots/Screenshot_2018-01-21-00-52-43.png" width="200"/>
-<img src="./screenshots/Screenshot_2018-01-21-00-51-21.png" width="200"/>
+<img src="./screenshots/Screenshot_2018-01-24-16-41-38.png" width="200"/>
+<img src="./screenshots/Screenshot_2018-01-24-16-53-17.png" width="200"/>
+<img src="./screenshots/Screenshot_2018-01-24-16-52-03.png" width="200"/>
 <img src="./screenshots/Screenshot_2018-01-21-00-54-44.png" width="200"/>
 </p>
 Sample usage in your activity:
