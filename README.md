@@ -113,4 +113,10 @@ compile 'com.github.mreram:ShowCaseView:1.0.4'
                        })
                        .build()
                        .show();
+## Contributation
+Pull requests are welcome! 
+You can improve/fix some part of it .
 
+Add Tests:
+Assuming that the code in question already has automated (unit) tests, do add tests for the code you submit.
+This isn't a hard rule. There are various cases where you may need to add code without test coverage (e.g. when adding a Object), but if it can be tested, it should be tested.
