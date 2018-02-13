@@ -113,7 +113,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.4'
                        })
                        .build()
                        .show();
-## Contributation
+## Contribution
 Pull requests are welcome! 
 You can improve/fix some part of it .
 
