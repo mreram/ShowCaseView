@@ -80,7 +80,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTargetView(view)
                 .setContentTextSize(12)//optional
                 .setTitleTextSize(14)//optional
-		            .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+		    .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
 		
@@ -102,7 +102,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTitle("Guide Title Text")
                 .setTargetView(view)
                 .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
-	            	.setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	            .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
                 	     
@@ -113,7 +113,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                       .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
                       .setGravity(GuideView.Gravity.CENTER)
                       .setTargetView(view1)
-		                  .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+		          .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                       .setGuideListener(new GuideView.GuideListener() {
                           @Override
                           public void onDismiss(View view) {
