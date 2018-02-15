@@ -18,7 +18,7 @@ Sample usage in your activity:
              .setTitle("Guide Title Text")
              .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
              .setGravity(GuideView.Gravity.AUTO) //optional
-             .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+             .setDismissType(GuideView.DismissType.anywhere) //optional - default GuideView.DismissType.targetView
              .setTargetView(view)
              .setContentTextSize(12)//optional
              .setTitleTextSize(14)//optional
