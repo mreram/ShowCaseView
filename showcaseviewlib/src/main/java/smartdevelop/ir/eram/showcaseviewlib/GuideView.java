@@ -37,7 +37,12 @@ public class GuideView extends FrameLayout {
     private GuideMessageView mMessageView;
     private boolean isTop;
     private Gravity mGravity;
+    private DismissType dismissType;
     int marginGuide;
+    private boolean mIsShowing;
+    private GuideListener mGuideListener;
+    int xMessageView = 0;
+    int yMessageView = 0;
 
     final int ANIMATION_DURATION = 400;
     final Paint emptyPaint = new Paint();
@@ -47,15 +52,18 @@ public class GuideView extends FrameLayout {
     final Paint mPaint = new Paint();
     final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
-    private boolean mIsShowing;
-    private GuideListener mGuideListener;
+
 
     public interface GuideListener {
         void onDismiss(View view);
     }
 
     public enum Gravity {
-        AUTO, CENTER
+        auto, center
+    }
+
+    public enum DismissType {
+        outside, anywhere, targetView
     }
 
     private GuideView(Context context, View view) {
@@ -147,7 +155,7 @@ public class GuideView extends FrameLayout {
             float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
 
             float x = (rect.left / 2 + rect.right / 2);
-            float stopY = (y + INDICATOR_HEIGHT * density);
+            float stopY = (yMessageView + INDICATOR_HEIGHT * density);
 
             tempCanvas.drawLine(x, startYLineAndCircle, x,
                     stopY
@@ -177,7 +185,7 @@ public class GuideView extends FrameLayout {
         this.startAnimation(startAnimation);
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(this);
         mIsShowing = false;
-        if(mGuideListener !=null){
+        if (mGuideListener != null) {
             mGuideListener.onDismiss(target);
         }
     }
@@ -187,15 +195,41 @@ public class GuideView extends FrameLayout {
         float x = event.getX();
         float y = event.getY();
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (rect.contains(x, y)) {
-                    target.performClick();
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            switch (dismissType) {
+
+                case outside:
+                    if (!isViewContains(mMessageView, x, y)) {
+                        dismiss();
+                    }
+                    break;
+
+                case anywhere:
                     dismiss();
-                }
-                return true;
+                    break;
+
+                case targetView:
+                    if (rect.contains(x, y)) {
+                        target.performClick();
+                        dismiss();
+                    }
+                    break;
+
+            }
+            return true;
         }
         return false;
+    }
+
+    private boolean isViewContains(View view, float rx, float ry) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int x = location[0];
+        int y = location[1];
+        int w = view.getWidth();
+        int h = view.getHeight();
+
+        return !(rx < x || rx > x + w || ry < y || ry > y + h);
     }
 
     void setMessageLocation(Point p) {
@@ -204,42 +238,40 @@ public class GuideView extends FrameLayout {
         requestLayout();
     }
 
-    int x = 0;
-    int y = 0;
 
     private Point resolveMessageViewLocation() {
 
-        if (mGravity == Gravity.CENTER) {
-            x = (int) (rect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
+        if (mGravity == Gravity.center) {
+            xMessageView = (int) (rect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
         } else
-            x = (int) (rect.right) - mMessageView.getWidth();
+            xMessageView = (int) (rect.right) - mMessageView.getWidth();
 
         if (isLandscape()) {
-            x -= getNavigationBarSize();
+            xMessageView -= getNavigationBarSize();
         }
 
-        if (x + mMessageView.getWidth() > getWidth())
-            x = getWidth() - mMessageView.getWidth();
-        if (x < 0)
-            x = 0;
+        if (xMessageView + mMessageView.getWidth() > getWidth())
+            xMessageView = getWidth() - mMessageView.getWidth();
+        if (xMessageView < 0)
+            xMessageView = 0;
 
 
         //set message view bottom
         if (rect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
             isTop = false;
-            y = (int) (rect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
+            yMessageView = (int) (rect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
         }
         //set message view top
         else {
             isTop = true;
-            y = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);
+            yMessageView = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);
         }
 
-        if (y < 0)
-            y = 0;
+        if (yMessageView < 0)
+            yMessageView = 0;
 
 
-        return new Point(x, y);
+        return new Point(xMessageView, yMessageView);
     }
 
 
@@ -289,11 +321,11 @@ public class GuideView extends FrameLayout {
     }
 
 
-
     public static class Builder {
         private View targetView;
         private String title, contentText;
         private Gravity gravity;
+        private DismissType dismissType;
         private Context context;
         private int titleTextSize;
         private int contentTextSize;
@@ -367,9 +399,16 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setDismissType(DismissType dismissType) {
+            this.dismissType = dismissType;
+            return this;
+        }
+
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
-            guideView.mGravity = gravity != null ? gravity : Gravity.AUTO;
+            guideView.mGravity = gravity != null ? gravity : Gravity.auto;
+            guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
+
             guideView.setTitle(title);
             if (contentText != null)
                 guideView.setContentText(contentText);
@@ -385,9 +424,10 @@ public class GuideView extends FrameLayout {
             if (contentTypeFace != null) {
                 guideView.setContentTypeFace(contentTypeFace);
             }
-            if(guideListener !=null){
+            if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
+
             return guideView;
         }
 

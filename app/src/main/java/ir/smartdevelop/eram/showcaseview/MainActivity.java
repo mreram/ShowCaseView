@@ -3,7 +3,6 @@ package ir.smartdevelop.eram.showcaseview;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
@@ -27,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
         builder = new GuideView.Builder(MainActivity.this)
                 .setTitle("Guide Title Text")
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                .setGravity(GuideView.Gravity.CENTER)
+                .setGravity(GuideView.Gravity.center)
+                .setDismissType(GuideView.DismissType.outside)
                 .setTargetView(view1)
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override

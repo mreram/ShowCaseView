@@ -14,7 +14,8 @@ Sample usage in your activity:
      new GuideView.Builder(this)
              .setTitle("Guide Title Text")
              .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-             .setGravity(GuideView.Gravity.AUTO)//optional
+             .setGravity(GuideView.Gravity.AUTO) //optional
+             .setDismissType(GuideView.DismissType.outSide) //optional - default dismissable by TargetView
              .setTargetView(view)
              .setContentTextSize(12)//optional
              .setTitleTextSize(14)//optional
@@ -38,7 +39,7 @@ maven:
 <dependency>
    <groupId>com.github.mreram</groupId>
    <artifactId>ShowCaseView</artifactId>
-   <version>1.0.4</version>
+   <version>1.0.5</version>
 </dependency>
 ```
 gradle:
@@ -113,10 +114,24 @@ compile 'com.github.mreram:ShowCaseView:1.0.4'
                        })
                        .build()
                        .show();
-## Contribution
-Pull requests are welcome! 
+
+
+### DismissType Attribute
+
+| Type | Description |
+| ------ | ------ |
+| outside | Dismissing with click on outside of MessageView |
+| anywhere | Dismissing with click on anywhere |
+| targetView | Dismissing with click on targetView(targetView is assigned with setTargetView method) |
+
+
+## Contribution :collision:
+
+Pull requests are welcome! :clap:
+
 You can improve/fix some part of it .
 
 Add Tests:
+
 Assuming that the code in question already has automated (unit) tests, do add tests for the code you submit.
 This isn't a hard rule. There are various cases where you may need to add code without test coverage (e.g. when adding a Object), but if it can be tested, it should be tested.
