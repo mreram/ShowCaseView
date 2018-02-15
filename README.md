@@ -10,7 +10,7 @@
 
 </p>
 
-##:question:How to use
+## How to use:question:
 
 Sample usage in your activity:
 
