@@ -55,7 +55,7 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-compile 'com.github.mreram:ShowCaseView:1.0.4'
+compile 'com.github.mreram:ShowCaseView:1.0.5'
 ```
 ## Change type face
 
