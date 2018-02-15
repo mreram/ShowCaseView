@@ -1,4 +1,4 @@
-# ShowCaseView
+# :flashlight:ShowCaseView:flashlight:
 
 [![APK](https://img.shields.io/badge/APK-Demo-brightgreen.svg)](https://github.com/mreram/ShowCaseView/raw/master/demo-flatShowCaseView.apk)
 [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlatShowCaseView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6713)
@@ -9,6 +9,9 @@
 <img src="./screenshots/Screenshot_2018-01-24-16-52-03.png" width="200"/>
 
 </p>
+
+##:question:How to use
+
 Sample usage in your activity:
 
      new GuideView.Builder(this)
@@ -65,7 +68,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTargetView(view)
                 .setContentTypeFace(Typeface)//optional
                 .setTitleTypeFace(Typeface)//optional
-	        .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	            .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
   
@@ -77,7 +80,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTargetView(view)
                 .setContentTextSize(12)//optional
                 .setTitleTextSize(14)//optional
-		.setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+		            .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
 		
@@ -88,7 +91,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
              .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
              .setGravity(GuideView.Gravity.CENTER)//optional
              .setTargetView(view) 
-	     .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	         .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
              .build()
              .show();
 	     
@@ -99,7 +102,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTitle("Guide Title Text")
                 .setTargetView(view)
                 .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
-		.setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	            	.setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
                 	     
@@ -110,7 +113,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                       .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
                       .setGravity(GuideView.Gravity.CENTER)
                       .setTargetView(view1)
-		      .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+		                  .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
                       .setGuideListener(new GuideView.GuideListener() {
                           @Override
                           public void onDismiss(View view) {
