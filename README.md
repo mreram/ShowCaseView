@@ -146,8 +146,6 @@ This isn't a hard rule. There are various cases where you may need to add code w
 
 
 ## License
------
-
 ```
    Copyright 2018 Mohammad Reza Eram
 
@@ -162,4 +160,5 @@ This isn't a hard rule. There are various cases where you may need to add code w
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   ```
+   
+   
