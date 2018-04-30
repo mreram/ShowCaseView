@@ -293,10 +293,17 @@ public class GuideView extends FrameLayout {
         mMessageView.setTitle(str);
     }
 
+    public void setTitleTextColor(int color) {
+        mMessageView.setTitleTextColor(color);
+    }
+
     public void setContentText(String str) {
         mMessageView.setContentText(str);
     }
 
+    public void setContentTextColor(int color) {
+        mMessageView.setContentTextColor(color);
+    }
 
     public void setContentSpan(Spannable span) {
         mMessageView.setContentSpan(span);
@@ -327,7 +334,9 @@ public class GuideView extends FrameLayout {
         private Gravity gravity;
         private DismissType dismissType;
         private Context context;
+        private int titleTextColor;
         private int titleTextSize;
+        private int contentTextColor;
         private int contentTextSize;
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
@@ -352,8 +361,18 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setTitleTextColor(int color) {
+            this.titleTextColor = color;
+            return this;
+        }
+
         public Builder setContentText(String contentText) {
             this.contentText = contentText;
+            return this;
+        }
+
+        public Builder setContentTextColor(int color) {
+            this.contentTextColor = color;
             return this;
         }
 
@@ -414,8 +433,12 @@ public class GuideView extends FrameLayout {
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)
                 guideView.setTitleTextSize(titleTextSize);
+            if (titleTextColor != 0)
+                guideView.setTitleTextColor(titleTextColor);
             if (contentTextSize != 0)
                 guideView.setContentTextSize(contentTextSize);
+            if (contentTextColor != 0)
+                guideView.setContentTextColor(contentTextColor);
             if (contentSpan != null)
                 guideView.setContentSpan(contentSpan);
             if (titleTypeFace != null) {
