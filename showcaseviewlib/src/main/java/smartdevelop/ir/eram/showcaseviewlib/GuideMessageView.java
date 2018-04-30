@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,7 +48,7 @@ class GuideMessageView extends LinearLayout {
         setGravity(Gravity.CENTER);
 
         final int padding = (int) (10 * density);
-        final int paddingBetween = (int) (3 * density);
+        final int paddingBetween = (int) (6 * density);
 
         mTitleTextView = new TextView(context);
         mTitleTextView.setPadding(padding, padding, padding, paddingBetween);
@@ -59,8 +60,9 @@ class GuideMessageView extends LinearLayout {
         mContentTextView = new TextView(context);
         mContentTextView.setTextColor(Color.BLACK);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        mContentTextView.setPadding(padding, paddingBetween, padding, padding);
+        mContentTextView.setPadding(padding, 0, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
+        mContentTextView.setVisibility(View.GONE);
         addView(mContentTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -76,10 +78,16 @@ class GuideMessageView extends LinearLayout {
 
     public void setContentText(String content) {
         mContentTextView.setText(content);
+        if (mContentTextView.getVisibility() != VISIBLE) {
+            mContentTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setContentSpan(Spannable content) {
         mContentTextView.setText(content);
+        if (mContentTextView.getVisibility() != VISIBLE) {
+            mContentTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setContentTypeFace(Typeface typeFace) {
