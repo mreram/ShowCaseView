@@ -24,6 +24,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 
+import smartdevelop.ir.eram.showcaseviewlib.utils.BitmapUtil;
+
 /**
  * Created by Mohammad Reza Eram on 20/01/2018.
  */
@@ -155,7 +157,7 @@ public class GuideView extends FrameLayout {
                 final int bottom = isTop ? yMessageView : (int) startYTipOfIndicator;
                 Rect destRect = new Rect(left, top, right, bottom);
 
-                tempCanvas.drawBitmap(indicatorDrawable, new Rect(0,0, indicatorDrawable.getWidth(), indicatorDrawable.getHeight()), destRect, null);
+                tempCanvas.drawBitmap(isTop ? indicatorDrawable : BitmapUtil.rotate(indicatorDrawable, 180), new Rect(0,0, indicatorDrawable.getWidth(), indicatorDrawable.getHeight()), destRect, null);
             } else {
                 // Draw Indicator using default arrow
                 float lineWidth = 3 * density;
