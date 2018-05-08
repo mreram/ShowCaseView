@@ -142,8 +142,7 @@ public class GuideView extends FrameLayout {
             mPaint.setAntiAlias(true);
             tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
 
-            // Paint pointer
-
+            // Paint Indicator
             marginGuide = (int) (isTop ? 15 * density : -15 * density);
             final float startYTipOfIndicator = (isTop ? rect.bottom : rect.top) + marginGuide;
             final float x = (rect.left / 2 + rect.right / 2);
