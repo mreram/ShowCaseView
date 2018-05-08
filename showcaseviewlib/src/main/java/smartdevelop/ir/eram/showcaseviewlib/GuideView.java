@@ -74,15 +74,15 @@ public class GuideView extends FrameLayout {
         outside, anywhere, targetView
     }
 
-    private GuideView(Context context, View view, int radius, int backgroundColor) {
+    private GuideView(Context context, View view, int radius, int backgroundColor, Integer drawableIndicator) {
         super(context);
         setWillNotDraw(false);
 
         this.target = view;
         this.radius = radius;
         this.backgroundColor = backgroundColor;
+        this.indicatorDrawable = drawableIndicator != null ? BitmapFactory.decodeResource(getResources(), drawableIndicator) : null;
         // TODO Remove this manual input on image drawable
-        this.indicatorDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.indicator);
         indicatorHeight = indicatorDrawable != null ? indicatorDrawable.getHeight() : DEFAULT_INDICATOR_HEIGHT;
 
         density = context.getResources().getDisplayMetrics().density;
@@ -359,6 +359,7 @@ public class GuideView extends FrameLayout {
         private Integer radius;
         private View targetView;
         private Integer backgroundColor;
+        private Integer indicatorResId;
         private String title, contentText;
         private Gravity gravity;
         private DismissType dismissType;
@@ -389,6 +390,11 @@ public class GuideView extends FrameLayout {
 
         public Builder setBackgroundColor(int backgroundColor) {
             this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        public Builder setIndicator(int indicatorResId) {
+            this.indicatorResId = indicatorResId;
             return this;
         }
 
@@ -473,7 +479,8 @@ public class GuideView extends FrameLayout {
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView,
                     radius != null ? radius : DEFAULT_RADIUS,
-                    backgroundColor != null ? backgroundColor : DEFAULT_BACKGROUND_COLOR);
+                    backgroundColor != null ? backgroundColor : DEFAULT_BACKGROUND_COLOR,
+                    indicatorResId);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
 
