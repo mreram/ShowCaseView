@@ -80,7 +80,7 @@ public class GuideView extends FrameLayout {
         this.radius = radius;
         this.backgroundColor = backgroundColor;
         // TODO Remove this manual input on image drawable
-        this.indicatorDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.pointer);
+        this.indicatorDrawable = BitmapFactory.decodeResource(getResources(), R.drawable.indicator);
         indicatorHeight = indicatorDrawable != null ? indicatorDrawable.getHeight() : DEFAULT_INDICATOR_HEIGHT;
 
         density = context.getResources().getDisplayMetrics().density;
