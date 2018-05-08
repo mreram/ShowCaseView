@@ -20,13 +20,15 @@ import android.widget.TextView;
 
 class GuideMessageView extends LinearLayout {
 
-    private Paint mPaint;
+    private int radius = -1;
+
+    private Paint mPaintBackground;
+    private Paint mPaintBorder;
     private RectF mRect;
 
     private TextView mTitleTextView;
     private TextView mContentTextView;
     float density;
-
 
     GuideMessageView(Context context) {
         super(context);
@@ -36,14 +38,13 @@ class GuideMessageView extends LinearLayout {
 
         mRect = new RectF();
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintBackground.setStrokeCap(Paint.Cap.ROUND);
 //        float radius = density * 3.0f;
 //        float dy = density * 2f;
-//        mPaint.setShadowLayer(radius, 0, dy, 0xFF3D3D3D);
+//        mPaintBackground.setShadowLayer(radius, 0, dy, 0xFF3D3D3D);
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
 
@@ -114,11 +115,23 @@ class GuideMessageView extends LinearLayout {
     }
 
     public void setColor(int color) {
-
-        mPaint.setAlpha(255);
-        mPaint.setColor(color);
+        mPaintBackground.setAlpha(255);
+        mPaintBackground.setColor(color);
 
         invalidate();
+    }
+
+    public void setBorder(int color, float width) {
+        if (mPaintBorder == null) {
+            mPaintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mPaintBorder.setStyle(Paint.Style.STROKE);
+        }
+        mPaintBorder.setColor(color);
+        mPaintBorder.setStrokeWidth(width);
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 
     int location[] = new int[2];
@@ -126,17 +139,15 @@ class GuideMessageView extends LinearLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-
         this.getLocationOnScreen(location);
-
 
         mRect.set(getPaddingLeft(),
                 getPaddingTop(),
                 canvas.getWidth() - getPaddingRight(),
                 canvas.getHeight() - getPaddingBottom());
-
-
-        canvas.drawRoundRect(mRect, 15, 15, mPaint);
+        canvas.drawRoundRect(mRect, radius, radius, mPaintBackground);
+        if (mPaintBorder != null) {
+            canvas.drawRoundRect(mRect, radius, radius, mPaintBorder);
+        }
     }
 }

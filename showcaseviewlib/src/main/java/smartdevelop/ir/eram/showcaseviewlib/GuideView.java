@@ -28,11 +28,14 @@ import android.widget.FrameLayout;
 
 public class GuideView extends FrameLayout {
 
-
+    private static final int DEFAULT_RADIUS = 15;
+    private static final int DEFAULT_BACKGROUND_COLOR = 0xdd000000;
     private static final float INDICATOR_HEIGHT = 30;
 
-    private float density;
-    private View target;
+    private final float density;
+    private final View target;
+    private final int radius;
+    private final int backgroundColor;
     private RectF rect;
     private GuideMessageView mMessageView;
     private boolean isTop;
@@ -53,7 +56,6 @@ public class GuideView extends FrameLayout {
     final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
-
     public interface GuideListener {
         void onDismiss(View view);
     }
@@ -66,11 +68,13 @@ public class GuideView extends FrameLayout {
         outside, anywhere, targetView
     }
 
-    private GuideView(Context context, View view) {
+    private GuideView(Context context, View view, int radius, int backgroundColor) {
         super(context);
         setWillNotDraw(false);
 
         this.target = view;
+        this.radius = radius;
+        this.backgroundColor = backgroundColor;
 
         density = context.getResources().getDisplayMetrics().density;
 
@@ -82,6 +86,7 @@ public class GuideView extends FrameLayout {
 
         mMessageView = new GuideMessageView(getContext());
         final int padding = (int) (5 * density);
+        mMessageView.setRadius(radius);
         mMessageView.setPadding(padding, padding, padding, padding);
         mMessageView.setColor(Color.WHITE);
 
@@ -124,16 +129,17 @@ public class GuideView extends FrameLayout {
             Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas tempCanvas = new Canvas(bitmap);
 
+            // Paint background
+            mPaint.setColor(backgroundColor);
+            mPaint.setStyle(Paint.Style.FILL);
+            mPaint.setAntiAlias(true);
+            tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
+
+            // Paint pointer
             float lineWidth = 3 * density;
             float strokeCircleWidth = 3 * density;
             float circleSize = 6 * density;
             float circleInnerSize = 5f * density;
-
-
-            mPaint.setColor(0xdd000000);
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setAntiAlias(true);
-            tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
 
             paintLine.setStyle(Paint.Style.FILL);
             paintLine.setColor(Color.WHITE);
@@ -153,22 +159,18 @@ public class GuideView extends FrameLayout {
             marginGuide = (int) (isTop ? 15 * density : -15 * density);
 
             float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
-
             float x = (rect.left / 2 + rect.right / 2);
             float stopY = (yMessageView + INDICATOR_HEIGHT * density);
 
-            tempCanvas.drawLine(x, startYLineAndCircle, x,
-                    stopY
-                    , paintLine);
-
+            tempCanvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
             tempCanvas.drawCircle(x, startYLineAndCircle, circleSize, paintCircle);
             tempCanvas.drawCircle(x, startYLineAndCircle, circleInnerSize, paintCircleInner);
 
-
+            // Paint target
             targetPaint.setXfermode(XFERMODE_CLEAR);
             targetPaint.setAntiAlias(true);
+            tempCanvas.drawRoundRect(rect, radius, radius, targetPaint);
 
-            tempCanvas.drawRoundRect(rect, 15, 15, targetPaint);
             canvas.drawBitmap(bitmap, 0, 0, emptyPaint);
         }
     }
@@ -327,9 +329,15 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentTextSize(size);
     }
 
+    public void setBorder(int color, float width) {
+        mMessageView.setBorder(color, width);
+    }
+
 
     public static class Builder {
+        private Integer radius;
         private View targetView;
+        private Integer backgroundColor;
         private String title, contentText;
         private Gravity gravity;
         private DismissType dismissType;
@@ -341,13 +349,25 @@ public class GuideView extends FrameLayout {
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
         private GuideListener guideListener;
+        private Integer borderColor;
+        private Float borderWidth;
 
         public Builder(Context context) {
             this.context = context;
         }
 
+        public Builder setRadius(int radius) {
+            this.radius = radius;
+            return this;
+        }
+
         public Builder setTargetView(View view) {
             this.targetView = view;
+            return this;
+        }
+
+        public Builder setBackgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
             return this;
         }
 
@@ -423,8 +443,16 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setBorder(int color, float width) {
+            this.borderColor = color;
+            this.borderWidth = width;
+            return this;
+        }
+
         public GuideView build() {
-            GuideView guideView = new GuideView(context, targetView);
+            GuideView guideView = new GuideView(context, targetView,
+                    radius != null ? radius : DEFAULT_RADIUS,
+                    backgroundColor != null ? backgroundColor : DEFAULT_BACKGROUND_COLOR);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
 
@@ -450,11 +478,12 @@ public class GuideView extends FrameLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
+            if (borderColor != null && borderWidth != null) {
+                guideView.setBorder(borderColor, borderWidth);
+            }
 
             return guideView;
         }
-
-
     }
 }
 
