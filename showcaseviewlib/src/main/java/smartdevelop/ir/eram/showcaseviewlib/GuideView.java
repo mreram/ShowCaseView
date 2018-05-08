@@ -151,13 +151,16 @@ public class GuideView extends FrameLayout {
 
             if (indicatorDrawable != null) {
                 // Draw Indicator using Drawable
+                final int y = yMessageView + marginGuide;
                 final int left = (int) x - indicatorDrawable.getWidth();
-                final int top = isTop ? (int) startYTipOfIndicator : yMessageView + mMessageView.getHeight();
+                final int top = isTop ? (int) startYTipOfIndicator : y + mMessageView.getHeight();
                 final int right = (int) x + indicatorDrawable.getWidth();
-                final int bottom = isTop ? yMessageView : (int) startYTipOfIndicator;
+                final int bottom = isTop ? y : (int) startYTipOfIndicator;
                 Rect destRect = new Rect(left, top, right, bottom);
 
-                tempCanvas.drawBitmap(isTop ? indicatorDrawable : BitmapUtil.rotate(indicatorDrawable, 180), new Rect(0,0, indicatorDrawable.getWidth(), indicatorDrawable.getHeight()), destRect, null);
+                tempCanvas.drawBitmap(isTop ? indicatorDrawable : BitmapUtil.rotate(indicatorDrawable, 180),
+                        new Rect(0,0, indicatorDrawable.getWidth(), indicatorDrawable.getHeight()),
+                        destRect, null);
             } else {
                 // Draw Indicator using default arrow
                 float lineWidth = 3 * density;
