@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
                 .setContentTextColor(getResources().getColor(R.color.colorPrimary))
                 .setRadius(20)
-                .setBorder(Color.BLUE, 10.0f)
+                .setBorder(Color.RED, 10.0f)
                 .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.outside)
                 .setTargetView(view1)
-//                .setBackgroundColor(getResources().getColor(android.R.color.transparent))
-//                .setPointer(getResources().getDrawable(R.drawable.))
+                .setBackgroundColor(getResources().getColor(android.R.color.transparent))
+                .setIndicator(R.drawable.indicator)
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override
                     public void onDismiss(View view) {
