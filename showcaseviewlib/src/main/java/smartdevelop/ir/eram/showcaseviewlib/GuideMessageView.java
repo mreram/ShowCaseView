@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,13 +20,15 @@ import android.widget.TextView;
 
 class GuideMessageView extends LinearLayout {
 
-    private Paint mPaint;
+    private int radius = -1;
+
+    private Paint mPaintBackground;
+    private Paint mPaintBorder;
     private RectF mRect;
 
     private TextView mTitleTextView;
     private TextView mContentTextView;
     float density;
-
 
     GuideMessageView(Context context) {
         super(context);
@@ -35,19 +38,18 @@ class GuideMessageView extends LinearLayout {
 
         mRect = new RectF();
 
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaintBackground = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaintBackground.setStrokeCap(Paint.Cap.ROUND);
 //        float radius = density * 3.0f;
 //        float dy = density * 2f;
-//        mPaint.setShadowLayer(radius, 0, dy, 0xFF3D3D3D);
+//        mPaintBackground.setShadowLayer(radius, 0, dy, 0xFF3D3D3D);
 
         setLayerType(LAYER_TYPE_SOFTWARE, null);
-
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
 
         final int padding = (int) (10 * density);
-        final int paddingBetween = (int) (3 * density);
+        final int paddingBetween = (int) (6 * density);
 
         mTitleTextView = new TextView(context);
         mTitleTextView.setPadding(padding, padding, padding, paddingBetween);
@@ -59,8 +61,9 @@ class GuideMessageView extends LinearLayout {
         mContentTextView = new TextView(context);
         mContentTextView.setTextColor(Color.BLACK);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-        mContentTextView.setPadding(padding, paddingBetween, padding, padding);
+        mContentTextView.setPadding(padding, 0, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
+        mContentTextView.setVisibility(View.GONE);
         addView(mContentTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
@@ -73,13 +76,22 @@ class GuideMessageView extends LinearLayout {
         mTitleTextView.setText(title);
     }
 
+    public void setTitleTextColor(int color) {
+        mTitleTextView.setTextColor(color);
+    }
 
     public void setContentText(String content) {
         mContentTextView.setText(content);
+        if (mContentTextView.getVisibility() != VISIBLE) {
+            mContentTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setContentSpan(Spannable content) {
         mContentTextView.setText(content);
+        if (mContentTextView.getVisibility() != VISIBLE) {
+            mContentTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setContentTypeFace(Typeface typeFace) {
@@ -98,12 +110,28 @@ class GuideMessageView extends LinearLayout {
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
-    public void setColor(int color) {
+    public void setContentTextColor(int color) {
+        mContentTextView.setTextColor(color);
+    }
 
-        mPaint.setAlpha(255);
-        mPaint.setColor(color);
+    public void setColor(int color) {
+        mPaintBackground.setAlpha(255);
+        mPaintBackground.setColor(color);
 
         invalidate();
+    }
+
+    public void setBorder(int color, float width) {
+        if (mPaintBorder == null) {
+            mPaintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mPaintBorder.setStyle(Paint.Style.STROKE);
+        }
+        mPaintBorder.setColor(color);
+        mPaintBorder.setStrokeWidth(width);
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 
     int location[] = new int[2];
@@ -111,17 +139,15 @@ class GuideMessageView extends LinearLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-
         this.getLocationOnScreen(location);
-
 
         mRect.set(getPaddingLeft(),
                 getPaddingTop(),
                 canvas.getWidth() - getPaddingRight(),
                 canvas.getHeight() - getPaddingBottom());
-
-
-        canvas.drawRoundRect(mRect, 15, 15, mPaint);
+        canvas.drawRoundRect(mRect, radius, radius, mPaintBackground);
+        if (mPaintBorder != null) {
+            canvas.drawRoundRect(mRect, radius, radius, mPaintBorder);
+        }
     }
 }

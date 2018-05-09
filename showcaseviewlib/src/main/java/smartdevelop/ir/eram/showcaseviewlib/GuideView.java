@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.Xfermode;
@@ -22,17 +24,24 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 
+import smartdevelop.ir.eram.showcaseviewlib.utils.BitmapUtil;
+
 /**
  * Created by Mohammad Reza Eram on 20/01/2018.
  */
 
 public class GuideView extends FrameLayout {
 
+    private static final int DEFAULT_RADIUS = 15;
+    private static final int DEFAULT_BACKGROUND_COLOR = 0xdd000000;
+    private static final float DEFAULT_INDICATOR_HEIGHT = 100;
 
-    private static final float INDICATOR_HEIGHT = 30;
-
-    private float density;
-    private View target;
+    private final float density;
+    private final View target;
+    private final int radius;
+    private final int backgroundColor;
+    private final Bitmap indicatorDrawable;
+    private float indicatorHeight;
     private RectF rect;
     private GuideMessageView mMessageView;
     private boolean isTop;
@@ -53,7 +62,6 @@ public class GuideView extends FrameLayout {
     final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
-
     public interface GuideListener {
         void onDismiss(View view);
     }
@@ -66,11 +74,16 @@ public class GuideView extends FrameLayout {
         outside, anywhere, targetView
     }
 
-    private GuideView(Context context, View view) {
+    private GuideView(Context context, View view, int radius, int backgroundColor, Integer drawableIndicator) {
         super(context);
         setWillNotDraw(false);
 
         this.target = view;
+        this.radius = radius;
+        this.backgroundColor = backgroundColor;
+        this.indicatorDrawable = drawableIndicator != null ? BitmapFactory.decodeResource(getResources(), drawableIndicator) : null;
+        // TODO Remove this manual input on image drawable
+        indicatorHeight = indicatorDrawable != null ? indicatorDrawable.getHeight() : DEFAULT_INDICATOR_HEIGHT;
 
         density = context.getResources().getDisplayMetrics().density;
 
@@ -82,6 +95,7 @@ public class GuideView extends FrameLayout {
 
         mMessageView = new GuideMessageView(getContext());
         final int padding = (int) (5 * density);
+        mMessageView.setRadius(radius);
         mMessageView.setPadding(padding, padding, padding, padding);
         mMessageView.setColor(Color.WHITE);
 
@@ -124,51 +138,63 @@ public class GuideView extends FrameLayout {
             Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas tempCanvas = new Canvas(bitmap);
 
-            float lineWidth = 3 * density;
-            float strokeCircleWidth = 3 * density;
-            float circleSize = 6 * density;
-            float circleInnerSize = 5f * density;
-
-
-            mPaint.setColor(0xdd000000);
+            // Paint background
+            mPaint.setColor(backgroundColor);
             mPaint.setStyle(Paint.Style.FILL);
             mPaint.setAntiAlias(true);
             tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
 
-            paintLine.setStyle(Paint.Style.FILL);
-            paintLine.setColor(Color.WHITE);
-            paintLine.setStrokeWidth(lineWidth);
-            paintLine.setAntiAlias(true);
-
-            paintCircle.setStyle(Paint.Style.STROKE);
-            paintCircle.setColor(Color.WHITE);
-            paintCircle.setStrokeCap(Paint.Cap.ROUND);
-            paintCircle.setStrokeWidth(strokeCircleWidth);
-            paintCircle.setAntiAlias(true);
-
-            paintCircleInner.setStyle(Paint.Style.FILL);
-            paintCircleInner.setColor(0xffcccccc);
-            paintCircleInner.setAntiAlias(true);
-
+            // Paint Indicator
             marginGuide = (int) (isTop ? 15 * density : -15 * density);
+            final float startYTipOfIndicator = (isTop ? rect.bottom : rect.top) + marginGuide;
+            final float x = (rect.left / 2 + rect.right / 2);
 
-            float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
+            if (indicatorDrawable != null) {
+                // Draw Indicator using Drawable
+                final int y = yMessageView + marginGuide;
+                final int left = (int) x - indicatorDrawable.getWidth();
+                final int top = isTop ? (int) startYTipOfIndicator : y + mMessageView.getHeight();
+                final int right = (int) x + indicatorDrawable.getWidth();
+                final int bottom = isTop ? y : (int) startYTipOfIndicator;
+                Rect destRect = new Rect(left, top, right, bottom);
 
-            float x = (rect.left / 2 + rect.right / 2);
-            float stopY = (yMessageView + INDICATOR_HEIGHT * density);
+                tempCanvas.drawBitmap(isTop ? indicatorDrawable : BitmapUtil.rotate(indicatorDrawable, 180),
+                        new Rect(0,0, indicatorDrawable.getWidth(), indicatorDrawable.getHeight()),
+                        destRect, null);
+            } else {
+                // Draw Indicator using default arrow
+                float lineWidth = 3 * density;
+                float strokeCircleWidth = 3 * density;
+                float circleSize = 6 * density;
+                float circleInnerSize = 5f * density;
 
-            tempCanvas.drawLine(x, startYLineAndCircle, x,
-                    stopY
-                    , paintLine);
+                paintLine.setStyle(Paint.Style.FILL);
+                paintLine.setColor(Color.WHITE);
+                paintLine.setStrokeWidth(lineWidth);
+                paintLine.setAntiAlias(true);
 
-            tempCanvas.drawCircle(x, startYLineAndCircle, circleSize, paintCircle);
-            tempCanvas.drawCircle(x, startYLineAndCircle, circleInnerSize, paintCircleInner);
+                paintCircle.setStyle(Paint.Style.STROKE);
+                paintCircle.setColor(Color.WHITE);
+                paintCircle.setStrokeCap(Paint.Cap.ROUND);
+                paintCircle.setStrokeWidth(strokeCircleWidth);
+                paintCircle.setAntiAlias(true);
 
+                paintCircleInner.setStyle(Paint.Style.FILL);
+                paintCircleInner.setColor(0xffcccccc);
+                paintCircleInner.setAntiAlias(true);
 
+                float stopY = (yMessageView + indicatorHeight * density);
+
+                tempCanvas.drawLine(x, startYTipOfIndicator, x, stopY, paintLine);
+                tempCanvas.drawCircle(x, startYTipOfIndicator, circleSize, paintCircle);
+                tempCanvas.drawCircle(x, startYTipOfIndicator, circleInnerSize, paintCircleInner);
+            }
+
+            // Paint target
             targetPaint.setXfermode(XFERMODE_CLEAR);
             targetPaint.setAntiAlias(true);
+            tempCanvas.drawRoundRect(rect, radius, radius, targetPaint);
 
-            tempCanvas.drawRoundRect(rect, 15, 15, targetPaint);
             canvas.drawBitmap(bitmap, 0, 0, emptyPaint);
         }
     }
@@ -257,14 +283,14 @@ public class GuideView extends FrameLayout {
 
 
         //set message view bottom
-        if (rect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
+        if (rect.top + (indicatorHeight * density) > getHeight() / 2) {
             isTop = false;
-            yMessageView = (int) (rect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
+            yMessageView = (int) (rect.top - mMessageView.getHeight() - indicatorHeight * density);
         }
         //set message view top
         else {
             isTop = true;
-            yMessageView = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);
+            yMessageView = (int) (rect.top + target.getHeight() + indicatorHeight * density);
         }
 
         if (yMessageView < 0)
@@ -293,10 +319,17 @@ public class GuideView extends FrameLayout {
         mMessageView.setTitle(str);
     }
 
+    public void setTitleTextColor(int color) {
+        mMessageView.setTitleTextColor(color);
+    }
+
     public void setContentText(String str) {
         mMessageView.setContentText(str);
     }
 
+    public void setContentTextColor(int color) {
+        mMessageView.setContentTextColor(color);
+    }
 
     public void setContentSpan(Spannable span) {
         mMessageView.setContentSpan(span);
@@ -320,25 +353,51 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentTextSize(size);
     }
 
+    public void setBorder(int color, float width) {
+        mMessageView.setBorder(color, width);
+    }
+
 
     public static class Builder {
+        private Integer radius;
         private View targetView;
+        private Integer backgroundColor;
+        private Integer indicatorResId;
         private String title, contentText;
         private Gravity gravity;
         private DismissType dismissType;
         private Context context;
+        private int titleTextColor;
         private int titleTextSize;
+        private int contentTextColor;
         private int contentTextSize;
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
         private GuideListener guideListener;
+        private Integer borderColor;
+        private Float borderWidth;
 
         public Builder(Context context) {
             this.context = context;
         }
 
+        public Builder setRadius(int radius) {
+            this.radius = radius;
+            return this;
+        }
+
         public Builder setTargetView(View view) {
             this.targetView = view;
+            return this;
+        }
+
+        public Builder setBackgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        public Builder setIndicator(int indicatorResId) {
+            this.indicatorResId = indicatorResId;
             return this;
         }
 
@@ -352,8 +411,18 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setTitleTextColor(int color) {
+            this.titleTextColor = color;
+            return this;
+        }
+
         public Builder setContentText(String contentText) {
             this.contentText = contentText;
+            return this;
+        }
+
+        public Builder setContentTextColor(int color) {
+            this.contentTextColor = color;
             return this;
         }
 
@@ -404,8 +473,17 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        public Builder setBorder(int color, float width) {
+            this.borderColor = color;
+            this.borderWidth = width;
+            return this;
+        }
+
         public GuideView build() {
-            GuideView guideView = new GuideView(context, targetView);
+            GuideView guideView = new GuideView(context, targetView,
+                    radius != null ? radius : DEFAULT_RADIUS,
+                    backgroundColor != null ? backgroundColor : DEFAULT_BACKGROUND_COLOR,
+                    indicatorResId);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
 
@@ -414,8 +492,12 @@ public class GuideView extends FrameLayout {
                 guideView.setContentText(contentText);
             if (titleTextSize != 0)
                 guideView.setTitleTextSize(titleTextSize);
+            if (titleTextColor != 0)
+                guideView.setTitleTextColor(titleTextColor);
             if (contentTextSize != 0)
                 guideView.setContentTextSize(contentTextSize);
+            if (contentTextColor != 0)
+                guideView.setContentTextColor(contentTextColor);
             if (contentSpan != null)
                 guideView.setContentSpan(contentSpan);
             if (titleTypeFace != null) {
@@ -427,11 +509,12 @@ public class GuideView extends FrameLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
+            if (borderColor != null && borderWidth != null) {
+                guideView.setBorder(borderColor, borderWidth);
+            }
 
             return guideView;
         }
-
-
     }
 }
 

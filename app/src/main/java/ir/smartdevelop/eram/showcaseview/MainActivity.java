@@ -1,5 +1,6 @@
 package ir.smartdevelop.eram.showcaseview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,13 +23,19 @@ public class MainActivity extends AppCompatActivity {
         final View view4 = findViewById(R.id.view4);
         final View view5 = findViewById(R.id.view5);
 
-
         builder = new GuideView.Builder(MainActivity.this)
                 .setTitle("Guide Title Text")
+                .setTitleTextSize(20)
+                .setTitleTextColor(getResources().getColor(R.color.colorAccent))
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setContentTextColor(getResources().getColor(R.color.colorPrimary))
+                .setRadius(20)
+                .setBorder(Color.RED, 10.0f)
                 .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.outside)
                 .setTargetView(view1)
+                //.setBackgroundColor(getResources().getColor(android.R.color.transparent))
+                .setIndicator(R.drawable.indicator)
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override
                     public void onDismiss(View view) {
