@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.outside)
                 .setTargetView(view1)
-                .setBackgroundColor(getResources().getColor(android.R.color.transparent))
+                //.setBackgroundColor(getResources().getColor(android.R.color.transparent))
                 .setIndicator(R.drawable.indicator)
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override
