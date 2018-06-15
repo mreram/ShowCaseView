@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         final View view4 = findViewById(R.id.view4);
         final View view5 = findViewById(R.id.view5);
 
-
         builder = new GuideView.Builder(MainActivity.this)
                 .setTitle("Guide Title Text")
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
@@ -56,13 +55,5 @@ public class MainActivity extends AppCompatActivity {
         mGuideView = builder.build();
         mGuideView.show();
     }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-    }
-
 
 }
