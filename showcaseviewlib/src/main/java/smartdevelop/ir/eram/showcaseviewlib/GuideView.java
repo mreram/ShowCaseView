@@ -14,6 +14,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.Xfermode;
+import android.os.Build;
 import android.text.Spannable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +31,7 @@ public class GuideView extends FrameLayout {
 
 
     private static final float INDICATOR_HEIGHT = 30;
+    private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     private float density;
     private View target;
@@ -91,7 +93,7 @@ public class GuideView extends FrameLayout {
 
         setMessageLocation(resolveMessageViewLocation());
 
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 setMessageLocation(resolveMessageViewLocation());
@@ -99,8 +101,14 @@ public class GuideView extends FrameLayout {
                 target.getLocationOnScreen(locationTarget);
                 rect = new RectF(locationTarget[0], locationTarget[1],
                         locationTarget[0] + target.getWidth(), locationTarget[1] + target.getHeight());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+                } else {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+                }
             }
-        });
+        };
+        getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
     }
 
     private int getNavigationBarSize() {
