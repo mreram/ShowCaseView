@@ -14,6 +14,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.Xfermode;
+import android.os.Build;
 import android.text.Spannable;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,17 +29,14 @@ import android.widget.FrameLayout;
 
 public class GuideView extends FrameLayout {
 
-
-    private static final float INDICATOR_HEIGHT = 30;
+    private final ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
     private float density;
     private View target;
     private RectF rect;
     private GuideMessageView mMessageView;
-    private boolean isTop;
     private Gravity mGravity;
     private DismissType dismissType;
-    int marginGuide;
     private boolean mIsShowing;
     private GuideListener mGuideListener;
     int xMessageView = 0;
@@ -46,9 +44,6 @@ public class GuideView extends FrameLayout {
 
     final int ANIMATION_DURATION = 400;
     final Paint emptyPaint = new Paint();
-    final Paint paintLine = new Paint();
-    final Paint paintCircle = new Paint();
-    final Paint paintCircleInner = new Paint();
     final Paint mPaint = new Paint();
     final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
@@ -91,7 +86,7 @@ public class GuideView extends FrameLayout {
 
         setMessageLocation(resolveMessageViewLocation());
 
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 setMessageLocation(resolveMessageViewLocation());
@@ -99,8 +94,14 @@ public class GuideView extends FrameLayout {
                 target.getLocationOnScreen(locationTarget);
                 rect = new RectF(locationTarget[0], locationTarget[1],
                         locationTarget[0] + target.getWidth(), locationTarget[1] + target.getHeight());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
+                } else {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+                }
             }
-        });
+        };
+        getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
     }
 
     private int getNavigationBarSize() {
@@ -124,46 +125,10 @@ public class GuideView extends FrameLayout {
             Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas tempCanvas = new Canvas(bitmap);
 
-            float lineWidth = 3 * density;
-            float strokeCircleWidth = 3 * density;
-            float circleSize = 6 * density;
-            float circleInnerSize = 5f * density;
-
-
             mPaint.setColor(0xdd000000);
             mPaint.setStyle(Paint.Style.FILL);
             mPaint.setAntiAlias(true);
             tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
-
-            paintLine.setStyle(Paint.Style.FILL);
-            paintLine.setColor(Color.WHITE);
-            paintLine.setStrokeWidth(lineWidth);
-            paintLine.setAntiAlias(true);
-
-            paintCircle.setStyle(Paint.Style.STROKE);
-            paintCircle.setColor(Color.WHITE);
-            paintCircle.setStrokeCap(Paint.Cap.ROUND);
-            paintCircle.setStrokeWidth(strokeCircleWidth);
-            paintCircle.setAntiAlias(true);
-
-            paintCircleInner.setStyle(Paint.Style.FILL);
-            paintCircleInner.setColor(0xffcccccc);
-            paintCircleInner.setAntiAlias(true);
-
-            marginGuide = (int) (isTop ? 15 * density : -15 * density);
-
-            float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
-
-            float x = (rect.left / 2 + rect.right / 2);
-            float stopY = (yMessageView + INDICATOR_HEIGHT * density);
-
-            tempCanvas.drawLine(x, startYLineAndCircle, x,
-                    stopY
-                    , paintLine);
-
-            tempCanvas.drawCircle(x, startYLineAndCircle, circleSize, paintCircle);
-            tempCanvas.drawCircle(x, startYLineAndCircle, circleInnerSize, paintCircleInner);
-
 
             targetPaint.setXfermode(XFERMODE_CLEAR);
             targetPaint.setAntiAlias(true);
@@ -255,21 +220,29 @@ public class GuideView extends FrameLayout {
         if (xMessageView < 0)
             xMessageView = 0;
 
-
-        //set message view bottom
-        if (rect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
-            isTop = false;
-            yMessageView = (int) (rect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
+        float rectCenterX = (rect.left + rect.right) / 2;
+        float rectCenterY = (rect.top + rect.bottom) / 2;
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+        float diffX = centerX - rectCenterX;
+        float diffY = centerY - rectCenterY;
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX < 0) { // left
+                xMessageView = (int) (rect.left / 2 - mMessageView.getWidth() / 2);
+                yMessageView = getHeight() / 2 - mMessageView.getHeight() / 2;
+            } else { // right
+                xMessageView = (int) (((getWidth() - rect.right) / 2) + rect.right - mMessageView.getWidth() / 2);
+                yMessageView = getHeight() / 2 - mMessageView.getHeight() / 2;
+            }
+        } else {
+            if (diffY < 0) { // top
+                xMessageView = getWidth() / 2 - mMessageView.getWidth() / 2;
+                yMessageView = (int) (rect.top / 2 - mMessageView.getHeight() / 2);
+            } else { // bottom
+                xMessageView = getWidth() / 2 - mMessageView.getWidth() / 2;
+                yMessageView = (int) (((getHeight() - rect.bottom) / 2) + rect.bottom - mMessageView.getHeight() / 2);
+            }
         }
-        //set message view top
-        else {
-            isTop = true;
-            yMessageView = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);
-        }
-
-        if (yMessageView < 0)
-            yMessageView = 0;
-
 
         return new Point(xMessageView, yMessageView);
     }
