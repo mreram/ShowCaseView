@@ -24,13 +24,18 @@ class GuideMessageView extends LinearLayout {
 
     private TextView mTitleTextView;
     private TextView mContentTextView;
+    private int boxBackgroundColor = Color.WHITE;
+    private int titleColor = Color.BLACK;
+    private int descriptiveColor = Color.BLACK;
     float density;
+    int screenWidth;
 
 
     GuideMessageView(Context context) {
         super(context);
 
         density = context.getResources().getDisplayMetrics().density;
+        screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         setWillNotDraw(false);
 
         mRect = new RectF();
@@ -49,19 +54,21 @@ class GuideMessageView extends LinearLayout {
         final int padding = (int) (10 * density);
         final int paddingBetween = (int) (3 * density);
 
+
+        int newCalculatedWidth = (int)((double)screenWidth / 1.5);
         mTitleTextView = new TextView(context);
         mTitleTextView.setPadding(padding, padding, padding, paddingBetween);
         mTitleTextView.setGravity(Gravity.CENTER);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-        mTitleTextView.setTextColor(Color.BLACK);
-        addView(mTitleTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mTitleTextView.setTextColor(titleColor);
+        addView(mTitleTextView, new LayoutParams(newCalculatedWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         mContentTextView = new TextView(context);
-        mContentTextView.setTextColor(Color.BLACK);
+        mContentTextView.setTextColor(descriptiveColor);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
         mContentTextView.setPadding(padding, paddingBetween, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
-        addView(mContentTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        addView(mContentTextView, new LayoutParams(newCalculatedWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
 
@@ -73,7 +80,13 @@ class GuideMessageView extends LinearLayout {
         mTitleTextView.setText(title);
     }
 
+    public void setTitleColor(int color){
+        titleColor = color;
+    }
 
+    public void setDescriptiveColor(int color){
+        descriptiveColor = color;
+    }
     public void setContentText(String content) {
         mContentTextView.setText(content);
     }
@@ -101,7 +114,8 @@ class GuideMessageView extends LinearLayout {
     public void setColor(int color) {
 
         mPaint.setAlpha(255);
-        mPaint.setColor(color);
+        boxBackgroundColor = color;
+        mPaint.setColor(boxBackgroundColor);
 
         invalidate();
     }
@@ -114,8 +128,6 @@ class GuideMessageView extends LinearLayout {
 
 
         this.getLocationOnScreen(location);
-
-
         mRect.set(getPaddingLeft(),
                 getPaddingTop(),
                 canvas.getWidth() - getPaddingRight(),
