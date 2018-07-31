@@ -278,33 +278,35 @@ public class GuideView extends LinearLayout {
         float x = event.getX();
         float y = event.getY();
 
-	if(isClickable){
+
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            switch (dismissType) {
+            if(isClickable) {
+                switch (dismissType) {
 
-                case outside:
-                    if (!isViewContains(mMessageView, x, y)) {
+                    case outside:
+                        if (!isViewContains(mMessageView, x, y)) {
+                            dismiss();
+                        }
+                        break;
+
+                    case anywhere:
                         dismiss();
-                    }
-                    break;
+                        break;
 
-                case anywhere:
-                    dismiss();
-                    break;
+                    case targetView:
+                        if (rect.contains(x, y)) {
+                            target.performClick();
+                            dismiss();
+                        }
+                        break;
 
-                case targetView:
-                    if (rect.contains(x, y)) {
-                        target.performClick();
-                        dismiss();
-                    }
-                    break;
-
+                }
             }
             return true;
         }
         return false;
-      }
+
     }
 
     private boolean isViewContains(View view, float rx, float ry) {
