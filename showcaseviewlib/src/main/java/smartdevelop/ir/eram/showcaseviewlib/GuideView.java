@@ -93,9 +93,7 @@ public class GuideView extends LinearLayout {
         this.target = view;
 
 
-
         density = context.getResources().getDisplayMetrics().density;
-
 
 
         int[] locationTarget = new int[2];
@@ -113,42 +111,42 @@ public class GuideView extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
 
-            LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-            textViewNext = new TextView(getContext());
-            textViewNext.setPadding(5, 5, 5, 5);
-            textViewNext.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-            textViewNext.setTextColor(Color.WHITE);
-            textViewNext.setText(">");
-            Log.d(TAG, "TextViewNext added");
+        textViewNext = new TextView(getContext());
+        textViewNext.setPadding(5, 5, 5, 5);
+        textViewNext.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
+        textViewNext.setTextColor(Color.WHITE);
+        textViewNext.setText(">");
+        Log.d(TAG, "TextViewNext added");
 
-            addView(textViewNext, textParam);
+        addView(textViewNext, textParam);
 
-            textViewPrevious = new TextView(getContext());
-            textViewPrevious.setPadding(5, 5, 5, 5);
-            textViewPrevious.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-            textViewPrevious.setTextColor(Color.WHITE);
-            textViewPrevious.setText("<");
-            Log.d(TAG, "TextView Previous added");
-            addView(textViewPrevious, textParam);
+        textViewPrevious = new TextView(getContext());
+        textViewPrevious.setPadding(5, 5, 5, 5);
+        textViewPrevious.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
+        textViewPrevious.setTextColor(Color.WHITE);
+        textViewPrevious.setText("<");
+        Log.d(TAG, "TextView Previous added");
+        addView(textViewPrevious, textParam);
 
-            textViewNext.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (arrowClickListener != null) {
-                        arrowClickListener.onArrowClicked("next");
-                    }
+        textViewNext.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (arrowClickListener != null) {
+                    arrowClickListener.onArrowClicked("next");
                 }
-            });
+            }
+        });
 
-            textViewPrevious.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (arrowClickListener != null) {
-                        arrowClickListener.onArrowClicked("prev");
-                    }
+        textViewPrevious.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (arrowClickListener != null) {
+                    arrowClickListener.onArrowClicked("prev");
                 }
-            });
+            }
+        });
 
 
         setMessageLocation(resolveMessageViewLocation());
@@ -161,21 +159,21 @@ public class GuideView extends LinearLayout {
                 target.getLocationOnScreen(locationTarget);
 
                 int totalHeight = getHeight();
-                int totalWidth  = getWidth();
+                int totalWidth = getWidth();
 
-                setTextViewNextPosition(totalWidth,totalHeight);
+                setTextViewNextPosition(totalWidth, totalHeight);
 
-                if(isCircle){
-                    if(target.getWidth() > target.getHeight()){
+                if (isCircle) {
+                    if (target.getWidth() > target.getHeight()) {
                         circleRadius = target.getWidth();
-                    }else if(target.getHeight() > target.getWidth()){
+                    } else if (target.getHeight() > target.getWidth()) {
                         circleRadius = target.getHeight();
-                    }else {
+                    } else {
                         circleRadius = target.getWidth();
                     }
                 }
 
-                rect = new RectF(locationTarget[0] - showcasePadding , locationTarget[1]-showcasePadding,
+                rect = new RectF(locationTarget[0] - showcasePadding, locationTarget[1] - showcasePadding,
                         locationTarget[0] + target.getWidth() + showcasePadding, locationTarget[1] + target.getHeight() + showcasePadding);
             }
         });
@@ -198,10 +196,10 @@ public class GuideView extends LinearLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if(messageYOffset == 0){
+        if (messageYOffset == 0) {
             INDICATOR_HEIGHT = 30;
-        }else {
-            INDICATOR_HEIGHT = (float)messageYOffset;
+        } else {
+            INDICATOR_HEIGHT = (float) messageYOffset;
         }
         if (target != null) {
             Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
@@ -279,9 +277,8 @@ public class GuideView extends LinearLayout {
         float y = event.getY();
 
 
-
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(isClickable) {
+            if (isClickable) {
                 switch (dismissType) {
 
                     case outside:
@@ -320,9 +317,9 @@ public class GuideView extends LinearLayout {
         return !(rx < x || rx > x + w || ry < y || ry > y + h);
     }
 
-    void setTextViewNextPosition(int x, int y){
+    void setTextViewNextPosition(int x, int y) {
 
-        if(showArrows) {
+        if (showArrows) {
             int xPercentageValue = ((x / 100) * 5);
             float txtNextxPoint = (float) (x - (xPercentageValue + 50));
             float txtNextyPoint = (float) (y - 300);
@@ -337,11 +334,12 @@ public class GuideView extends LinearLayout {
             textViewPrevious.setX(txtPrevxPoint);
 
             Log.d(TAG, "NextXPoint: " + String.valueOf(txtNextxPoint));
-        }else {
+        } else {
             textViewNext.setVisibility(GONE);
             textViewPrevious.setVisibility(GONE);
         }
     }
+
     void setMessageLocation(Point p) {
         mMessageView.setX(p.x + messageXOffset);
         mMessageView.setY(p.y + messageYOffset);
@@ -388,8 +386,7 @@ public class GuideView extends LinearLayout {
     public void show() {
         this.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        this.setClickable(false);
-
+        setClickable(isClickable);
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
         AlphaAnimation startAnimation = new AlphaAnimation(0.0f, 1.0f);
         startAnimation.setDuration(ANIMATION_DURATION);
@@ -399,83 +396,86 @@ public class GuideView extends LinearLayout {
 
     }
 
-    public void setTitle(String str) {
+    private void setTitle(String str) {
         mMessageView.setTitle(str);
     }
 
-    public void setContentText(String str) {
+    private void setContentText(String str) {
         mMessageView.setContentText(str);
     }
 
-    public void setArrows(boolean state){
+    private void setArrows(boolean state) {
         showArrows = state;
     }
-    public void setClickable(boolean state){
+
+    public void setClickable(boolean state) {
         isClickable = state;
     }
 
-    public void setContentSpan(Spannable span) {
+    private void setContentSpan(Spannable span) {
         mMessageView.setContentSpan(span);
     }
 
-    public void setTitleTypeFace(Typeface typeFace) {
+    private void setTitleTypeFace(Typeface typeFace) {
         mMessageView.setTitleTypeFace(typeFace);
     }
 
-    public void setContentTypeFace(Typeface typeFace) {
+    private void setContentTypeFace(Typeface typeFace) {
         mMessageView.setContentTypeFace(typeFace);
     }
 
 
-    public void setTitleTextSize(int size) {
+    private void setTitleTextSize(int size) {
         mMessageView.setTitleTextSize(size);
     }
 
 
-    public void setContentTextSize(int size) {
+    private void setContentTextSize(int size) {
         mMessageView.setContentTextSize(size);
     }
 
-    public void setShowcasePadding(int padding){
+    private void setShowcasePadding(int padding) {
         showcasePadding = padding;
     }
-    public void setXOffset(int xOffset){
+
+    private void setXOffset(int xOffset) {
         messageXOffset = xOffset;
     }
-    public void setYOffset(int yOffset){
+
+    private void setYOffset(int yOffset) {
         messageYOffset = yOffset;
     }
-    public void setBackGroundColor(int color){
+
+    private void setBackGroundColor(int color) {
         backgroundColor = color;
     }
 
-    public void setMessageBoxBackground(int color){
+    private void setMessageBoxBackground(int color) {
         mMessageView.setColor(color);
     }
 
-    public void setTitleTextColor(int color){
+    private void setTitleTextColor(int color) {
         mMessageView.setTitleColor(color);
     }
 
-    public void setDescriptiveTextColor(int color){
+    private void setDescriptiveTextColor(int color) {
         mMessageView.setDescriptiveColor(color);
     }
 
-    public void setIsCircle(boolean value){
+    private void setIsCircle(boolean value) {
         isCircle = value;
     }
 
-    public void setCornerRadius(int value){
+    private void setCornerRadius(int value) {
         circleRadius = value;
     }
-
 
 
     public static class Builder {
         private View targetView;
         private boolean isCircle;
         private boolean showArrow;
-	private boolean isClickable;
+        private boolean isClickable;
         private int messageBoxColor;
         private int titleColor;
         private int descriptionColor;
@@ -504,16 +504,17 @@ public class GuideView extends LinearLayout {
             return this;
         }
 
-        public Builder setArrows(boolean state){
+        public Builder setArrows(boolean state) {
             this.showArrow = state;
             return this;
         }
-	public Builder setClickable(boolean state){
+
+        public Builder setClickable(boolean state) {
             this.isClickable = state;
             return this;
         }
 
-        public Builder setArrowClickListener(ArrowClickListener arrowClickListener){
+        public Builder setArrowClickListener(ArrowClickListener arrowClickListener) {
             this.arrowClickListener = arrowClickListener;
             return this;
         }
@@ -522,6 +523,7 @@ public class GuideView extends LinearLayout {
             this.isCircle = isCircle;
             return this;
         }
+
         public Builder setMessageBoxBackground(int color) {
             this.messageBoxColor = color;
             return this;
@@ -531,16 +533,18 @@ public class GuideView extends LinearLayout {
             this.cornerRadius = radius;
             return this;
         }
+
         public Builder setTitleTextColor(int color) {
             this.titleColor = color;
             return this;
         }
+
         public Builder setDescriptionTextColor(int color) {
             this.descriptionColor = color;
             return this;
         }
 
-        public Builder setBackgroundColor(int color){
+        public Builder setBackgroundColor(int color) {
             this.backgroundColor = color;
             return this;
         }
@@ -560,16 +564,17 @@ public class GuideView extends LinearLayout {
             return this;
         }
 
-        public Builder setMessageXOffset(int messageXOffset){
+        public Builder setMessageXOffset(int messageXOffset) {
             this.messageXOffset = messageXOffset;
             return this;
         }
 
-        public Builder setMessageYOffset(int messageYOffset){
+        public Builder setMessageYOffset(int messageYOffset) {
             this.messageYOffset = messageYOffset;
             return this;
         }
-        public Builder setShowcasePadding(int showcasePadding){
+
+        public Builder setShowcasePadding(int showcasePadding) {
             this.showcasePadding = showcasePadding;
             return this;
         }
@@ -645,41 +650,41 @@ public class GuideView extends LinearLayout {
             if (guideListener != null) {
                 guideView.mGuideListener = guideListener;
             }
-            if(arrowClickListener != null){
+            if (arrowClickListener != null) {
                 guideView.arrowClickListener = arrowClickListener;
             }
-            if(showcasePadding != 0){
+            if (showcasePadding != 0) {
                 guideView.setShowcasePadding(showcasePadding);
             }
-            if(messageXOffset != 0){
+            if (messageXOffset != 0) {
                 guideView.setXOffset(messageXOffset);
             }
-            if(messageYOffset != 0){
+            if (messageYOffset != 0) {
                 guideView.setYOffset(messageYOffset);
             }
-            if(backgroundColor != 0){
+            if (backgroundColor != 0) {
                 guideView.setBackGroundColor(backgroundColor);
             }
-            if(messageBoxColor != 0){
+            if (messageBoxColor != 0) {
                 guideView.setMessageBoxBackground(messageBoxColor);
             }
-            if(titleColor != 0){
+            if (titleColor != 0) {
                 guideView.setTitleTextColor(titleColor);
             }
-            if(descriptionColor != 0){
+            if (descriptionColor != 0) {
                 guideView.setDescriptiveTextColor(descriptionColor);
             }
-            if(isCircle){
+            if (isCircle) {
                 guideView.setIsCircle(isCircle);
             }
 
-            if(showArrow){
+            if (showArrow) {
                 guideView.setArrows(showArrow);
             }
-	    if(isClickable){
+            if (isClickable) {
                 guideView.setClickable(isClickable);
             }
-            if(cornerRadius != 0 && !isCircle){
+            if (cornerRadius != 0 && !isCircle) {
                 guideView.setCornerRadius(cornerRadius);
             }
 

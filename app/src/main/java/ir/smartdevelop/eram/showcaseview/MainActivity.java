@@ -1,5 +1,6 @@
 package ir.smartdevelop.eram.showcaseview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,30 +28,43 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
                 .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.outside)
+                .setMessageBoxBackground(Color.WHITE)
+                .setBackgroundColor(0x88002244)
+                .setCircleView(false)
+                .setArrows(false)
+                .setClickable(true)
+                .setCornerRadius(10)
                 .setTargetView(view1)
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override
                     public void onDismiss(View view) {
-                        switch (view.getId()){
+                        switch (view.getId()) {
                             case R.id.view1:
+                                builder.setCircleView(true);
                                 builder.setTargetView(view2).build();
                                 break;
                             case R.id.view2:
+                                builder.setCircleView(false);
                                 builder.setTargetView(view3).build();
                                 break;
                             case R.id.view3:
+                                builder.setCircleView(false);
                                 builder.setTargetView(view4).build();
                                 break;
                             case R.id.view4:
+                                builder.setCircleView(false);
                                 builder.setTargetView(view5).build();
                                 break;
                             case R.id.view5:
                                 return;
                         }
+
                         mGuideView = builder.build();
                         mGuideView.show();
                     }
                 });
+
+
 
         mGuideView = builder.build();
         mGuideView.show();
