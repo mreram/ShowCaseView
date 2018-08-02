@@ -330,8 +330,6 @@ public class GuideView extends LinearLayout {
 
             textViewPrevious.setY(txtPrevyPoint);
             textViewPrevious.setX(txtPrevxPoint);
-
-            Log.d(TAG, "NextXPoint: " + String.valueOf(txtNextxPoint));
         } else {
             textViewNext.setVisibility(GONE);
             textViewPrevious.setVisibility(GONE);
@@ -339,8 +337,12 @@ public class GuideView extends LinearLayout {
     }
 
     void setMessageLocation(Point p) {
-        mMessageView.setX(p.x + (messageXOffset));
-        mMessageView.setY(p.y + (messageYOffset));
+        float x = (p.x + (messageXOffset));
+        System.out.println(String.valueOf(x));
+        mMessageView.setX(x);
+        float y = (p.y + (messageYOffset));
+        System.out.println(String.valueOf(y));
+        mMessageView.setY(y);
         requestLayout();
     }
 
