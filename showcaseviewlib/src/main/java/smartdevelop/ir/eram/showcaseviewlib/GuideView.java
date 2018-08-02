@@ -14,6 +14,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.Xfermode;
+import android.os.Build;
 import android.text.Spannable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -114,19 +115,13 @@ public class GuideView extends LinearLayout {
         LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         textViewNext = new TextView(getContext());
-        textViewNext.setPadding(5, 5, 5, 5);
-        textViewNext.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-        textViewNext.setTextColor(Color.WHITE);
-        textViewNext.setText(">");
+        textViewNext.setBackground(getResources().getDrawable(R.drawable.right_arrow));
         Log.d(TAG, "TextViewNext added");
 
         addView(textViewNext, textParam);
 
         textViewPrevious = new TextView(getContext());
-        textViewPrevious.setPadding(5, 5, 5, 5);
-        textViewPrevious.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-        textViewPrevious.setTextColor(Color.WHITE);
-        textViewPrevious.setText("<");
+        textViewPrevious.setBackground(getResources().getDrawable(R.drawable.left_arrow));
         Log.d(TAG, "TextView Previous added");
         addView(textViewPrevious, textParam);
 
