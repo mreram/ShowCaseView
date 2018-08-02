@@ -316,7 +316,7 @@ public class GuideView extends LinearLayout {
 
         if (showArrows) {
             int xPercentageValue = ((x / 100) * 5);
-            float txtNextxPoint = (float) (x - (xPercentageValue + 50));
+            float txtNextxPoint = (float) (x - (xPercentageValue + 100));
             float txtNextyPoint = (float) (y - 300);
 
             textViewNext.setY(txtNextyPoint);
