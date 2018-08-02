@@ -79,11 +79,15 @@ public class GuideView extends LinearLayout {
     }
 
     public interface ArrowClickListener {
-        void onArrowClicked(String direction);
+        void onArrowClicked(Direction direction);
     }
 
     public enum Gravity {
         auto, center
+    }
+
+    public enum Direction{
+        next,prev
     }
 
     public enum DismissType {
@@ -132,7 +136,7 @@ public class GuideView extends LinearLayout {
             @Override
             public void onClick(View view) {
                 if (arrowClickListener != null) {
-                    arrowClickListener.onArrowClicked("next");
+                    arrowClickListener.onArrowClicked(Direction.next);
                 }
             }
         });
@@ -141,7 +145,7 @@ public class GuideView extends LinearLayout {
             @Override
             public void onClick(View view) {
                 if (arrowClickListener != null) {
-                    arrowClickListener.onArrowClicked("prev");
+                    arrowClickListener.onArrowClicked(Direction.prev);
                 }
             }
         });
