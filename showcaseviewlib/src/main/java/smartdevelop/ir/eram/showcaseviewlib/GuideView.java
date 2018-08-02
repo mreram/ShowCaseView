@@ -337,12 +337,19 @@ public class GuideView extends LinearLayout {
     }
 
     void setMessageLocation(Point p) {
+        float y;
+        if(messageYOffset < 0){
+            y = (p.y - Math.abs(messageYOffset));
+        }else {
+            y = (p.y + messageYOffset);
+        }
         float x = (p.x + (messageXOffset));
         System.out.println(String.valueOf(x));
         mMessageView.setX(x);
-        float y = (p.y + (messageYOffset));
         System.out.println(String.valueOf(y));
         mMessageView.setY(y);
+
+        mMessageView.invalidate();
         requestLayout();
     }
 
