@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessageBoxBackground(Color.WHITE)
                 .setBackgroundColor(0x88002244)
                 .setCircleView(false)
-                .setArrows(false)
+                .setArrows(true)
                 .setClickable(true)
                 .setCornerRadius(10)
                 .setTargetView(view1)

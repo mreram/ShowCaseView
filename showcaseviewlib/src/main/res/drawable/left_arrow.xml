@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+            <stroke android:width="3dp" android:color="@color/colorGreen" />
+            <corners android:radius="90dp" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_chevron_left_black_50dp"/>
+</layer-list>

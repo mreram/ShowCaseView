@@ -14,6 +14,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.Xfermode;
+import android.os.Build;
 import android.text.Spannable;
 import android.util.Log;
 import android.util.TypedValue;
@@ -38,6 +39,9 @@ public class GuideView extends LinearLayout {
 
     private static final String TAG = "GuideViewActions";
     private TextView textViewNext, textViewPrevious;
+    private int arrowHeight = 300;
+    private int arrowXPercentOffset = 5;
+    private int rightArrowAdjust = 100;
     private boolean showArrows = false;
     private boolean isCircle = false;
     private int circleRadius = 0;
@@ -114,19 +118,13 @@ public class GuideView extends LinearLayout {
         LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         textViewNext = new TextView(getContext());
-        textViewNext.setPadding(5, 5, 5, 5);
-        textViewNext.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-        textViewNext.setTextColor(Color.WHITE);
-        textViewNext.setText(">");
+        textViewNext.setBackground(getResources().getDrawable(R.drawable.right_arrow));
         Log.d(TAG, "TextViewNext added");
 
         addView(textViewNext, textParam);
 
         textViewPrevious = new TextView(getContext());
-        textViewPrevious.setPadding(5, 5, 5, 5);
-        textViewPrevious.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
-        textViewPrevious.setTextColor(Color.WHITE);
-        textViewPrevious.setText("<");
+        textViewPrevious.setBackground(getResources().getDrawable(R.drawable.left_arrow));
         Log.d(TAG, "TextView Previous added");
         addView(textViewPrevious, textParam);
 
@@ -320,20 +318,18 @@ public class GuideView extends LinearLayout {
     void setTextViewNextPosition(int x, int y) {
 
         if (showArrows) {
-            int xPercentageValue = ((x / 100) * 5);
-            float txtNextxPoint = (float) (x - (xPercentageValue + 50));
-            float txtNextyPoint = (float) (y - 300);
+            int xPercentageValue = ((x / 100) * arrowXPercentOffset);
+            float txtNextxPoint = (float) (x - (xPercentageValue + rightArrowAdjust));
+            float txtNextyPoint = (float) (y - arrowHeight);
 
             textViewNext.setY(txtNextyPoint);
             textViewNext.setX(txtNextxPoint);
 
             float txtPrevxPoint = (float) xPercentageValue;
-            float txtPrevyPoint = (float) (y - 300);
+            float txtPrevyPoint = (float) (y - arrowHeight);
 
             textViewPrevious.setY(txtPrevyPoint);
             textViewPrevious.setX(txtPrevxPoint);
-
-            Log.d(TAG, "NextXPoint: " + String.valueOf(txtNextxPoint));
         } else {
             textViewNext.setVisibility(GONE);
             textViewPrevious.setVisibility(GONE);
@@ -341,8 +337,24 @@ public class GuideView extends LinearLayout {
     }
 
     void setMessageLocation(Point p) {
-        mMessageView.setX(p.x + messageXOffset);
-        mMessageView.setY(p.y + messageYOffset);
+
+        int xI = messageXOffset;
+        int yI = Math.abs(messageYOffset);
+
+
+        float y;
+        if(messageYOffset < 0){
+            y = (float)(p.y - yI);
+        }else {
+            y = (float)(p.y + yI);
+        }
+        float x = (float)(p.x + (messageXOffset));
+        System.out.println(String.valueOf(x));
+        mMessageView.setX(x);
+        System.out.println(String.valueOf(y));
+        mMessageView.setY(y);
+
+        mMessageView.invalidate();
         requestLayout();
     }
 
@@ -424,6 +436,15 @@ public class GuideView extends LinearLayout {
         mMessageView.setContentTypeFace(typeFace);
     }
 
+    public void setArrowXPercentOffset(int value){
+        arrowXPercentOffset = value;
+    }
+    public void setArrowHeight(int value){
+        arrowHeight = value;
+    }
+    public void setRightArrowAdjust(int value){
+        rightArrowAdjust = value;
+    }
 
     private void setTitleTextSize(int size) {
         mMessageView.setTitleTextSize(size);
@@ -474,6 +495,9 @@ public class GuideView extends LinearLayout {
     public static class Builder {
         private View targetView;
         private boolean isCircle;
+        private int arrowHeight;
+        private int arrowXPercentOffset;
+        private int rightArrowAdjust;
         private boolean showArrow;
         private boolean isClickable;
         private int messageBoxColor;
@@ -531,6 +555,19 @@ public class GuideView extends LinearLayout {
 
         public Builder setCornerRadius(int radius) {
             this.cornerRadius = radius;
+            return this;
+        }
+
+        public Builder setArrowXPercentOffset(int value){
+            this.arrowXPercentOffset = value;
+            return this;
+        }
+        public Builder setArrowHeight(int value){
+            this.arrowHeight = value;
+            return this;
+        }
+        public Builder setRightArrowAdjust(int value){
+           this.rightArrowAdjust = value;
             return this;
         }
 
@@ -671,8 +708,17 @@ public class GuideView extends LinearLayout {
             if (titleColor != 0) {
                 guideView.setTitleTextColor(titleColor);
             }
+            if (arrowHeight != 0) {
+                guideView.setArrowHeight(arrowHeight);
+            }
+            if (rightArrowAdjust != 0) {
+                guideView.setRightArrowAdjust(rightArrowAdjust);
+            }
+            if (arrowXPercentOffset != 0) {
+                guideView.setTitleTextColor(arrowXPercentOffset);
+            }
             if (descriptionColor != 0) {
-                guideView.setDescriptiveTextColor(descriptionColor);
+                guideView.setArrowXPercentOffset(descriptionColor);
             }
             if (isCircle) {
                 guideView.setIsCircle(isCircle);
