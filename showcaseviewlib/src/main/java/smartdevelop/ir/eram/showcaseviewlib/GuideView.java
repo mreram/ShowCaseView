@@ -338,20 +338,32 @@ public class GuideView extends LinearLayout {
 
     void setMessageLocation(Point p) {
 
+        System.out.println("Message Y Offset: " + String.valueOf(messageYOffset));
+        System.out.println("Message X Offset: " + String.valueOf(messageXOffset));
+
         int xI = messageXOffset;
         int yI = Math.abs(messageYOffset);
+
+        int newXPoint = p.x;
+        int newYPoint = p.y;
+
+        System.out.println("Passed point X: " + String.valueOf(newXPoint));
+        System.out.println("Passed point Y: " + String.valueOf(newYPoint));
 
 
         float y;
         if(messageYOffset < 0){
-            y = (float)(p.y - yI);
+            y = (float)(newYPoint - yI);
+            System.out.println("Calculated point Y: " + String.valueOf(y));
         }else {
-            y = (float)(p.y + yI);
+            y = (float)(newYPoint + yI);
+            System.out.println("Calculated point Y: " + String.valueOf(y));
         }
-        float x = (float)(p.x + (messageXOffset));
-        System.out.println(String.valueOf(x));
+        float x = (float)(newXPoint + (messageXOffset));
+
+        System.out.println("Calculated point : " + String.valueOf(x));
+
         mMessageView.setX(x);
-        System.out.println(String.valueOf(y));
         mMessageView.setY(y);
 
         mMessageView.invalidate();
