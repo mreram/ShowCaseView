@@ -12,16 +12,16 @@ public class MainActivity extends AppCompatActivity {
     private GuideView mGuideView;
     private GuideView.Builder builder;
 
+    int currentTargetViewId;
+    View currentTargetView = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         final View view1 = findViewById(R.id.view1);
-        final View view2 = findViewById(R.id.view2);
-        final View view3 = findViewById(R.id.view3);
-        final View view4 = findViewById(R.id.view4);
-        final View view5 = findViewById(R.id.view5);
+        currentTargetViewId = R.id.view1;
 
         builder = new GuideView.Builder(MainActivity.this)
                 .setTitle("Guide Title Text")
@@ -32,39 +32,40 @@ public class MainActivity extends AppCompatActivity {
                 .setBackgroundColor(0x88002244)
                 .setCircleView(false)
                 .setArrows(true)
-                .setClickable(true)
-                .setCornerRadius(10)
-                .setTargetView(view1)
-                .setGuideListener(new GuideView.GuideListener() {
+                .setArrowClickListener(new GuideView.ArrowClickListener() {
                     @Override
-                    public void onDismiss(View view) {
-                        switch (view.getId()) {
+                    public void onArrowClicked(GuideView.Direction direction) {
+                        mGuideView.dismiss();
+                        switch (currentTargetViewId) {
                             case R.id.view1:
-                                builder.setCircleView(true);
-                                builder.setTargetView(view2).build();
+                                currentTargetViewId = direction == GuideView.Direction.next ? R.id.view2 : R.id.view1;
+                                currentTargetView = findViewById(currentTargetViewId);
                                 break;
                             case R.id.view2:
-                                builder.setCircleView(false);
-                                builder.setTargetView(view3).build();
+                                currentTargetViewId = direction == GuideView.Direction.next ? R.id.view3 : R.id.view1;
                                 break;
                             case R.id.view3:
-                                builder.setCircleView(false);
-                                builder.setTargetView(view4).build();
+                                currentTargetViewId = direction == GuideView.Direction.next ? R.id.view4 : R.id.view2;
                                 break;
                             case R.id.view4:
-                                builder.setCircleView(false);
-                                builder.setTargetView(view5).build();
+                                currentTargetViewId = direction == GuideView.Direction.next ? R.id.view5 : R.id.view3;
                                 break;
                             case R.id.view5:
-                                return;
+                                currentTargetViewId = direction == GuideView.Direction.next ? -1 : R.id.view4;
+                                break;
                         }
 
-                        mGuideView = builder.build();
-                        mGuideView.show();
+                        if (currentTargetViewId != -1) {
+                            currentTargetView = findViewById(currentTargetViewId);
+                            builder.setCircleView(false);
+                            mGuideView = builder.setTargetView(currentTargetView).build();
+                            mGuideView.show();
+                        }
                     }
-                });
-
-
+                })
+                .setClickable(true)
+                .setCornerRadius(10)
+                .setTargetView(view1);
 
         mGuideView = builder.build();
         mGuideView.show();

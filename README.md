@@ -23,6 +23,10 @@ Sample usage in your activity:
              .setTargetView(view)
              .setContentTextSize(12)//optional
              .setTitleTextSize(14)//optional
+             .setMessageBoxBackground(Color.WHITE)
+             .setCircleView(false)
+             .setArrows(false)
+             .setClickable(true)
              .build()
              .show();
 
@@ -133,6 +137,20 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
 | anywhere | Dismissing with click on anywhere |
 | targetView | Dismissing with click on targetView(targetView is assigned with setTargetView method) |
 
+### Additional Attributes in Builder
+
+| Name | Description |
+| ---- | ----------- |
+| setMessageBoxBackground | For example you can set color for background message box |
+| setBackgroundColor | Changing the transparent background on other views |
+| setCircleView | Making circle border of targetView |
+| setArrows | Showing arrows on screen |
+| setArrowClickListener | Set onClick listener for arrows |
+| setClickable | Set "false" value , if you would handle touch and gesture by self |
+| setCornerRadius | You can use this method to specify the amount of border rounding |
+| setShowcasePadding | You can set a padding for the border of target view |
+| setMessageYOffset | You can increase or decrease message view offset in the y axis |
+| setMessageXOffset | You can increase or decrease message view offset in the X axis  |
 
 ## Contribution :collision:
 
