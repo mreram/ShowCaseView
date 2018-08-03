@@ -40,7 +40,7 @@ public class GuideView extends LinearLayout {
     private static final String TAG = "GuideViewActions";
     private TextView textViewNext, textViewPrevious;
     private int arrowHeight = 300;
-    private int arrowXPercentOffset = 5;
+    private int arrowXPercentOffset = 2;
     private int rightArrowAdjust = 100;
     private boolean showArrows = false;
     private boolean isCircle = false;
@@ -318,15 +318,17 @@ public class GuideView extends LinearLayout {
     void setTextViewNextPosition(int x, int y) {
 
         if (showArrows) {
+
+            int yPosition = ((y/100)*arrowHeight);
             int xPercentageValue = ((x / 100) * arrowXPercentOffset);
             float txtNextxPoint = (float) (x - (xPercentageValue + rightArrowAdjust));
-            float txtNextyPoint = (float) (y - arrowHeight);
+            float txtNextyPoint = (float) (y - yPosition);
 
             textViewNext.setY(txtNextyPoint);
             textViewNext.setX(txtNextxPoint);
 
             float txtPrevxPoint = (float) xPercentageValue;
-            float txtPrevyPoint = (float) (y - arrowHeight);
+            float txtPrevyPoint = (float) (y - yPosition);
 
             textViewPrevious.setY(txtPrevyPoint);
             textViewPrevious.setX(txtPrevxPoint);
@@ -338,30 +340,29 @@ public class GuideView extends LinearLayout {
 
     void setMessageLocation(Point p) {
 
-        System.out.println("Message Y Offset: " + String.valueOf(messageYOffset));
-        System.out.println("Message X Offset: " + String.valueOf(messageXOffset));
-
+        //System.out.println("Message Y Offset: " + String.valueOf(messageYOffset));
+        //System.out.println("Message X Offset: " + String.valueOf(messageXOffset));
         int xI = messageXOffset;
         int yI = Math.abs(messageYOffset);
 
         int newXPoint = p.x;
         int newYPoint = p.y;
 
-        System.out.println("Passed point X: " + String.valueOf(newXPoint));
-        System.out.println("Passed point Y: " + String.valueOf(newYPoint));
+        //System.out.println("Passed point X: " + String.valueOf(newXPoint));
+        //System.out.println("Passed point Y: " + String.valueOf(newYPoint));
 
 
         float y;
         if(messageYOffset < 0){
             y = (float)(newYPoint - yI);
-            System.out.println("Calculated point Y: " + String.valueOf(y));
+            //System.out.println("Calculated point Y: " + String.valueOf(y));
         }else {
             y = (float)(newYPoint + yI);
-            System.out.println("Calculated point Y: " + String.valueOf(y));
+            //System.out.println("Calculated point Y: " + String.valueOf(y));
         }
         float x = (float)(newXPoint + (messageXOffset));
 
-        System.out.println("Calculated point : " + String.valueOf(x));
+        //System.out.println("Calculated point : " + String.valueOf(x));
 
         mMessageView.setX(x);
         mMessageView.setY(y);
@@ -473,10 +474,13 @@ public class GuideView extends LinearLayout {
 
     private void setXOffset(int xOffset) {
         messageXOffset = xOffset;
+        System.out.println("Message X Offset: " + String.valueOf(messageXOffset));
     }
 
     private void setYOffset(int yOffset) {
         messageYOffset = yOffset;
+        System.out.println("Message Y Offset: " + String.valueOf(messageYOffset));
+
     }
 
     private void setBackGroundColor(int color) {
@@ -579,7 +583,7 @@ public class GuideView extends LinearLayout {
             return this;
         }
         public Builder setRightArrowAdjust(int value){
-           this.rightArrowAdjust = value;
+            this.rightArrowAdjust = value;
             return this;
         }
 
@@ -705,10 +709,13 @@ public class GuideView extends LinearLayout {
             if (showcasePadding != 0) {
                 guideView.setShowcasePadding(showcasePadding);
             }
+            System.out.println("Message X Offset in BUILDER: " + String.valueOf(messageXOffset));
             if (messageXOffset != 0) {
                 guideView.setXOffset(messageXOffset);
             }
+            System.out.println("Message Y Offset in BUILDER: " + String.valueOf(messageYOffset));
             if (messageYOffset != 0) {
+                System.out.println("NEW MESSAGE Y OFFSET IS SET");
                 guideView.setYOffset(messageYOffset);
             }
             if (backgroundColor != 0) {
