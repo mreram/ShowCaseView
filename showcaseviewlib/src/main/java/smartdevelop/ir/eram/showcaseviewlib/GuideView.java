@@ -738,10 +738,10 @@ public class GuideView extends LinearLayout {
                 guideView.setRightArrowAdjust(rightArrowAdjust);
             }
             if (arrowXPercentOffset != 0) {
-                guideView.setTitleTextColor(arrowXPercentOffset);
+                guideView.setArrowXPercentOffset(arrowXPercentOffset);
             }
             if (descriptionColor != 0) {
-                guideView.setArrowXPercentOffset(descriptionColor);
+                guideView.setDescriptiveTextColor(descriptionColor);
             }
             if (isCircle) {
                 guideView.setIsCircle(isCircle);
