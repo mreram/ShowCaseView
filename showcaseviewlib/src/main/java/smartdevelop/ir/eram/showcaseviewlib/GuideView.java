@@ -325,7 +325,7 @@ public class GuideView extends LinearLayout {
 
         if (showArrows) {
 
-            int yPosition = ((y/100)*arrowHeight);
+            int yPosition = ((y / 100) * arrowHeight);
             int xPercentageValue = ((x / 100) * arrowXPercentOffset);
             float txtNextxPoint = (float) (x - (xPercentageValue + rightArrowAdjust));
             float txtNextyPoint = (float) (y - yPosition);
@@ -338,7 +338,9 @@ public class GuideView extends LinearLayout {
 
             textViewPrevious.setY(txtPrevyPoint);
             textViewPrevious.setX(txtPrevxPoint);
-        } else {
+        }else if(hideLeftArrow) {
+            textViewPrevious.setVisibility(GONE);
+        }else {
             textViewNext.setVisibility(GONE);
             textViewPrevious.setVisibility(GONE);
         }
