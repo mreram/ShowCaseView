@@ -42,6 +42,8 @@ public class GuideView extends LinearLayout {
     private int arrowHeight = 300;
     private int arrowXPercentOffset = 2;
     private int rightArrowAdjust = 100;
+    private boolean hideLeftArrow = false;
+    private boolean hideRightArrow = false;
     private boolean showArrows = false;
     private boolean isCircle = false;
     private int circleRadius = 0;
@@ -487,6 +489,9 @@ public class GuideView extends LinearLayout {
 
     }
 
+    private void setHideLeftArrow(boolean state){hideLeftArrow = state;}
+    private void setHideRightArrow(boolean state){hideRightArrow = state;}
+
     private void setBackGroundColor(int color) {
         backgroundColor = color;
     }
@@ -519,6 +524,8 @@ public class GuideView extends LinearLayout {
         private int arrowXPercentOffset;
         private int rightArrowAdjust;
         private boolean showArrow;
+        private boolean hideLeftArrow;
+        private boolean hideRightArrow;
         private boolean isClickable;
         private int messageBoxColor;
         private int titleColor;
@@ -550,6 +557,16 @@ public class GuideView extends LinearLayout {
 
         public Builder setArrows(boolean state) {
             this.showArrow = state;
+            return this;
+        }
+
+        public Builder hideLeftArrow(boolean state){
+            this.hideLeftArrow = state;
+            return this;
+        }
+
+        public Builder hideRightArrow(boolean state){
+            this.hideRightArrow = state;
             return this;
         }
 
@@ -709,6 +726,12 @@ public class GuideView extends LinearLayout {
             }
             if (arrowClickListener != null) {
                 guideView.arrowClickListener = arrowClickListener;
+            }
+            if(hideLeftArrow){
+                guideView.setHideLeftArrow(hideLeftArrow);
+            }
+            if(hideRightArrow){
+                guideView.setHideRightArrow(hideRightArrow);
             }
             if (showcasePadding != 0) {
                 guideView.setShowcasePadding(showcasePadding);
