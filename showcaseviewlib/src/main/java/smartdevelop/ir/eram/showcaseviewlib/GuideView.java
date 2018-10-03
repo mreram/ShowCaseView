@@ -338,8 +338,10 @@ public class GuideView extends LinearLayout {
 
             textViewPrevious.setY(txtPrevyPoint);
             textViewPrevious.setX(txtPrevxPoint);
-        }else if(hideLeftArrow) {
-            textViewPrevious.setVisibility(GONE);
+
+            if(hideLeftArrow) {
+                textViewPrevious.setVisibility(GONE);
+            }
         }else {
             textViewNext.setVisibility(GONE);
             textViewPrevious.setVisibility(GONE);
