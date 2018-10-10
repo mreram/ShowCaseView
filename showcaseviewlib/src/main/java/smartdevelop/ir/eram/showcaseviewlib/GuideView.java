@@ -39,6 +39,7 @@ public class GuideView extends LinearLayout {
 
     private static final String TAG = "GuideViewActions";
     private TextView textViewNext, textViewPrevious;
+    private TextView txtSkip;
     private int arrowHeight = 300;
     private int arrowXPercentOffset = 2;
     private int rightArrowAdjust = 100;
@@ -63,6 +64,7 @@ public class GuideView extends LinearLayout {
     private boolean mIsShowing;
     private GuideListener mGuideListener;
     private ArrowClickListener arrowClickListener;
+    private SkipTapped skipTapped;
     int xMessageView = 0;
     int yMessageView = 0;
 
@@ -80,10 +82,12 @@ public class GuideView extends LinearLayout {
         void onDismiss(View view);
     }
 
+    public interface SkipTapped {
+        void onSkipTapped();
+    }
     public interface ArrowClickListener {
         void onArrowClicked(Direction direction);
     }
-
     public enum Gravity {
         auto, center
     }
@@ -122,6 +126,15 @@ public class GuideView extends LinearLayout {
 
 
         LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams textSkipParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        textSkipParam.gravity = android.view.Gravity.BOTTOM;
+
+        txtSkip = new TextView(getContext());
+        String textSkip = "SKIP";
+        txtSkip.setText(textSkip);
+        txtSkip.setTextColor(16777215);
+
+        addView(txtSkip, textSkipParam);
 
         textViewNext = new TextView(getContext());
         textViewNext.setBackground(getResources().getDrawable(R.drawable.right_arrow));
@@ -148,6 +161,15 @@ public class GuideView extends LinearLayout {
             public void onClick(View view) {
                 if (arrowClickListener != null) {
                     arrowClickListener.onArrowClicked(Direction.prev);
+                }
+            }
+        });
+
+        txtSkip.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (skipTapped != null) {
+                    skipTapped.onSkipTapped();
                 }
             }
         });
@@ -549,7 +571,7 @@ public class GuideView extends LinearLayout {
         private Typeface titleTypeFace, contentTypeFace;
         private GuideListener guideListener;
         private ArrowClickListener arrowClickListener;
-
+        private SkipTapped skipTapped;
         public Builder(Context context) {
             this.context = context;
         }
@@ -583,7 +605,10 @@ public class GuideView extends LinearLayout {
             this.arrowClickListener = arrowClickListener;
             return this;
         }
-
+        public Builder setOnSkipTapped(SkipTapped skipTapped) {
+            this.skipTapped = skipTapped;
+            return this;
+        }
         public Builder setCircleView(boolean isCircle) {
             this.isCircle = isCircle;
             return this;
@@ -730,6 +755,9 @@ public class GuideView extends LinearLayout {
             }
             if (arrowClickListener != null) {
                 guideView.arrowClickListener = arrowClickListener;
+            }
+            if(skipTapped != null){
+                guideView.skipTapped = skipTapped;
             }
             if(hideLeftArrow){
                 guideView.setHideLeftArrow(hideLeftArrow);
