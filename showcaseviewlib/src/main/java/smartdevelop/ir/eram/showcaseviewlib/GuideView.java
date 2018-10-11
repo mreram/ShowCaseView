@@ -346,8 +346,8 @@ public class GuideView extends LinearLayout {
 
     void setTextViewNextPosition(int x, int y) {
 
-        float txtSkipXp = x * 0.8f;
-        float txtSkipYp = y * 0.97f;
+        float txtSkipXp = x * 0.85f;
+        float txtSkipYp = y * 0.93f;
 
         txtSkip.setX(txtSkipXp);
         txtSkip.setY(txtSkipYp);
