@@ -127,14 +127,15 @@ public class GuideView extends LinearLayout {
 
         LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         LinearLayout.LayoutParams textSkipParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
+        textSkipParam.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.END;
+        
         txtSkip = new TextView(getContext());
         String textSkip = "SKIP";
         txtSkip.setText(textSkip);
         txtSkip.setTextColor(Color.WHITE);
         txtSkip.setTextSize(15f);
         txtSkip.setPadding(10, 10, 10, 10);
-        txtSkip.setGravity(android.view.Gravity.BOTTOM | android.view.Gravity.END );
+
 
         addView(txtSkip, textSkipParam);
 
