@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 /**
  * Created by Mohammad Reza Eram on 20/01/2018.
- * Editted by Kobus Swart on 27/07/2018
+ * Edited by Kobus Swart on 27/07/2018
  */
 
 public class GuideView extends LinearLayout {
@@ -132,7 +132,8 @@ public class GuideView extends LinearLayout {
         txtSkip = new TextView(getContext());
         String textSkip = "SKIP";
         txtSkip.setText(textSkip);
-        txtSkip.setTextColor(16777215);
+        txtSkip.setTextColor(Color.WHITE);
+        txtSkip.setTextSize(15f);
 
         addView(txtSkip, textSkipParam);
 
