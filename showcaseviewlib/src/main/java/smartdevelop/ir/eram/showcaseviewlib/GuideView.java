@@ -126,9 +126,6 @@ public class GuideView extends LinearLayout {
 
 
         LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        RelativeLayout.LayoutParams textSkipParam = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        textSkipParam.addRule(RelativeLayout.ALIGN_BOTTOM, RelativeLayout.TRUE);
-        textSkipParam.addRule(RelativeLayout.ALIGN_RIGHT, RelativeLayout.TRUE);
 
         txtSkip = new TextView(getContext());
         String textSkip = "SKIP";
@@ -138,7 +135,7 @@ public class GuideView extends LinearLayout {
         txtSkip.setPadding(10, 10, 10, 10);
 
 
-        addView(txtSkip, textSkipParam);
+        addView(txtSkip, textParam);
 
         textViewNext = new TextView(getContext());
         textViewNext.setBackground(getResources().getDrawable(R.drawable.right_arrow));
@@ -348,6 +345,12 @@ public class GuideView extends LinearLayout {
     }
 
     void setTextViewNextPosition(int x, int y) {
+
+        float txtSkipXp = x * 0.8f;
+        float txtSkipYp = y * 0.97f;
+
+        txtSkip.setX(txtSkipXp);
+        txtSkip.setY(txtSkipYp);
 
         if (showArrows) {
 
