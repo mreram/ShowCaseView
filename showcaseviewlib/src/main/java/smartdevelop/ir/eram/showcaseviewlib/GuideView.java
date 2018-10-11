@@ -126,9 +126,10 @@ public class GuideView extends LinearLayout {
 
 
         LinearLayout.LayoutParams textParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        LinearLayout.LayoutParams textSkipParam = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        textSkipParam.gravity = android.view.Gravity.BOTTOM | android.view.Gravity.END;
-        
+        RelativeLayout.LayoutParams textSkipParam = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        textSkipParam.addRule(RelativeLayout.ALIGN_BOTTOM, RelativeLayout.TRUE);
+        textSkipParam.addRule(RelativeLayout.ALIGN_RIGHT, RelativeLayout.TRUE);
+
         txtSkip = new TextView(getContext());
         String textSkip = "SKIP";
         txtSkip.setText(textSkip);
