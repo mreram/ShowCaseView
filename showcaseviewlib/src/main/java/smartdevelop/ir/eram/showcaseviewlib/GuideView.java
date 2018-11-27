@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.Xfermode;
@@ -22,6 +23,10 @@ import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
+
 /**
  * Created by Mohammad Reza Eram on 20/01/2018.
  */
@@ -29,42 +34,47 @@ import android.widget.FrameLayout;
 public class GuideView extends FrameLayout {
 
 
-    private static final float INDICATOR_HEIGHT = 30;
+    private static final int INDICATOR_HEIGHT = 30;
+    private static final int MESSAGE_VIEW_PADDING = 5;
+    private static final int ANIMATION_DURATION = 100;
+    private static final int CIRCLE_SIZE_INDICATOR = 6;
+
+    private static final int LINE_INDICATOR_WIDTH_SIZE = 3;
+    private static final int STROKE_CIRCLE_INDICATOR_SIZE = 3;
+    private static final float CIRCLE_INNER_INDICATOR_SIZE = 5f;
+
+    private static final int BACKGROUND_COLOR = 0xdd000000;
+    private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
+    private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
+    private static final int LINE_INDICATOR_COLOR = Color.WHITE;
+    private static final int RADIUS_SIZE_TARGER_RECT = 15;
+
+    private static final int MARGIN_BETWEEN_INDICATOR_AND_MESSAGE_VIEW = 15;
+
 
     private float density;
     private View target;
-    private RectF rect;
-    private GuideMessageView mMessageView;
+    private RectF targetRect;
+    private Rect selfRect;
     private boolean isTop;
+    private boolean mIsShowing;
+    private int yMessageView = 0;
+
+    private GuideListener mGuideListener;
     private Gravity mGravity;
     private DismissType dismissType;
-    int marginGuide;
-    private boolean mIsShowing;
-    private GuideListener mGuideListener;
-    int xMessageView = 0;
-    int yMessageView = 0;
+    private GuideMessageView mMessageView;
 
-    final int ANIMATION_DURATION = 400;
-    final Paint emptyPaint = new Paint();
-    final Paint paintLine = new Paint();
-    final Paint paintCircle = new Paint();
-    final Paint paintCircleInner = new Paint();
-    final Paint mPaint = new Paint();
-    final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    final Xfermode XFERMODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+    private final Paint emptyPaint = new Paint();
+    private final Paint selfPaint = new Paint();
+    private final Paint paintLine = new Paint();
+    private final Paint paintCircle = new Paint();
+    private final Paint paintCircleInner = new Paint();
+    private final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Xfermode X_FER_MODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+    private Bitmap bmpResult;
+    private Canvas canvasResult;
 
-
-    public interface GuideListener {
-        void onDismiss(View view);
-    }
-
-    public enum Gravity {
-        auto, center
-    }
-
-    public enum DismissType {
-        outside, anywhere, targetView
-    }
 
     private GuideView(Context context, View view) {
         super(context);
@@ -76,18 +86,17 @@ public class GuideView extends FrameLayout {
 
         int[] locationTarget = new int[2];
         target.getLocationOnScreen(locationTarget);
-        rect = new RectF(locationTarget[0], locationTarget[1],
+        targetRect = new RectF(locationTarget[0],
+                locationTarget[1],
                 locationTarget[0] + target.getWidth(),
                 locationTarget[1] + target.getHeight());
 
         mMessageView = new GuideMessageView(getContext());
-        final int padding = (int) (5 * density);
+        final int padding = (int) (MESSAGE_VIEW_PADDING * density);
         mMessageView.setPadding(padding, padding, padding, padding);
         mMessageView.setColor(Color.WHITE);
 
-        addView(mMessageView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-
+        addView(mMessageView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         setMessageLocation(resolveMessageViewLocation());
 
@@ -97,8 +106,11 @@ public class GuideView extends FrameLayout {
                 setMessageLocation(resolveMessageViewLocation());
                 int[] locationTarget = new int[2];
                 target.getLocationOnScreen(locationTarget);
-                rect = new RectF(locationTarget[0], locationTarget[1],
-                        locationTarget[0] + target.getWidth(), locationTarget[1] + target.getHeight());
+
+                targetRect = new RectF(locationTarget[0],
+                        locationTarget[1],
+                        locationTarget[0] + target.getWidth(),
+                        locationTarget[1] + target.getHeight());
             }
         });
     }
@@ -118,58 +130,65 @@ public class GuideView extends FrameLayout {
     }
 
     @Override
+    protected void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
+        bmpResult = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+        canvasResult = new Canvas(bmpResult);
+        selfRect = canvas.getClipBounds();
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (target != null) {
-            Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas tempCanvas = new Canvas(bitmap);
+        if (target != null && canvasResult != null) {
 
-            float lineWidth = 3 * density;
-            float strokeCircleWidth = 3 * density;
-            float circleSize = 6 * density;
-            float circleInnerSize = 5f * density;
+            float lineWidth = LINE_INDICATOR_WIDTH_SIZE * density;
+            float strokeCircleWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
+            float circleSize = CIRCLE_SIZE_INDICATOR * density;
+            float circleInnerSize = CIRCLE_INNER_INDICATOR_SIZE * density;
 
-
-            mPaint.setColor(0xdd000000);
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setAntiAlias(true);
-            tempCanvas.drawRect(canvas.getClipBounds(), mPaint);
+            selfPaint.setColor(BACKGROUND_COLOR);
+            selfPaint.setStyle(Paint.Style.FILL);
+            selfPaint.setAntiAlias(true);
+            canvasResult.drawRect(selfRect, selfPaint);
 
             paintLine.setStyle(Paint.Style.FILL);
-            paintLine.setColor(Color.WHITE);
+            paintLine.setColor(LINE_INDICATOR_COLOR);
             paintLine.setStrokeWidth(lineWidth);
             paintLine.setAntiAlias(true);
 
             paintCircle.setStyle(Paint.Style.STROKE);
-            paintCircle.setColor(Color.WHITE);
+            paintCircle.setColor(CIRCLE_INDICATOR_COLOR);
             paintCircle.setStrokeCap(Paint.Cap.ROUND);
             paintCircle.setStrokeWidth(strokeCircleWidth);
             paintCircle.setAntiAlias(true);
 
             paintCircleInner.setStyle(Paint.Style.FILL);
-            paintCircleInner.setColor(0xffcccccc);
+            paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
             paintCircleInner.setAntiAlias(true);
 
-            marginGuide = (int) (isTop ? 15 * density : -15 * density);
+            int marginGuide = (int) (isTop ? MARGIN_BETWEEN_INDICATOR_AND_MESSAGE_VIEW * density : -MARGIN_BETWEEN_INDICATOR_AND_MESSAGE_VIEW * density);
 
-            float startYLineAndCircle = (isTop ? rect.bottom : rect.top) + marginGuide;
+            float startYLineAndCircle = (isTop ? targetRect.bottom : targetRect.top) + marginGuide;
 
-            float x = (rect.left / 2 + rect.right / 2);
+            float x = (targetRect.left / 2 + targetRect.right / 2);
             float stopY = (yMessageView + INDICATOR_HEIGHT * density);
 
-            tempCanvas.drawLine(x, startYLineAndCircle, x,
-                    stopY
-                    , paintLine);
+            canvasResult.drawLine(x,
+                    startYLineAndCircle,
+                    x,
+                    stopY,
+                    paintLine);
 
-            tempCanvas.drawCircle(x, startYLineAndCircle, circleSize, paintCircle);
-            tempCanvas.drawCircle(x, startYLineAndCircle, circleInnerSize, paintCircleInner);
+            canvasResult.drawCircle(x, startYLineAndCircle, circleSize, paintCircle);
+            canvasResult.drawCircle(x, startYLineAndCircle, circleInnerSize, paintCircleInner);
 
 
-            targetPaint.setXfermode(XFERMODE_CLEAR);
+            targetPaint.setXfermode(X_FER_MODE_CLEAR);
             targetPaint.setAntiAlias(true);
 
-            tempCanvas.drawRoundRect(rect, 15, 15, targetPaint);
-            canvas.drawBitmap(bitmap, 0, 0, emptyPaint);
+            canvasResult.drawRoundRect(targetRect, RADIUS_SIZE_TARGER_RECT, RADIUS_SIZE_TARGER_RECT, targetPaint);
+            canvas.drawBitmap(bmpResult, 0, 0, emptyPaint);
         }
     }
 
@@ -209,7 +228,7 @@ public class GuideView extends FrameLayout {
                     break;
 
                 case targetView:
-                    if (rect.contains(x, y)) {
+                    if (targetRect.contains(x, y)) {
                         target.performClick();
                         dismiss();
                     }
@@ -241,10 +260,11 @@ public class GuideView extends FrameLayout {
 
     private Point resolveMessageViewLocation() {
 
+        int xMessageView = 0;
         if (mGravity == Gravity.center) {
-            xMessageView = (int) (rect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
+            xMessageView = (int) (targetRect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
         } else
-            xMessageView = (int) (rect.right) - mMessageView.getWidth();
+            xMessageView = (int) (targetRect.right) - mMessageView.getWidth();
 
         if (isLandscape()) {
             xMessageView -= getNavigationBarSize();
@@ -257,14 +277,14 @@ public class GuideView extends FrameLayout {
 
 
         //set message view bottom
-        if (rect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
+        if (targetRect.top + (INDICATOR_HEIGHT * density) > getHeight() / 2) {
             isTop = false;
-            yMessageView = (int) (rect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
+            yMessageView = (int) (targetRect.top - mMessageView.getHeight() - INDICATOR_HEIGHT * density);
         }
         //set message view top
         else {
             isTop = true;
-            yMessageView = (int) (rect.top + target.getHeight() + INDICATOR_HEIGHT * density);
+            yMessageView = (int) (targetRect.top + target.getHeight() + INDICATOR_HEIGHT * density);
         }
 
         if (yMessageView < 0)
@@ -327,11 +347,11 @@ public class GuideView extends FrameLayout {
         private Gravity gravity;
         private DismissType dismissType;
         private Context context;
-        private int titleTextSize;
-        private int contentTextSize;
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
         private GuideListener guideListener;
+        private int titleTextSize;
+        private int contentTextSize;
 
         public Builder(Context context) {
             this.context = context;
@@ -342,36 +362,71 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        /**
+         * gravity GuideView
+         *
+         * @param gravity it should be one type of Gravity enum.
+         **/
         public Builder setGravity(Gravity gravity) {
             this.gravity = gravity;
             return this;
         }
 
+        /**
+         * defining a title
+         *
+         * @param title a title. for example: submit button.
+         **/
         public Builder setTitle(String title) {
             this.title = title;
             return this;
         }
 
+        /**
+         * defining a description for the target view
+         *
+         * @param contentText a description. for example: this button can for submit your information..
+         **/
         public Builder setContentText(String contentText) {
             this.contentText = contentText;
             return this;
         }
 
+        /**
+         * setting spannable type
+         *
+         * @param span a instance of spannable
+         **/
         public Builder setContentSpan(Spannable span) {
             this.contentSpan = span;
             return this;
         }
 
+        /**
+         * setting font type face
+         *
+         * @param typeFace a instance of type face (font family)
+         **/
         public Builder setContentTypeFace(Typeface typeFace) {
             this.contentTypeFace = typeFace;
             return this;
         }
 
+        /**
+         * adding a listener on show case view
+         *
+         * @param guideListener a listener for events
+         **/
         public Builder setGuideListener(GuideListener guideListener) {
             this.guideListener = guideListener;
             return this;
         }
 
+        /**
+         * setting font type face
+         *
+         * @param typeFace a instance of type face (font family)
+         **/
         public Builder setTitleTypeFace(Typeface typeFace) {
             this.titleTypeFace = typeFace;
             return this;
@@ -399,6 +454,11 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        /**
+         * this method defining the type of dismissing function
+         *
+         * @param dismissType should be one type of DismissType enum. for example: outside -> Dismissing with click on outside of MessageView
+         */
         public Builder setDismissType(DismissType dismissType) {
             this.dismissType = dismissType;
             return this;

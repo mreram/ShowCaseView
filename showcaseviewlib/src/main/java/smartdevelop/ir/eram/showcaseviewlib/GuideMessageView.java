@@ -24,27 +24,19 @@ class GuideMessageView extends LinearLayout {
 
     private TextView mTitleTextView;
     private TextView mContentTextView;
-    float density;
 
 
     GuideMessageView(Context context) {
         super(context);
 
-        density = context.getResources().getDisplayMetrics().density;
+        float density = context.getResources().getDisplayMetrics().density;
         setWillNotDraw(false);
-
-        mRect = new RectF();
-
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-//        float radius = density * 3.0f;
-//        float dy = density * 2f;
-//        mPaint.setShadowLayer(radius, 0, dy, 0xFF3D3D3D);
-
-        setLayerType(LAYER_TYPE_SOFTWARE, null);
-
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER);
+
+        mRect = new RectF();
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
 
         final int padding = (int) (10 * density);
         final int paddingBetween = (int) (3 * density);
@@ -118,7 +110,7 @@ class GuideMessageView extends LinearLayout {
 
         mRect.set(getPaddingLeft(),
                 getPaddingTop(),
-                canvas.getWidth() - getPaddingRight(),
+                getWidth() - getPaddingRight(),
                 canvas.getHeight() - getPaddingBottom());
 
 

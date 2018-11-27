@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
+import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
         builder = new GuideView.Builder(MainActivity.this)
                 .setTitle("Guide Title Text")
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                .setGravity(GuideView.Gravity.center)
-                .setDismissType(GuideView.DismissType.outside)
+                .setGravity(Gravity.center)
+                .setDismissType(DismissType.outside)
                 .setTargetView(view1)
-                .setGuideListener(new GuideView.GuideListener() {
+                .setGuideListener(new GuideListener() {
                     @Override
                     public void onDismiss(View view) {
                         switch (view.getId()){
