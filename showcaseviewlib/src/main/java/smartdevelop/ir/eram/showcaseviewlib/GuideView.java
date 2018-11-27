@@ -47,7 +47,7 @@ public class GuideView extends FrameLayout {
     private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
     private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
     private static final int LINE_INDICATOR_COLOR = Color.WHITE;
-    private static final int RADIUS_SIZE_TARGER_RECT = 15;
+    private static final int RADIUS_SIZE_TARGET_RECT = 15;
 
     private static final int MARGIN_BETWEEN_INDICATOR_AND_MESSAGE_VIEW = 15;
 
@@ -187,7 +187,7 @@ public class GuideView extends FrameLayout {
             targetPaint.setXfermode(X_FER_MODE_CLEAR);
             targetPaint.setAntiAlias(true);
 
-            canvasResult.drawRoundRect(targetRect, RADIUS_SIZE_TARGER_RECT, RADIUS_SIZE_TARGER_RECT, targetPaint);
+            canvasResult.drawRoundRect(targetRect, RADIUS_SIZE_TARGET_RECT, RADIUS_SIZE_TARGET_RECT, targetPaint);
             canvas.drawBitmap(bmpResult, 0, 0, emptyPaint);
         }
     }
