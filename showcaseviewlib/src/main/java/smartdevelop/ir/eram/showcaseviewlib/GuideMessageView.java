@@ -111,7 +111,7 @@ class GuideMessageView extends LinearLayout {
         mRect.set(getPaddingLeft(),
                 getPaddingTop(),
                 getWidth() - getPaddingRight(),
-                canvas.getHeight() - getPaddingBottom());
+                getHeight() - getPaddingBottom());
 
 
         canvas.drawRoundRect(mRect, 15, 15, mPaint);
