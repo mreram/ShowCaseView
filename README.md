@@ -41,9 +41,9 @@ maven:
 	Step 2. Add the dependency
 ```xml
 <dependency>
-   <groupId>com.github.mreram</groupId>
-   <artifactId>ShowCaseView</artifactId>
-   <version>1.1</version>
+    <groupId>com.github.mreram</groupId>
+    <artifactId>showcaseview</artifactId>
+    <version>1.1</version>
 </dependency>
 ```
 gradle:
@@ -59,7 +59,7 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-compile 'com.github.mreram:ShowCaseView:1.1'
+implementation 'com.github.mreram:showcaseview:1.1'
 ```
 ## Change type face
 
