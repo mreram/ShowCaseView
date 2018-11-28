@@ -18,8 +18,8 @@ Sample usage in your activity:
      new GuideView.Builder(this)
              .setTitle("Guide Title Text")
              .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-             .setGravity(GuideView.Gravity.AUTO) //optional
-             .setDismissType(GuideView.DismissType.anywhere) //optional - default GuideView.DismissType.targetView
+             .setGravity(Gravity.AUTO) //optional
+             .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
              .setTargetView(view)
              .setContentTextSize(12)//optional
              .setTitleTextSize(14)//optional
@@ -43,7 +43,7 @@ maven:
 <dependency>
    <groupId>com.github.mreram</groupId>
    <artifactId>ShowCaseView</artifactId>
-   <version>1.0.5</version>
+   <version>1.1</version>
 </dependency>
 ```
 gradle:
@@ -59,7 +59,7 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-compile 'com.github.mreram:ShowCaseView:1.0.5'
+compile 'com.github.mreram:ShowCaseView:1.1'
 ```
 ## Change type face
 
@@ -69,7 +69,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTargetView(view)
                 .setContentTypeFace(Typeface)//optional
                 .setTitleTypeFace(Typeface)//optional
-	            .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	            .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
   
@@ -81,7 +81,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTargetView(view)
                 .setContentTextSize(12)//optional
                 .setTitleTextSize(14)//optional
-		    .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+		    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
 		
@@ -90,9 +90,9 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
 	new GuideView.Builder(this)
              .setTitle("Guide Title Text")
              .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-             .setGravity(GuideView.Gravity.CENTER)//optional
+             .setGravity(Gravity.CENTER)//optional
              .setTargetView(view) 
-	         .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	         .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
              .build()
              .show();
 	     
@@ -103,7 +103,7 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
                 .setTitle("Guide Title Text")
                 .setTargetView(view)
                 .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
-	            .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
+	            .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
                 .build()
                 .show();
                 	     
@@ -112,10 +112,10 @@ compile 'com.github.mreram:ShowCaseView:1.0.5'
       new GuideView.Builder(MainActivity.this)
                       .setTitle("Guide Title Text")
                       .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                      .setGravity(GuideView.Gravity.CENTER)
+                      .setGravity(Gravity.CENTER)
                       .setTargetView(view1)
-		          .setDismissType(GuideView.DismissType.outSide) //optional - default dismissible by TargetView
-                      .setGuideListener(new GuideView.GuideListener() {
+		          .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+                      .setGuideListener(new GuideListener() {
                           @Override
                           public void onDismiss(View view) {
                              //TODO ...
