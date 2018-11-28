@@ -26,6 +26,8 @@ Sample usage in your activity:
              .build()
              .show();
 
+<img src="./screenshots/sample1.gif" width="300">
+
 ## Installation
 	
 maven:
@@ -132,6 +134,8 @@ implementation 'com.github.mreram:showcaseview:1.1'
 | outside | Dismissing with click on outside of MessageView |
 | anywhere | Dismissing with click on anywhere |
 | targetView | Dismissing with click on targetView(targetView is assigned with setTargetView method) |
+
+
 
 
 ## Contribution :collision:
