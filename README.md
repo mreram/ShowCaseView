@@ -1,4 +1,5 @@
 # :flashlight:ShowCaseView:flashlight:
+[![](https://jitpack.io/v/TKshadow018/ShowCaseView.svg)](https://jitpack.io/#TKshadow018/ShowCaseView)
 [![Release](https://jitpack.io/v/mreram/ShowCaseView.svg)](https://jitpack.io/#mreram/ShowCaseView)
 [![APK](https://img.shields.io/badge/APK-Demo-brightgreen.svg)](https://github.com/mreram/ShowCaseView/raw/master/demo-flatShowCaseView.apk)
 [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlatShowCaseView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6713)
