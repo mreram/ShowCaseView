@@ -295,6 +295,11 @@ public class GuideView extends FrameLayout {
                     }
                     break;
 
+                case selfView:
+                    if (isViewContains(mMessageView, x, y)) {
+                        dismiss();
+                    }
+                    break;
             }
             return true;
         }
