@@ -14,19 +14,19 @@
 
 ## How to use:question:
 
-Sample usage in your activity:
-
-     new GuideView.Builder(this)
-             .setTitle("Guide Title Text")
-             .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-             .setGravity(Gravity.auto) //optional
-             .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
-             .setTargetView(view)
-             .setContentTextSize(12)//optional
-             .setTitleTextSize(14)//optional
-             .build()
-             .show();
-
+Sample usage in your activity
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setGravity(Gravity.auto) //optional
+    .setDismissType(DismissType.anywhere) //optional - default DismissType.targetView
+    .setTargetView(view)
+    .setContentTextSize(12)//optional
+    .setTitleTextSize(14)//optional
+    .build()
+    .show();
+```
 <img src="./screenshots/sample1.gif" width="300">
 
 ## Installation
@@ -65,68 +65,72 @@ allprojects {
 implementation 'com.github.mreram:showcaseview:1.1'
 ```
 ## Change type face
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setTargetView(view)
+    .setContentTypeFace(Typeface)//optional
+    .setTitleTypeFace(Typeface)//optional
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```
 
- 	 new GuideView.Builder(this)
-                .setTitle("Guide Title Text")
-                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                .setTargetView(view)
-                .setContentTypeFace(Typeface)//optional
-                .setTitleTypeFace(Typeface)//optional
-	            .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
-                .build()
-                .show();
-  
 ## Change title and Content text size
 
-   	new GuideView.Builder(this)
-                .setTitle("Guide Title Text")
-                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                .setTargetView(view)
-                .setContentTextSize(12)//optional
-                .setTitleTextSize(14)//optional
-		    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
-                .build()
-                .show();
-		
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setTargetView(view)
+    .setContentTextSize(12)//optional
+    .setTitleTextSize(14)//optional
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```	
 ## Change Gravity
 
-	new GuideView.Builder(this)
-             .setTitle("Guide Title Text")
-             .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-             .setGravity(Gravity.CENTER)//optional
-             .setTargetView(view) 
-	         .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
-             .build()
-             .show();
-	     
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setGravity(Gravity.CENTER)//optional
+    .setTargetView(view) 
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```     
 	     
 ## use Spannable for Content
-	
-	 new GuideView.Builder(this)
-                .setTitle("Guide Title Text")
-                .setTargetView(view)
-                .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
-	            .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
-                .build()
-                .show();
-                	     
-## Set Listener 
-	
-      new GuideView.Builder(MainActivity.this)
-                      .setTitle("Guide Title Text")
-                      .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
-                      .setGravity(Gravity.CENTER)
-                      .setTargetView(view1)
-		          .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
-                      .setGuideListener(new GuideListener() {
-                          @Override
-                          public void onDismiss(View view) {
-                             //TODO ...
-                          }
-                       })
-                       .build()
-                       .show();
+```java	
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setTargetView(view)
+    .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```
 
+## Set Listener 
+```java	
+new GuideView.Builder(MainActivity.this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setGravity(Gravity.CENTER)
+    .setTargetView(view1)
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .setGuideListener(new GuideListener() {
+        @Override
+        public void onDismiss(View view) {
+           //TODO ...
+        }
+     })
+    .build()
+    .show();
+```
 
 ### DismissType Attribute
 
