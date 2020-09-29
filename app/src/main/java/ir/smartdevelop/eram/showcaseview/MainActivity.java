@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     View view3;
     View view4;
     View view5;
+    View view6;
     private GuideView mGuideView;
     private GuideView.Builder builder;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         view3 = findViewById(R.id.view3);
         view4 = findViewById(R.id.view4);
         view5 = findViewById(R.id.view5);
+        view6 = findViewById(R.id.view6);
 
         builder = new GuideView.Builder(this)
                 .setTitle("Guide Title Text")
@@ -54,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
                                 builder.setTargetView(view5).build();
                                 break;
                             case R.id.view5:
+                                builder.setTargetView(view6).build();
+                                break;
+                            case R.id.view6:
                                 return;
                         }
                         mGuideView = builder.build();

@@ -35,7 +35,6 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class GuideView extends FrameLayout {
 
-
     static final String TAG = "GuideView";
 
     private static final int INDICATOR_HEIGHT              = 40;
@@ -95,12 +94,16 @@ public class GuideView extends FrameLayout {
         density = context.getResources().getDisplayMetrics().density;
         init();
 
-        int[] locationTarget = new int[2];
-        target.getLocationOnScreen(locationTarget);
-        targetRect = new RectF(locationTarget[0],
-                locationTarget[1],
-                locationTarget[0] + target.getWidth(),
-                locationTarget[1] + target.getHeight());
+        if(view instanceof Targetable ){
+            targetRect = ((Targetable) view).boundingRect();
+        } else {
+            int[] locationTarget = new int[2];
+            target.getLocationOnScreen(locationTarget);
+            targetRect = new RectF(locationTarget[0],
+                    locationTarget[1],
+                    locationTarget[0] + target.getWidth(),
+                    locationTarget[1] + target.getHeight());
+        }
 
         mMessageView = new GuideMessageView(getContext());
         mMessageView.setPadding(messageViewPadding, messageViewPadding, messageViewPadding, messageViewPadding);
@@ -119,13 +122,17 @@ public class GuideView extends FrameLayout {
                     getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
                 setMessageLocation(resolveMessageViewLocation());
-                int[] locationTarget = new int[2];
-                target.getLocationOnScreen(locationTarget);
 
-                targetRect = new RectF(locationTarget[0],
-                        locationTarget[1],
-                        locationTarget[0] + target.getWidth(),
-                        locationTarget[1] + target.getHeight());
+                if(target instanceof Targetable ){
+                    targetRect = ((Targetable) target).boundingRect();
+                } else {
+                    int[] locationTarget = new int[2];
+                    target.getLocationOnScreen(locationTarget);
+                    targetRect = new RectF(locationTarget[0],
+                            locationTarget[1],
+                            locationTarget[0] + target.getWidth(),
+                            locationTarget[1] + target.getHeight());
+                }
 
                 selfRect.set(getPaddingLeft(),
                         getPaddingTop(),
@@ -254,7 +261,11 @@ public class GuideView extends FrameLayout {
             targetPaint.setXfermode(X_FER_MODE_CLEAR);
             targetPaint.setAntiAlias(true);
 
-            canvas.drawRoundRect(targetRect, RADIUS_SIZE_TARGET_RECT, RADIUS_SIZE_TARGET_RECT, targetPaint);
+            if (target instanceof Targetable) {
+                canvas.drawPath(((Targetable) target).guidePath(), targetPaint);
+            } else {
+                canvas.drawRoundRect(targetRect, RADIUS_SIZE_TARGET_RECT, RADIUS_SIZE_TARGET_RECT, targetPaint);
+            }
         }
     }
 
