@@ -12,9 +12,9 @@ import android.view.View;
 import smartdevelop.ir.eram.showcaseviewlib.Targetable;
 
 public class CircleView extends View implements Targetable {
-    private static final int DEFAULT_CIRCLE_COLOR = Color.RED;
 
-    private int circleColor = DEFAULT_CIRCLE_COLOR;
+    private static final int DEFAULT_CIRCLE_COLOR = Color.RED;
+    private int _circleColor = DEFAULT_CIRCLE_COLOR;
     private Paint _paint;
     private Path _guidePath = new Path();
     private RectF _boundingRect = new RectF();
@@ -39,13 +39,13 @@ public class CircleView extends View implements Targetable {
 
     public void setCircleColor(int circleColor)
     {
-        this.circleColor = circleColor;
+        this._circleColor = circleColor;
         invalidate();
     }
 
     public int getCircleColor()
     {
-        return circleColor;
+        return _circleColor;
     }
 
     private int usableWidth() {
@@ -83,7 +83,7 @@ public class CircleView extends View implements Targetable {
         int cx = pl + halfUsableWidth;
         int cy = pt + halfUsableHeight;
 
-        _paint.setColor(circleColor);
+        _paint.setColor(_circleColor);
 
         canvas.drawCircle(cx, cy, radius, _paint);
 
