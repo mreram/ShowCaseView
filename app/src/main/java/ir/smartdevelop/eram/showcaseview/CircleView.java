@@ -16,8 +16,9 @@ public class CircleView extends View implements Targetable {
     private static final int DEFAULT_CIRCLE_COLOR = Color.RED;
     private int _circleColor = DEFAULT_CIRCLE_COLOR;
     private Paint _paint;
-    private Path _guidePath = new Path();
-    private RectF _boundingRect = new RectF();
+    private final Path _guidePath = new Path();
+    private final RectF _boundingRect = new RectF();
+    final int[] locationTarget = new int[2];
 
     public CircleView(Context context)
     {
@@ -87,7 +88,6 @@ public class CircleView extends View implements Targetable {
 
         canvas.drawCircle(cx, cy, radius, _paint);
 
-        int[] locationTarget = new int[2];
         getLocationOnScreen(locationTarget);
         int centerX = pl + halfUsableWidth + locationTarget[0];
         int centerY = pt + halfUsableHeight + locationTarget[1];
