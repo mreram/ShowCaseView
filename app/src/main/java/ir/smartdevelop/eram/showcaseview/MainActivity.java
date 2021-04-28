@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Guide Title Text")
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
                 .setGravity(Gravity.center)
-                .setDismissType(DismissType.selfView)
+                .setDismissType(DismissType.anywhere)
                 .setTargetView(view1)
                 .setGuideListener(new GuideListener() {
                     @Override
