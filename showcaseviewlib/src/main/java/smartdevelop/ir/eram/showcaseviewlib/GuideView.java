@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -28,6 +29,7 @@ import android.widget.FrameLayout;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.config.PointerType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 /**
@@ -84,6 +86,7 @@ public class GuideView extends FrameLayout {
     private GuideListener mGuideListener;
     private Gravity mGravity;
     private DismissType dismissType;
+    private PointerType pointerType;
     private final GuideMessageView mMessageView;
 
     private GuideView(Context context, View view) {
@@ -271,17 +274,33 @@ public class GuideView extends FrameLayout {
             paintCircleInner.setAntiAlias(true);
 
             final float x = (targetRect.left / 2 + targetRect.right / 2);
-            canvas.drawLine(
-                x,
-                startYLineAndCircle,
-                x,
-                stopY,
-                paintLine
-            );
 
-            canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
-            canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
-
+            switch (pointerType) {
+                case circle:
+                    canvas.drawLine(x,startYLineAndCircle,x,stopY,paintLine);
+                    canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
+                    canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
+                    break;
+                case arrow:
+                    canvas.drawLine(x,startYLineAndCircle,x,stopY,paintLine);
+                    Path path = new Path();
+                    if (isTop) {
+                        path.moveTo(x, startYLineAndCircle - (circleIndicatorSize * 2));
+                        path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
+                        path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
+                        path.close();
+                    } else {
+                        path.moveTo(x, startYLineAndCircle + (circleIndicatorSize * 2));
+                        path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
+                        path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
+                        path.close();
+                    }
+                    canvas.drawPath(path, paintCircle);
+                    break;
+                case none:
+                    //draw no line and no pointer
+                    break;
+            }
             targetPaint.setXfermode(X_FER_MODE_CLEAR);
             targetPaint.setAntiAlias(true);
 
@@ -455,6 +474,7 @@ public class GuideView extends FrameLayout {
         private String title, contentText;
         private Gravity gravity;
         private DismissType dismissType;
+        private PointerType pointerType;
         private final Context context;
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
@@ -628,10 +648,20 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        /**
+         * this method defining the type of pointer
+         *
+         * @param pointerType should be one type of PointerType enum. for example: arrow -> To show arrow pointing to target view
+         */
+        public Builder setPointerType(PointerType pointerType) {
+            this.pointerType = pointerType;
+            return this;
+        }
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
+            guideView.pointerType = pointerType != null ? pointerType : PointerType.circle;
             float density = context.getResources().getDisplayMetrics().density;
 
             guideView.setTitle(title);

@@ -142,6 +142,14 @@ new GuideView.Builder(MainActivity.this)
 
 
 
+### PointerType Attribute
+
+| Type | Description |
+| ------ | ------ |
+| circle | Show circle pointer towards targetView |
+| arrow | Show arrow pointer towards targetView |
+| none | Show no pointer or line towards targetView |
+
 
 ## Contribution :collision:
 
