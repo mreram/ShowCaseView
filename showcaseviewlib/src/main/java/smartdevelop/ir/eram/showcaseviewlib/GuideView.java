@@ -37,7 +37,7 @@ import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 @SuppressLint("ViewConstructor")
 public class GuideView extends FrameLayout {
 
-    private static final int INDICATOR_HEIGHT = 40;
+    private static final int INDICATOR_HEIGHT = 30;
     private static final int MESSAGE_VIEW_PADDING = 5;
     private static final int SIZE_ANIMATION_DURATION = 700;
     private static final int APPEARING_ANIMATION_DURATION = 400;
@@ -47,7 +47,7 @@ public class GuideView extends FrameLayout {
     private static final int RADIUS_SIZE_TARGET_RECT = 15;
     private static final int MARGIN_INDICATOR = 15;
 
-    private static final int BACKGROUND_COLOR = 0x99000000;
+    private static final int BACKGROUND_COLOR = 0xBF000000;
     private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
     private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
     private static final int LINE_INDICATOR_COLOR = Color.WHITE;
@@ -100,28 +100,28 @@ public class GuideView extends FrameLayout {
             int[] locationTarget = new int[2];
             target.getLocationOnScreen(locationTarget);
             targetRect = new RectF(
-                locationTarget[0],
-                locationTarget[1],
-                locationTarget[0] + target.getWidth(),
-                locationTarget[1] + target.getHeight()
+                    locationTarget[0],
+                    locationTarget[1],
+                    locationTarget[0] + target.getWidth(),
+                    locationTarget[1] + target.getHeight()
             );
         }
 
         mMessageView = new GuideMessageView(getContext());
         mMessageView.setPadding(
-            messageViewPadding,
-            messageViewPadding,
-            messageViewPadding,
-            messageViewPadding
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding
         );
-        mMessageView.setColor(Color.WHITE);
+        mMessageView.setColor(Color.TRANSPARENT);
 
         addView(
-            mMessageView,
-            new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+                mMessageView,
+                new LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         );
 
         setMessageLocation(resolveMessageViewLocation());
@@ -143,18 +143,18 @@ public class GuideView extends FrameLayout {
                     int[] locationTarget = new int[2];
                     target.getLocationOnScreen(locationTarget);
                     targetRect = new RectF(
-                        locationTarget[0],
-                        locationTarget[1],
-                        locationTarget[0] + target.getWidth(),
-                        locationTarget[1] + target.getHeight()
+                            locationTarget[0],
+                            locationTarget[1],
+                            locationTarget[0] + target.getWidth(),
+                            locationTarget[1] + target.getHeight()
                     );
                 }
 
                 selfRect.set(
-                    getPaddingLeft(),
-                    getPaddingTop(),
-                    getWidth() - getPaddingRight(),
-                    getHeight() - getPaddingBottom()
+                        getPaddingLeft(),
+                        getPaddingTop(),
+                        getWidth() - getPaddingRight(),
+                        getHeight() - getPaddingBottom()
                 );
 
                 marginGuide = (int) (isTop ? marginGuide : -marginGuide);
@@ -170,8 +170,8 @@ public class GuideView extends FrameLayout {
     private void startAnimationSize() {
         if (!isPerformedAnimationSize) {
             final ValueAnimator circleSizeAnimator = ValueAnimator.ofFloat(
-                0f,
-                circleIndicatorSizeFinal
+                    0f,
+                    circleIndicatorSizeFinal
             );
             circleSizeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -183,8 +183,8 @@ public class GuideView extends FrameLayout {
             });
 
             final ValueAnimator linePositionAnimator = ValueAnimator.ofFloat(
-                stopY,
-                startYLineAndCircle
+                    stopY,
+                    startYLineAndCircle
             );
             linePositionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -272,11 +272,11 @@ public class GuideView extends FrameLayout {
 
             final float x = (targetRect.left / 2 + targetRect.right / 2);
             canvas.drawLine(
-                x,
-                startYLineAndCircle,
-                x,
-                stopY,
-                paintLine
+                    x,
+                    startYLineAndCircle,
+                    x,
+                    stopY,
+                    paintLine
             );
 
             canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
@@ -289,10 +289,10 @@ public class GuideView extends FrameLayout {
                 canvas.drawPath(((Targetable) target).guidePath(), targetPaint);
             } else {
                 canvas.drawRoundRect(
-                    targetRect,
-                    RADIUS_SIZE_TARGET_RECT,
-                    RADIUS_SIZE_TARGET_RECT,
-                    targetPaint
+                        targetRect,
+                        RADIUS_SIZE_TARGET_RECT,
+                        RADIUS_SIZE_TARGET_RECT,
+                        targetPaint
                 );
             }
         }
@@ -408,8 +408,8 @@ public class GuideView extends FrameLayout {
 
     public void show() {
         this.setLayoutParams(new ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
         ));
         this.setClickable(false);
 
@@ -676,4 +676,3 @@ public class GuideView extends FrameLayout {
         }
     }
 }
-

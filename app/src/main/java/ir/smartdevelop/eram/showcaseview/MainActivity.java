@@ -1,5 +1,6 @@
 package ir.smartdevelop.eram.showcaseview;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -34,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
         view6 = findViewById(R.id.view6);
 
         builder = new GuideView.Builder(this)
-                .setTitle("Guide Title Text")
-                .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+                .setContentText("Description\nDescription\nDescription")
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.anywhere)
                 .setTargetView(view1)
                 .setGuideListener(new GuideListener() {
+                    @SuppressLint("NonConstantResourceId")
                     @Override
                     public void onDismiss(View view) {
                         switch (view.getId()) {

@@ -1,5 +1,6 @@
 package smartdevelop.ir.eram.showcaseviewlib;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,19 +10,23 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Mohammad Reza Eram  on 20/01/2018.
  */
 
+@SuppressLint("ViewConstructor")
 class GuideMessageView extends LinearLayout {
 
     private static final int RADIUS_SIZE = 5;
     private static final int PADDING_SIZE = 10;
-    private static final int BOTTOM_PADDING_SIZE = 5;
+    private static final int BOTTOM_PADDING_SIZE = 30;
     private static final int DEFAULT_TITLE_TEXT_SIZE = 18;
     private static final int DEFAULT_CONTENT_TEXT_SIZE = 14;
 
@@ -30,6 +35,7 @@ class GuideMessageView extends LinearLayout {
 
     private final TextView mTitleTextView;
     private final TextView mContentTextView;
+    ArrayList<View> view;
     int[] location = new int[2];
 
     GuideMessageView(Context context) {
@@ -49,29 +55,31 @@ class GuideMessageView extends LinearLayout {
 
         mTitleTextView = new TextView(context);
         mTitleTextView.setPadding(padding, padding, padding, paddingBottom);
-        mTitleTextView.setGravity(Gravity.CENTER);
+        mTitleTextView.setGravity(Gravity.LEFT);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_TITLE_TEXT_SIZE);
-        mTitleTextView.setTextColor(Color.BLACK);
+        mTitleTextView.setTextColor(Color.WHITE);
         addView(
-            mTitleTextView,
-            new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+                mTitleTextView,
+                new LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         );
 
+        view = new ArrayList<>();
         mContentTextView = new TextView(context);
-        mContentTextView.setTextColor(Color.BLACK);
+        mContentTextView.setTextColor(Color.WHITE);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_CONTENT_TEXT_SIZE);
         mContentTextView.setPadding(padding, paddingBottom, padding, padding);
-        mContentTextView.setGravity(Gravity.CENTER);
+        mContentTextView.setGravity(Gravity.LEFT);
         addView(
-            mContentTextView,
-            new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+                mContentTextView,
+                new LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         );
+        view.add(mContentTextView);
     }
 
     public void setTitle(String title) {
@@ -118,10 +126,10 @@ class GuideMessageView extends LinearLayout {
         this.getLocationOnScreen(location);
 
         mRect.set(
-            getPaddingLeft(),
-            getPaddingTop(),
-            getWidth() - getPaddingRight(),
-            getHeight() - getPaddingBottom()
+                getPaddingLeft(),
+                getPaddingTop(),
+                getWidth() - getPaddingRight(),
+                getHeight() - getPaddingBottom()
         );
 
         final int density = (int) getResources().getDisplayMetrics().density;
