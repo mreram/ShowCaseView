@@ -3,11 +3,11 @@ package ir.smartdevelop.eram.showcaseview;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.EditText;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
+import smartdevelop.ir.eram.showcaseviewlib.config.PointerType;
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
                 .setGravity(Gravity.center)
                 .setDismissType(DismissType.anywhere)
+                .setPointerType(PointerType.arrow)
                 .setTargetView(view1)
                 .setGuideListener(new GuideListener() {
                     @Override

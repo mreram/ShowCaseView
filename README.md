@@ -1,5 +1,4 @@
 # :flashlight:ShowCaseView:flashlight:
-[![](https://jitpack.io/v/TKshadow018/ShowCaseView.svg)](https://jitpack.io/#TKshadow018/ShowCaseView)
 [![Release](https://jitpack.io/v/mreram/ShowCaseView.svg)](https://jitpack.io/#mreram/ShowCaseView)
 [![APK](https://img.shields.io/badge/APK-Demo-brightgreen.svg)](https://github.com/mreram/ShowCaseView/raw/master/demo-flatShowCaseView.apk)
 [![API](https://img.shields.io/badge/API-11%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlatShowCaseView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6713)
@@ -46,7 +45,7 @@ maven:
 <dependency>
     <groupId>com.github.mreram</groupId>
     <artifactId>showcaseview</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 gradle:
@@ -62,7 +61,7 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-implementation 'com.github.mreram:showcaseview:1.2.0'
+implementation 'com.github.mreram:showcaseview:1.3.0'
 ```
 ## Change type face
 ```java
@@ -141,6 +140,14 @@ new GuideView.Builder(MainActivity.this)
 | targetView | Dismissing with click on targetView(targetView is assigned with setTargetView method) |
 
 
+
+### PointerType Attribute
+
+| Type | Description |
+| ------ | ------ |
+| circle | Show circle pointer towards targetView |
+| arrow | Show arrow pointer towards targetView |
+| none | Show no pointer or line towards targetView |
 
 
 ## Contribution :collision:
