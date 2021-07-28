@@ -111,6 +111,15 @@ class GuideMessageView extends LinearLayout {
         invalidate();
     }
 
+    public void setTitleColor(int color) {
+        if(color!=0)
+            mTitleTextView.setTextColor(color);
+    }
+
+    public void setContentTextColor(int color) {
+        if(color!=0)
+            mContentTextView.setTextColor(color);
+    }
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

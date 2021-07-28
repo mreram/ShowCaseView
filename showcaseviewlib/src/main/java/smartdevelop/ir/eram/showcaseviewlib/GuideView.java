@@ -50,9 +50,9 @@ public class GuideView extends FrameLayout {
     private static final int MARGIN_INDICATOR = 15;
 
     private static final int BACKGROUND_COLOR = 0x99000000;
-    private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
-    private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
-    private static final int LINE_INDICATOR_COLOR = Color.WHITE;
+    private static int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
+    private static int CIRCLE_INDICATOR_COLOR = Color.WHITE;
+    private static int LINE_INDICATOR_COLOR = Color.WHITE;
 
     private final Paint selfPaint = new Paint();
     private final Paint paintLine = new Paint();
@@ -80,6 +80,9 @@ public class GuideView extends FrameLayout {
     private float marginGuide;
     private float strokeCircleWidth;
     private float indicatorHeight;
+    private int messageBoxColor = Color.WHITE;
+    private int messageTitleColor = Color.BLACK;
+    private int messageContentTextColor = Color.BLACK;
 
     private boolean isPerformedAnimationSize = false;
 
@@ -117,7 +120,7 @@ public class GuideView extends FrameLayout {
             messageViewPadding,
             messageViewPadding
         );
-        mMessageView.setColor(Color.WHITE);
+        mMessageView.setColor(messageBoxColor);
 
         addView(
             mMessageView,
@@ -251,6 +254,9 @@ public class GuideView extends FrameLayout {
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+        mMessageView.setColor(messageBoxColor);
+        mMessageView.setTitleColor(messageTitleColor);
+        mMessageView.setContentTextColor(messageContentTextColor);
         if (target != null) {
 
             selfPaint.setColor(BACKGROUND_COLOR);
@@ -486,6 +492,13 @@ public class GuideView extends FrameLayout {
         private float circleIndicatorSize;
         private float circleInnerIndicatorSize;
         private float strokeCircleWidth;
+        private int messageBoxColor;
+        private int messageBoxAndLineAndPointerColor;
+        private int lineAndPointerColor;
+        private int pointerColor;
+        private int lineColor;
+        private int messageTitleColor;
+        private int messageContentTextColor;
 
         public Builder(Context context) {
             this.context = context;
@@ -657,6 +670,80 @@ public class GuideView extends FrameLayout {
             this.pointerType = pointerType;
             return this;
         }
+
+        /**
+         * the defined messageBoxColor overrides any defined messageBoxColor in the default or provided style
+         *
+         * @param messageBoxColor color of messageBox
+         * @return builder
+         */
+        public Builder setMessageBoxColor(int messageBoxColor) {
+            this.messageBoxColor = messageBoxColor;
+            return this;
+        }
+
+
+        /**
+         * the defined messageBoxAndLineAndPointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param messageBoxAndLineAndPointerColor color of messageBox
+         * @return builder
+         */
+        public Builder setColorOfMessageBoxAndLineAndPointer(int messageBoxAndLineAndPointerColor) {
+            this.messageBoxAndLineAndPointerColor = messageBoxAndLineAndPointerColor;
+            return this;
+        }
+        /**
+         * the defined LineAndPointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param lineAndPointerColor color of messageBox
+         * @return builder
+         */
+        public Builder setLineAndPointerColor(int lineAndPointerColor) {
+            this.lineAndPointerColor = lineAndPointerColor;
+            return this;
+        }
+        /**
+         * the defined LineColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param lineColor color of messageBox
+         * @return builder
+         */
+        public Builder setLineColor(int lineColor) {
+            this.lineColor = lineColor;
+            return this;
+        }
+        /**
+         * the defined PointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param pointerColor color of messageBox
+         * @return builder
+         */
+        public Builder setPointerColor(int pointerColor) {
+            this.pointerColor = pointerColor;
+            return this;
+        }
+        /**
+         * the defined PointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param messageTitleColor color of messageBox
+         * @return builder
+         */
+        public Builder setMessageTitleColor(int messageTitleColor) {
+            this.messageTitleColor = messageTitleColor;
+            return this;
+        }
+        /**
+         * the defined PointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param messageContentTextColor color of messageBox
+         * @return builder
+         */
+        public Builder setMessageContentTextColor(int messageContentTextColor) {
+            this.messageContentTextColor = messageContentTextColor;
+            return this;
+        }
+
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
@@ -700,6 +787,33 @@ public class GuideView extends FrameLayout {
             }
             if (strokeCircleWidth != 0) {
                 guideView.strokeCircleWidth = strokeCircleWidth * density;
+            }
+            if (messageBoxColor != 0) {
+                guideView.messageBoxColor = messageBoxColor;
+            }
+            if (messageBoxAndLineAndPointerColor != 0) {
+                guideView.LINE_INDICATOR_COLOR = messageBoxAndLineAndPointerColor;
+                guideView.CIRCLE_INDICATOR_COLOR = messageBoxAndLineAndPointerColor;
+                guideView.CIRCLE_INNER_INDICATOR_COLOR = messageBoxAndLineAndPointerColor;
+                guideView.messageBoxColor = messageBoxAndLineAndPointerColor;
+            }
+            if (lineAndPointerColor != 0) {
+                guideView.LINE_INDICATOR_COLOR = lineAndPointerColor;
+                guideView.CIRCLE_INDICATOR_COLOR = lineAndPointerColor;
+                guideView.CIRCLE_INNER_INDICATOR_COLOR = lineAndPointerColor;
+            }
+            if (lineColor != 0) {
+                guideView.LINE_INDICATOR_COLOR = lineColor;
+            }
+            if (pointerColor != 0) {
+                guideView.CIRCLE_INDICATOR_COLOR = pointerColor;
+                guideView.CIRCLE_INNER_INDICATOR_COLOR = pointerColor;
+            }
+            if (messageTitleColor != 0) {
+                guideView.messageTitleColor = messageTitleColor;
+            }
+            if (messageContentTextColor != 0) {
+                guideView.messageContentTextColor = messageContentTextColor;
             }
 
             return guideView;
