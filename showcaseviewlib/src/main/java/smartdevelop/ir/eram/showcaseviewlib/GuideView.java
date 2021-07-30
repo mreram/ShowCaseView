@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
@@ -91,6 +92,11 @@ public class GuideView extends FrameLayout {
     private DismissType dismissType;
     private PointerType pointerType;
     private final GuideMessageView mMessageView;
+    private final TextView skipButton;
+    private View lastTargetView;
+    //Skip button is false by default
+    private boolean setSkip =false;
+    FrameLayout.LayoutParams skipParams;
 
     private GuideView(Context context, View view) {
         super(context);
@@ -114,6 +120,21 @@ public class GuideView extends FrameLayout {
         }
 
         mMessageView = new GuideMessageView(getContext());
+        skipButton = new TextView(context);
+        skipButton.setText("SKIP");
+        skipButton.setTextColor(Color.WHITE);
+        skipButton.setGravity(android.view.Gravity.CENTER);
+        skipButton.setPadding(
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding
+        );
+        skipParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        ((LayoutParams)skipParams).setMargins(0,0,10,140);
+        ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
+        skipButton.setLayoutParams(skipParams);
+
         mMessageView.setPadding(
             messageViewPadding,
             messageViewPadding,
@@ -129,7 +150,16 @@ public class GuideView extends FrameLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         );
-
+        skipButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(setSkip && lastTargetView!=null)
+                    dismiss(lastTargetView);
+            }
+        });
+        if(setSkip) {
+            addView(skipButton, skipParams);
+        }
         setMessageLocation(resolveMessageViewLocation());
 
         ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -327,11 +357,11 @@ public class GuideView extends FrameLayout {
         return mIsShowing;
     }
 
-    public void dismiss() {
+    public void dismiss(View view) {
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(this);
         mIsShowing = false;
         if (mGuideListener != null) {
-            mGuideListener.onDismiss(target);
+            mGuideListener.onDismiss(view);
         }
     }
 
@@ -346,24 +376,24 @@ public class GuideView extends FrameLayout {
 
                 case outside:
                     if (!isViewContains(mMessageView, x, y)) {
-                        dismiss();
+                        dismiss(target);
                     }
                     break;
 
                 case anywhere:
-                    dismiss();
+                    dismiss(target);
                     break;
 
                 case targetView:
                     if (targetRect.contains(x, y)) {
                         target.performClick();
-                        dismiss();
+                        dismiss(target);
                     }
                     break;
 
                 case selfView:
                     if (isViewContains(mMessageView, x, y)) {
-                        dismiss();
+                        dismiss(target);
                     }
                     break;
             }
@@ -444,6 +474,9 @@ public class GuideView extends FrameLayout {
         startAnimation.setFillAfter(true);
         this.startAnimation(startAnimation);
         mIsShowing = true;
+        if(setSkip) {
+            addView(skipButton, skipParams);
+        }
     }
 
     public void setTitle(String str) {
@@ -497,6 +530,8 @@ public class GuideView extends FrameLayout {
         private int lineAndPointerColor;
         private int pointerColor;
         private int lineColor;
+        private boolean setSkip;
+        private View lastTargetView;
         private int messageTitleColor;
         private int messageContentTextColor;
 
@@ -694,7 +729,7 @@ public class GuideView extends FrameLayout {
             return this;
         }
         /**
-         * the defined LineAndPointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         * the defined LineAndPointerColor overrides any defined lineAndPointerColor in the default or provided style
          *
          * @param lineAndPointerColor color of messageBox
          * @return builder
@@ -704,7 +739,7 @@ public class GuideView extends FrameLayout {
             return this;
         }
         /**
-         * the defined LineColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         * the defined LineColor overrides any defined lineColor in the default or provided style
          *
          * @param lineColor color of messageBox
          * @return builder
@@ -714,7 +749,7 @@ public class GuideView extends FrameLayout {
             return this;
         }
         /**
-         * the defined PointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         * the defined setPointerColor overrides any defined pointerColor in the default or provided style
          *
          * @param pointerColor color of messageBox
          * @return builder
@@ -724,7 +759,7 @@ public class GuideView extends FrameLayout {
             return this;
         }
         /**
-         * the defined PointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         * the defined setMessageTitleColor overrides any defined messageTitleColor in the default or provided style
          *
          * @param messageTitleColor color of messageBox
          * @return builder
@@ -734,13 +769,25 @@ public class GuideView extends FrameLayout {
             return this;
         }
         /**
-         * the defined PointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         * the defined setMessageContentTextColor overrides any defined messageContentTextColor in the default or provided style
          *
          * @param messageContentTextColor color of messageBox
          * @return builder
          */
         public Builder setMessageContentTextColor(int messageContentTextColor) {
             this.messageContentTextColor = messageContentTextColor;
+            return this;
+        }
+        /**
+         * the defined setSkip overrides any defined setSkip in the default
+         *
+         * @param setSkip true if to show Skip button
+         * @param lastTargetView Last target view
+         * @return builder
+         */
+        public Builder setSkip(boolean setSkip,View lastTargetView) {
+            this.setSkip = setSkip;
+            this.lastTargetView = lastTargetView;
             return this;
         }
 
@@ -750,7 +797,7 @@ public class GuideView extends FrameLayout {
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
             guideView.pointerType = pointerType != null ? pointerType : PointerType.circle;
             float density = context.getResources().getDisplayMetrics().density;
-
+            guideView.setSkip = setSkip;
             guideView.setTitle(title);
             if (contentText != null) {
                 guideView.setContentText(contentText);
@@ -814,6 +861,9 @@ public class GuideView extends FrameLayout {
             }
             if (messageContentTextColor != 0) {
                 guideView.messageContentTextColor = messageContentTextColor;
+            }
+            if (setSkip) {
+                guideView.lastTargetView = lastTargetView;
             }
 
             return guideView;
