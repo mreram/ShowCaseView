@@ -54,9 +54,9 @@ public class GuideView extends FrameLayout {
     private static final int MARGIN_INDICATOR = 15;
 
     private static final int BACKGROUND_COLOR = 0x99000000;
-    private static int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
-    private static int CIRCLE_INDICATOR_COLOR = Color.WHITE;
-    private static int LINE_INDICATOR_COLOR = Color.WHITE;
+    private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
+    private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
+    private static final int LINE_INDICATOR_COLOR = Color.WHITE;
 
     private final Paint selfPaint = new Paint();
     private final Paint paintLine = new Paint();
@@ -87,6 +87,9 @@ public class GuideView extends FrameLayout {
     private int messageBoxColor = Color.WHITE;
     private int messageTitleColor = Color.BLACK;
     private int messageContentTextColor = Color.BLACK;
+    private int circleInnerIndicatorColor = 0xffcccccc;
+    private int circleIndicatorColor = Color.WHITE;
+    private int lineIndicatorColor = Color.WHITE;
 
     private boolean isPerformedAnimationSize = false;
 
@@ -97,8 +100,9 @@ public class GuideView extends FrameLayout {
     private final GuideMessageView mMessageView;
     private final TextView skipButton;
     private View lastTargetView;
-    //Skip button is false by default
-    private boolean setSkip =false;
+    private boolean enableSkipButton = false;
+    private static final String SKIP_BUTTON_TEXT = "SKIP";
+    private static final int MARGIN_SIZE = 10;
     FrameLayout.LayoutParams skipParams;
 
     private GuideView(Context context, View view) {
@@ -124,7 +128,7 @@ public class GuideView extends FrameLayout {
 
         mMessageView = new GuideMessageView(getContext());
         skipButton = new TextView(context);
-        skipButton.setText("SKIP");
+        skipButton.setText(SKIP_BUTTON_TEXT);
         skipButton.setTextColor(Color.WHITE);
         skipButton.setGravity(android.view.Gravity.CENTER);
         skipButton.setPadding(
@@ -155,7 +159,7 @@ public class GuideView extends FrameLayout {
         skipButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(setSkip && lastTargetView!=null)
+                if(enableSkipButton && lastTargetView!=null)
                     dismiss(lastTargetView);
             }
         });
@@ -282,7 +286,9 @@ public class GuideView extends FrameLayout {
 
     private int checkOrientation(){
         try{
-            Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            Display display = ((WindowManager) getContext()
+                    .getSystemService(Context.WINDOW_SERVICE))
+                    .getDefaultDisplay();
             int rotation = display.getRotation();
             return rotation;
         }
@@ -305,18 +311,18 @@ public class GuideView extends FrameLayout {
             canvas.drawRect(selfRect, selfPaint);
 
             paintLine.setStyle(Paint.Style.FILL);
-            paintLine.setColor(LINE_INDICATOR_COLOR);
+            paintLine.setColor(lineIndicatorColor);
             paintLine.setStrokeWidth(lineIndicatorWidthSize);
             paintLine.setAntiAlias(true);
 
             paintCircle.setStyle(Paint.Style.STROKE);
-            paintCircle.setColor(CIRCLE_INDICATOR_COLOR);
+            paintCircle.setColor(circleIndicatorColor);
             paintCircle.setStrokeCap(Paint.Cap.ROUND);
             paintCircle.setStrokeWidth(strokeCircleWidth);
             paintCircle.setAntiAlias(true);
 
             paintCircleInner.setStyle(Paint.Style.FILL);
-            paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
+            paintCircleInner.setColor(circleInnerIndicatorColor);
             paintCircleInner.setAntiAlias(true);
 
             final float x = (targetRect.left / 2 + targetRect.right / 2);
@@ -484,21 +490,21 @@ public class GuideView extends FrameLayout {
         startAnimation.setFillAfter(true);
         this.startAnimation(startAnimation);
         mIsShowing = true;
-        if(setSkip) {
+        if(enableSkipButton) {
 
         switch(checkOrientation()){
             case Surface.ROTATION_0:
-                ((LayoutParams)skipParams).setMargins(0,0,10,140);
+                ((LayoutParams)skipParams).setMargins(0,0,MARGIN_SIZE,getNavigationBarSize());
                 ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
                 break;
 
             case Surface.ROTATION_90:
-                ((LayoutParams)skipParams).setMargins(10,0,0,0);
+                ((LayoutParams)skipParams).setMargins(MARGIN_SIZE,0,0,0);
                 ((LayoutParams)skipParams).gravity = android.view.Gravity.LEFT | android.view.Gravity.BOTTOM;
                 break;
 
             case Surface.ROTATION_270:
-                ((LayoutParams)skipParams).setMargins(0,0,10,0);
+                ((LayoutParams)skipParams).setMargins(0,0,MARGIN_SIZE,0);
                 ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
                 break;
         }
@@ -558,7 +564,7 @@ public class GuideView extends FrameLayout {
         private int lineAndPointerColor;
         private int pointerColor;
         private int lineColor;
-        private boolean setSkip;
+        private boolean enableSkipButton;
         private View lastTargetView;
         private int messageTitleColor;
         private int messageContentTextColor;
@@ -809,12 +815,11 @@ public class GuideView extends FrameLayout {
         /**
          * the defined setSkip overrides any defined setSkip in the default
          *
-         * @param setSkip true if to show Skip button
          * @param lastTargetView Last target view
          * @return builder
          */
-        public Builder setSkip(boolean setSkip,View lastTargetView) {
-            this.setSkip = setSkip;
+        public Builder enableSkipButton(View lastTargetView) {
+            this.enableSkipButton = true;
             this.lastTargetView = lastTargetView;
             return this;
         }
@@ -825,7 +830,7 @@ public class GuideView extends FrameLayout {
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
             guideView.pointerType = pointerType != null ? pointerType : PointerType.circle;
             float density = context.getResources().getDisplayMetrics().density;
-            guideView.setSkip = setSkip;
+            guideView.enableSkipButton = enableSkipButton;
             guideView.setTitle(title);
             if (contentText != null) {
                 guideView.setContentText(contentText);
@@ -867,22 +872,22 @@ public class GuideView extends FrameLayout {
                 guideView.messageBoxColor = messageBoxColor;
             }
             if (messageBoxAndLineAndPointerColor != 0) {
-                guideView.LINE_INDICATOR_COLOR = messageBoxAndLineAndPointerColor;
-                guideView.CIRCLE_INDICATOR_COLOR = messageBoxAndLineAndPointerColor;
-                guideView.CIRCLE_INNER_INDICATOR_COLOR = messageBoxAndLineAndPointerColor;
+                guideView.lineIndicatorColor = messageBoxAndLineAndPointerColor;
+                guideView.circleIndicatorColor = messageBoxAndLineAndPointerColor;
+                guideView.circleInnerIndicatorColor = messageBoxAndLineAndPointerColor;
                 guideView.messageBoxColor = messageBoxAndLineAndPointerColor;
             }
             if (lineAndPointerColor != 0) {
-                guideView.LINE_INDICATOR_COLOR = lineAndPointerColor;
-                guideView.CIRCLE_INDICATOR_COLOR = lineAndPointerColor;
-                guideView.CIRCLE_INNER_INDICATOR_COLOR = lineAndPointerColor;
+                guideView.lineIndicatorColor = lineAndPointerColor;
+                guideView.circleIndicatorColor = lineAndPointerColor;
+                guideView.circleInnerIndicatorColor = lineAndPointerColor;
             }
             if (lineColor != 0) {
-                guideView.LINE_INDICATOR_COLOR = lineColor;
+                guideView.lineIndicatorColor = lineColor;
             }
             if (pointerColor != 0) {
-                guideView.CIRCLE_INDICATOR_COLOR = pointerColor;
-                guideView.CIRCLE_INNER_INDICATOR_COLOR = pointerColor;
+                guideView.circleIndicatorColor = pointerColor;
+                guideView.circleInnerIndicatorColor = pointerColor;
             }
             if (messageTitleColor != 0) {
                 guideView.messageTitleColor = messageTitleColor;
@@ -890,7 +895,7 @@ public class GuideView extends FrameLayout {
             if (messageContentTextColor != 0) {
                 guideView.messageContentTextColor = messageContentTextColor;
             }
-            if (setSkip) {
+            if (enableSkipButton) {
                 guideView.lastTargetView = lastTargetView;
             }
 

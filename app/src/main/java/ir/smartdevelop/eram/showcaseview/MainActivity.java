@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 .setLineAndPointerColor(Color.WHITE)
                 .setMessageTitleColor(Color.WHITE)
                 .setMessageContentTextColor(Color.WHITE)
-                .setSkip(true,view6)
+                .enableSkipButton(view6)
                 .setGuideListener(new GuideListener() {
                     @Override
                     public void onDismiss(View view) {
