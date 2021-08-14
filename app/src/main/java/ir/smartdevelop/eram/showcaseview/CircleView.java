@@ -87,8 +87,7 @@ public class CircleView extends View implements Targetable {
         _paint.setColor(_circleColor);
 
         canvas.drawCircle(cx, cy, radius, _paint);
-
-        getLocationOnScreen(locationTarget);
+        getLocationInWindow(locationTarget);
         int centerX = pl + halfUsableWidth + locationTarget[0];
         int centerY = pt + halfUsableHeight + locationTarget[1];
         _guidePath.reset();

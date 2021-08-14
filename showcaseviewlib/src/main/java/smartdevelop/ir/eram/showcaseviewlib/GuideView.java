@@ -20,10 +20,13 @@ import android.graphics.Typeface;
 import android.graphics.Xfermode;
 import android.os.Build;
 import android.text.Spannable;
+import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -133,7 +136,6 @@ public class GuideView extends FrameLayout {
         skipParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         ((LayoutParams)skipParams).setMargins(0,0,10,140);
         ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
-        skipButton.setLayoutParams(skipParams);
 
         mMessageView.setPadding(
             messageViewPadding,
@@ -157,9 +159,6 @@ public class GuideView extends FrameLayout {
                     dismiss(lastTargetView);
             }
         });
-        if(setSkip) {
-            addView(skipButton, skipParams);
-        }
         setMessageLocation(resolveMessageViewLocation());
 
         ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -177,7 +176,7 @@ public class GuideView extends FrameLayout {
                     targetRect = ((Targetable) target).boundingRect();
                 } else {
                     int[] locationTarget = new int[2];
-                    target.getLocationOnScreen(locationTarget);
+                    target.getLocationInWindow(locationTarget);
                     targetRect = new RectF(
                         locationTarget[0],
                         locationTarget[1],
@@ -279,6 +278,17 @@ public class GuideView extends FrameLayout {
     private boolean isLandscape() {
         int display_mode = getResources().getConfiguration().orientation;
         return display_mode != Configuration.ORIENTATION_PORTRAIT;
+    }
+
+    private int checkOrientation(){
+        try{
+            Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+            int rotation = display.getRotation();
+            return rotation;
+        }
+        catch (Exception e){
+            return Surface.ROTATION_0;
+        }
     }
 
     @Override
@@ -475,6 +485,24 @@ public class GuideView extends FrameLayout {
         this.startAnimation(startAnimation);
         mIsShowing = true;
         if(setSkip) {
+
+        switch(checkOrientation()){
+            case Surface.ROTATION_0:
+                ((LayoutParams)skipParams).setMargins(0,0,10,140);
+                ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
+                break;
+
+            case Surface.ROTATION_90:
+                ((LayoutParams)skipParams).setMargins(10,0,0,0);
+                ((LayoutParams)skipParams).gravity = android.view.Gravity.LEFT | android.view.Gravity.BOTTOM;
+                break;
+
+            case Surface.ROTATION_270:
+                ((LayoutParams)skipParams).setMargins(0,0,10,0);
+                ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
+                break;
+        }
+
             addView(skipButton, skipParams);
         }
     }
