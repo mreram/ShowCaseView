@@ -88,7 +88,36 @@ new GuideView.Builder(this)
     .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
     .build()
     .show();
-```	
+```
+
+## Change title and Content text color
+
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setTargetView(view)
+    .setMessageTitleColor(Color.BLACK)//optional - default is BLACK
+    .setMessageContentTextColor(Color.BLACK)//optional - default is BLACK
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```
+
+## Change MessageBox color and color of Line and Pointer
+
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setTargetView(view)
+    .setMessageBoxColor(Color.WHITE) //optional - default is WHITE
+    .setLineAndPointerColor(Color.WHITE) //optional - default is WHITE
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```
+
 ## Change Gravity
 
 ```java
@@ -108,6 +137,17 @@ new GuideView.Builder(this)
     .setTitle("Guide Title Text")
     .setTargetView(view)
     .setContentSpan((Spannable) Html.fromHtml("<font color='red'>testing spannable</p>"))
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```
+	     
+## use Skip for Sequence of ShowCase
+```java	
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setTargetView(view)
+    .setSkip(true,view6) // view6 is supposed to be the last target view of the sequence.
     .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
     .build()
     .show();

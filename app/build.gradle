@@ -4,8 +4,8 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "smartdevelop.ir.eram.showcaseview"
-        minSdkVersion 21
-        targetSdkVersion 26
+        minSdkVersion 11
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
