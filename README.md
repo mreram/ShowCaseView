@@ -138,6 +138,7 @@ new GuideView.Builder(MainActivity.this)
 | outside | Dismissing with click on outside of MessageView |
 | anywhere | Dismissing with click on anywhere |
 | targetView | Dismissing with click on targetView(targetView is assigned with setTargetView method) |
+| outsideTargetAndMessage | Dismissing with click on outside of MessageView and target View |
 
 
 
