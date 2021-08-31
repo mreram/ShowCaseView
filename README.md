@@ -45,7 +45,7 @@ maven:
 <dependency>
     <groupId>com.github.mreram</groupId>
     <artifactId>showcaseview</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 gradle:
@@ -61,7 +61,7 @@ allprojects {
 ```	
 	Step 2. Add the dependency
 ```groovy	
-implementation 'com.github.mreram:showcaseview:1.3.0'
+implementation 'com.github.mreram:showcaseview:1.4.0'
 ```
 ## Change type face
 ```java
