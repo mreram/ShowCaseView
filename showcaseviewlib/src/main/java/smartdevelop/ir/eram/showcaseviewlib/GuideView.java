@@ -360,6 +360,11 @@ public class GuideView extends FrameLayout {
                         dismiss();
                     }
                     break;
+
+                case outsideTargetAndMessage:
+                    if(!(targetRect.contains(x, y) || isViewContains(mMessageView, x, y))){
+                        dismiss();
+                    }
             }
             return true;
         }
