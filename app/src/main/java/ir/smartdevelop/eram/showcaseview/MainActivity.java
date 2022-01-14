@@ -1,5 +1,6 @@
 package ir.smartdevelop.eram.showcaseview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -40,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
                 .setDismissType(DismissType.anywhere)
                 .setPointerType(PointerType.arrow)
                 .setTargetView(view1)
+                .setMessageBoxColor(Color.BLACK)
+                .setLineAndPointerColor(Color.WHITE)
+                .setMessageTitleColor(Color.WHITE)
+                .setMessageContentTextColor(Color.WHITE)
+                .enableSkipButton(view6)
                 .setGuideListener(new GuideListener() {
                     @Override
                     public void onDismiss(View view) {

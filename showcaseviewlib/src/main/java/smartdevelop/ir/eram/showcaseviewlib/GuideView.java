@@ -20,12 +20,16 @@ import android.graphics.Typeface;
 import android.graphics.Xfermode;
 import android.os.Build;
 import android.text.Spannable;
+import android.view.Display;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import smartdevelop.ir.eram.showcaseviewlib.config.DismissType;
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity;
@@ -80,6 +84,12 @@ public class GuideView extends FrameLayout {
     private float marginGuide;
     private float strokeCircleWidth;
     private float indicatorHeight;
+    private int messageBoxColor = Color.WHITE;
+    private int messageTitleColor = Color.BLACK;
+    private int messageContentTextColor = Color.BLACK;
+    private int circleInnerIndicatorColor = 0xffcccccc;
+    private int circleIndicatorColor = Color.WHITE;
+    private int lineIndicatorColor = Color.WHITE;
 
     private boolean isPerformedAnimationSize = false;
 
@@ -88,6 +98,12 @@ public class GuideView extends FrameLayout {
     private DismissType dismissType;
     private PointerType pointerType;
     private final GuideMessageView mMessageView;
+    private final TextView skipButton;
+    private View lastTargetView;
+    private boolean enableSkipButton = false;
+    private static final String SKIP_BUTTON_TEXT = "SKIP";
+    private static final int MARGIN_SIZE = 10;
+    FrameLayout.LayoutParams skipParams;
 
     private GuideView(Context context, View view) {
         super(context);
@@ -111,13 +127,27 @@ public class GuideView extends FrameLayout {
         }
 
         mMessageView = new GuideMessageView(getContext());
+        skipButton = new TextView(context);
+        skipButton.setText(SKIP_BUTTON_TEXT);
+        skipButton.setTextColor(Color.WHITE);
+        skipButton.setGravity(android.view.Gravity.CENTER);
+        skipButton.setPadding(
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding
+        );
+        skipParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        ((LayoutParams)skipParams).setMargins(0,0,10,140);
+        ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
+
         mMessageView.setPadding(
             messageViewPadding,
             messageViewPadding,
             messageViewPadding,
             messageViewPadding
         );
-        mMessageView.setColor(Color.WHITE);
+        mMessageView.setColor(messageBoxColor);
 
         addView(
             mMessageView,
@@ -126,7 +156,13 @@ public class GuideView extends FrameLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         );
-
+        skipButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(enableSkipButton && lastTargetView != null)
+                    dismiss(lastTargetView);
+            }
+        });
         setMessageLocation(resolveMessageViewLocation());
 
         ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -144,7 +180,7 @@ public class GuideView extends FrameLayout {
                     targetRect = ((Targetable) target).boundingRect();
                 } else {
                     int[] locationTarget = new int[2];
-                    target.getLocationOnScreen(locationTarget);
+                    target.getLocationInWindow(locationTarget);
                     targetRect = new RectF(
                         locationTarget[0],
                         locationTarget[1],
@@ -248,9 +284,25 @@ public class GuideView extends FrameLayout {
         return display_mode != Configuration.ORIENTATION_PORTRAIT;
     }
 
+    private int checkOrientation(){
+        try{
+            Display display = ((WindowManager) getContext()
+                    .getSystemService(Context.WINDOW_SERVICE))
+                    .getDefaultDisplay();
+            int rotation = display.getRotation();
+            return rotation;
+        }
+        catch (Exception e){
+            return Surface.ROTATION_0;
+        }
+    }
+
     @Override
     protected void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
+        mMessageView.setColor(messageBoxColor);
+        mMessageView.setTitleColor(messageTitleColor);
+        mMessageView.setContentTextColor(messageContentTextColor);
         if (target != null) {
 
             selfPaint.setColor(BACKGROUND_COLOR);
@@ -259,18 +311,18 @@ public class GuideView extends FrameLayout {
             canvas.drawRect(selfRect, selfPaint);
 
             paintLine.setStyle(Paint.Style.FILL);
-            paintLine.setColor(LINE_INDICATOR_COLOR);
+            paintLine.setColor(lineIndicatorColor);
             paintLine.setStrokeWidth(lineIndicatorWidthSize);
             paintLine.setAntiAlias(true);
 
             paintCircle.setStyle(Paint.Style.STROKE);
-            paintCircle.setColor(CIRCLE_INDICATOR_COLOR);
+            paintCircle.setColor(circleIndicatorColor);
             paintCircle.setStrokeCap(Paint.Cap.ROUND);
             paintCircle.setStrokeWidth(strokeCircleWidth);
             paintCircle.setAntiAlias(true);
 
             paintCircleInner.setStyle(Paint.Style.FILL);
-            paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
+            paintCircleInner.setColor(circleInnerIndicatorColor);
             paintCircleInner.setAntiAlias(true);
 
             final float x = (targetRect.left / 2 + targetRect.right / 2);
@@ -321,11 +373,11 @@ public class GuideView extends FrameLayout {
         return mIsShowing;
     }
 
-    public void dismiss() {
+    public void dismiss(View view) {
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).removeView(this);
         mIsShowing = false;
         if (mGuideListener != null) {
-            mGuideListener.onDismiss(target);
+            mGuideListener.onDismiss(view);
         }
     }
 
@@ -340,24 +392,24 @@ public class GuideView extends FrameLayout {
 
                 case outside:
                     if (!isViewContains(mMessageView, x, y)) {
-                        dismiss();
+                        dismiss(target);
                     }
                     break;
 
                 case anywhere:
-                    dismiss();
+                    dismiss(target);
                     break;
 
                 case targetView:
                     if (targetRect.contains(x, y)) {
                         target.performClick();
-                        dismiss();
+                        dismiss(target);
                     }
                     break;
 
                 case selfView:
                     if (isViewContains(mMessageView, x, y)) {
-                        dismiss();
+                        dismiss(target);
                     }
                     break;
             }
@@ -438,6 +490,27 @@ public class GuideView extends FrameLayout {
         startAnimation.setFillAfter(true);
         this.startAnimation(startAnimation);
         mIsShowing = true;
+        if(enableSkipButton) {
+
+        switch(checkOrientation()){
+            case Surface.ROTATION_0:
+                ((LayoutParams)skipParams).setMargins(0,0,MARGIN_SIZE,getNavigationBarSize());
+                ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
+                break;
+
+            case Surface.ROTATION_90:
+                ((LayoutParams)skipParams).setMargins(MARGIN_SIZE,0,0,0);
+                ((LayoutParams)skipParams).gravity = android.view.Gravity.LEFT | android.view.Gravity.BOTTOM;
+                break;
+
+            case Surface.ROTATION_270:
+                ((LayoutParams)skipParams).setMargins(0,0,MARGIN_SIZE,0);
+                ((LayoutParams)skipParams).gravity = android.view.Gravity.RIGHT | android.view.Gravity.BOTTOM;
+                break;
+        }
+
+            addView(skipButton, skipParams);
+        }
     }
 
     public void setTitle(String str) {
@@ -486,6 +559,15 @@ public class GuideView extends FrameLayout {
         private float circleIndicatorSize;
         private float circleInnerIndicatorSize;
         private float strokeCircleWidth;
+        private int messageBoxColor;
+        private int messageBoxAndLineAndPointerColor;
+        private int lineAndPointerColor;
+        private int pointerColor;
+        private int lineColor;
+        private boolean enableSkipButton;
+        private View lastTargetView;
+        private int messageTitleColor;
+        private int messageContentTextColor;
 
         public Builder(Context context) {
             this.context = context;
@@ -657,13 +739,98 @@ public class GuideView extends FrameLayout {
             this.pointerType = pointerType;
             return this;
         }
+
+        /**
+         * the defined messageBoxColor overrides any defined messageBoxColor in the default or provided style
+         *
+         * @param messageBoxColor color of messageBox
+         * @return builder
+         */
+        public Builder setMessageBoxColor(int messageBoxColor) {
+            this.messageBoxColor = messageBoxColor;
+            return this;
+        }
+
+
+        /**
+         * the defined messageBoxAndLineAndPointerColor overrides any defined messageBoxAndLineAndPointerColor in the default or provided style
+         *
+         * @param messageBoxAndLineAndPointerColor color of messageBox
+         * @return builder
+         */
+        public Builder setColorOfMessageBoxAndLineAndPointer(int messageBoxAndLineAndPointerColor) {
+            this.messageBoxAndLineAndPointerColor = messageBoxAndLineAndPointerColor;
+            return this;
+        }
+        /**
+         * the defined LineAndPointerColor overrides any defined lineAndPointerColor in the default or provided style
+         *
+         * @param lineAndPointerColor color of messageBox
+         * @return builder
+         */
+        public Builder setLineAndPointerColor(int lineAndPointerColor) {
+            this.lineAndPointerColor = lineAndPointerColor;
+            return this;
+        }
+        /**
+         * the defined LineColor overrides any defined lineColor in the default or provided style
+         *
+         * @param lineColor color of messageBox
+         * @return builder
+         */
+        public Builder setLineColor(int lineColor) {
+            this.lineColor = lineColor;
+            return this;
+        }
+        /**
+         * the defined setPointerColor overrides any defined pointerColor in the default or provided style
+         *
+         * @param pointerColor color of messageBox
+         * @return builder
+         */
+        public Builder setPointerColor(int pointerColor) {
+            this.pointerColor = pointerColor;
+            return this;
+        }
+        /**
+         * the defined setMessageTitleColor overrides any defined messageTitleColor in the default or provided style
+         *
+         * @param messageTitleColor color of messageBox
+         * @return builder
+         */
+        public Builder setMessageTitleColor(int messageTitleColor) {
+            this.messageTitleColor = messageTitleColor;
+            return this;
+        }
+        /**
+         * the defined setMessageContentTextColor overrides any defined messageContentTextColor in the default or provided style
+         *
+         * @param messageContentTextColor color of messageBox
+         * @return builder
+         */
+        public Builder setMessageContentTextColor(int messageContentTextColor) {
+            this.messageContentTextColor = messageContentTextColor;
+            return this;
+        }
+        /**
+         * the defined enableSkipButton overrides any defined enableSkipButton in the default
+         *
+         * @param lastTargetView Last target view
+         * @return builder
+         */
+        public Builder enableSkipButton(View lastTargetView) {
+            this.enableSkipButton = true;
+            this.lastTargetView = lastTargetView;
+            return this;
+        }
+
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
             guideView.pointerType = pointerType != null ? pointerType : PointerType.circle;
             float density = context.getResources().getDisplayMetrics().density;
-
+            guideView.enableSkipButton = enableSkipButton;
             guideView.setTitle(title);
             if (contentText != null) {
                 guideView.setContentText(contentText);
@@ -700,6 +867,36 @@ public class GuideView extends FrameLayout {
             }
             if (strokeCircleWidth != 0) {
                 guideView.strokeCircleWidth = strokeCircleWidth * density;
+            }
+            if (messageBoxColor != 0) {
+                guideView.messageBoxColor = messageBoxColor;
+            }
+            if (messageBoxAndLineAndPointerColor != 0) {
+                guideView.lineIndicatorColor = messageBoxAndLineAndPointerColor;
+                guideView.circleIndicatorColor = messageBoxAndLineAndPointerColor;
+                guideView.circleInnerIndicatorColor = messageBoxAndLineAndPointerColor;
+                guideView.messageBoxColor = messageBoxAndLineAndPointerColor;
+            }
+            if (lineAndPointerColor != 0) {
+                guideView.lineIndicatorColor = lineAndPointerColor;
+                guideView.circleIndicatorColor = lineAndPointerColor;
+                guideView.circleInnerIndicatorColor = lineAndPointerColor;
+            }
+            if (lineColor != 0) {
+                guideView.lineIndicatorColor = lineColor;
+            }
+            if (pointerColor != 0) {
+                guideView.circleIndicatorColor = pointerColor;
+                guideView.circleInnerIndicatorColor = pointerColor;
+            }
+            if (messageTitleColor != 0) {
+                guideView.messageTitleColor = messageTitleColor;
+            }
+            if (messageContentTextColor != 0) {
+                guideView.messageContentTextColor = messageContentTextColor;
+            }
+            if (enableSkipButton) {
+                guideView.lastTargetView = lastTargetView;
             }
 
             return guideView;
