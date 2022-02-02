@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.mreram'
 android {
     compileSdkVersion 30
@@ -9,10 +8,8 @@ android {
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 30
-        versionCode 3
-        versionName "1.4.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
 

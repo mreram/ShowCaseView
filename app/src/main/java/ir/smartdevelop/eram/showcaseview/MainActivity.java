@@ -1,7 +1,7 @@
 package ir.smartdevelop.eram.showcaseview;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
@@ -45,19 +45,19 @@ public class MainActivity extends AppCompatActivity {
                     public void onDismiss(View view) {
                         switch (view.getId()) {
                             case R.id.view1:
-                                builder.setTargetView(view2).build();
+                                builder.setGravity(Gravity.sideauto).setTargetView(view2).build();
                                 break;
                             case R.id.view2:
-                                builder.setTargetView(view3).build();
+                                builder.setGravity(Gravity.auto).setTargetView(view3).build();
                                 break;
                             case R.id.view3:
-                                builder.setTargetView(view4).build();
+                                builder.setGravity(Gravity.auto).setTargetView(view4).build();
                                 break;
                             case R.id.view4:
-                                builder.setTargetView(view5).build();
+                                builder.setGravity(Gravity.auto).setTargetView(view5).build();
                                 break;
                             case R.id.view5:
-                                builder.setTargetView(view6).build();
+                                builder.setGravity(Gravity.sidecenter).setTargetView(view6).build();
                                 break;
                             case R.id.view6:
                                 return;
