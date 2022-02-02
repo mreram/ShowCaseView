@@ -67,19 +67,25 @@ public class GuideView extends FrameLayout {
 
     private final float density;
     private float stopY;
+    private float stopX;
     private boolean isTop;
+    private boolean isLeft;
     private boolean mIsShowing;
     private int yMessageView = 0;
+    private int xMessageView = 0;
 
+    private float startXLineAndCircle;
     private float startYLineAndCircle;
     private float circleIndicatorSize = 0;
     private float circleIndicatorSizeFinal;
     private float circleInnerIndicatorSize = 0;
     private float lineIndicatorWidthSize;
+    private float lineIndicatorHeightSize;
     private int messageViewPadding;
     private float marginGuide;
     private float strokeCircleWidth;
     private float indicatorHeight;
+    private float indicatorWidth;
 
     private boolean isPerformedAnimationSize = false;
 
@@ -160,9 +166,15 @@ public class GuideView extends FrameLayout {
                     getHeight() - getPaddingBottom()
                 );
 
-                marginGuide = (int) (isTop ? marginGuide : -marginGuide);
-                startYLineAndCircle = (isTop ? targetRect.bottom : targetRect.top) + marginGuide;
-                stopY = yMessageView + indicatorHeight;
+                if(mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
+                    marginGuide = (int) (isLeft ? -marginGuide : marginGuide);
+                    startYLineAndCircle = (isLeft ? targetRect.left : targetRect.right) + marginGuide;
+                    stopY = xMessageView + indicatorWidth;
+                } else  {
+                    marginGuide = (int) (isTop ? marginGuide : -marginGuide);
+                    startYLineAndCircle = (isTop ? targetRect.bottom : targetRect.top) + marginGuide;
+                    stopY = yMessageView + indicatorHeight;
+                }
                 startAnimationSize();
                 getViewTreeObserver().addOnGlobalLayoutListener(this);
             }
@@ -227,8 +239,10 @@ public class GuideView extends FrameLayout {
 
     private void init() {
         lineIndicatorWidthSize = LINE_INDICATOR_WIDTH_SIZE * density;
+        lineIndicatorHeightSize = LINE_INDICATOR_WIDTH_SIZE * density;
         marginGuide = MARGIN_INDICATOR * density;
         indicatorHeight = INDICATOR_HEIGHT * density;
+        indicatorWidth = INDICATOR_HEIGHT * density;
         messageViewPadding = (int) (MESSAGE_VIEW_PADDING * density);
         strokeCircleWidth = STROKE_CIRCLE_INDICATOR_SIZE * density;
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
@@ -273,24 +287,48 @@ public class GuideView extends FrameLayout {
             paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
             paintCircleInner.setAntiAlias(true);
 
-            final float x = (targetRect.left / 2 + targetRect.right / 2);
+            float x = 0.0f;
+            if (mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
+                x = (targetRect.top / 2 + targetRect.bottom / 2);
+            } else {
+                x = (targetRect.left / 2 + targetRect.right / 2);
+            }
+
 
             switch (pointerType) {
                 case circle:
-                    canvas.drawLine(x,startYLineAndCircle,x,stopY,paintLine);
-                    canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
-                    canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
+                    if (mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
+                        canvas.drawLine(startYLineAndCircle, x, stopY, x, paintLine);
+                        canvas.drawCircle(startYLineAndCircle, x, circleIndicatorSize, paintCircle);
+                        canvas.drawCircle(startYLineAndCircle, x, circleInnerIndicatorSize, paintCircleInner);
+                    }
+                    else {
+                        canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
+                        canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
+                        canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
+                    }
+
                     break;
                 case arrow:
-                    canvas.drawLine(x,startYLineAndCircle,x,stopY,paintLine);
                     Path path = new Path();
-                    if (isTop) {
-                        path.moveTo(x, startYLineAndCircle - (circleIndicatorSize * 2));
-                        path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
-                        path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
+                    if (mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
+                        canvas.drawLine(startYLineAndCircle, x, stopY, x, paintLine);
+                        if (isLeft) {
+                            path.moveTo(startYLineAndCircle + (circleIndicatorSize * 2), x);
+                        } else {
+                            path.moveTo(startYLineAndCircle - (circleIndicatorSize * 2), x);
+                        }
+                        path.lineTo(startYLineAndCircle, x + circleIndicatorSize);
+                        path.lineTo(startYLineAndCircle, x - circleIndicatorSize);
                         path.close();
+
                     } else {
-                        path.moveTo(x, startYLineAndCircle + (circleIndicatorSize * 2));
+                        canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
+                        if (isTop) {
+                            path.moveTo(x, startYLineAndCircle - (circleIndicatorSize * 2));
+                        } else {
+                            path.moveTo(x, startYLineAndCircle + (circleIndicatorSize * 2));
+                        }
                         path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
                         path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
                         path.close();
@@ -394,39 +432,70 @@ public class GuideView extends FrameLayout {
 
     private Point resolveMessageViewLocation() {
 
-        int xMessageView;
-        if (mGravity == Gravity.center) {
-            xMessageView = (int) (targetRect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
-        } else {
-            xMessageView = (int) (targetRect.right) - mMessageView.getWidth();
-        }
+        if(mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter)
+        {
+            if (mGravity == Gravity.sidecenter) {
+                yMessageView = (int) (targetRect.top + target.getHeight() / 2 - mMessageView.getHeight() / 2);
+            } else {
+                yMessageView = (int) (targetRect.top);
+            }
 
-        if (isLandscape()) {
-            xMessageView -= getNavigationBarSize();
-        }
+            if (yMessageView + mMessageView.getHeight() > getHeight()) {
+                yMessageView = getHeight() - mMessageView.getHeight();
+            }
+            if (yMessageView < 0) {
+                yMessageView = 0;
+            }
 
-        if (xMessageView + mMessageView.getWidth() > getWidth()) {
-            xMessageView = getWidth() - mMessageView.getWidth();
-        }
-        if (xMessageView < 0) {
-            xMessageView = 0;
-        }
+            //set message view bottom
+            if ((targetRect.left - (indicatorWidth)) < getWidth() / 2f) {
+                isLeft = false;
+                xMessageView = (int) (targetRect.right + indicatorWidth);
+            }
+            //set message view top
+            else {
+                isLeft = true;
+                xMessageView = (int) (targetRect.left - mMessageView.getWidth() - indicatorWidth);
+            }
 
-        //set message view bottom
-        if ((targetRect.top + (indicatorHeight)) > getHeight() / 2f) {
-            isTop = false;
-            yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
+            if (xMessageView < 0) {
+                xMessageView = 0;
+            }
+
         }
-        //set message view top
         else {
-            isTop = true;
-            yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
-        }
+            if (mGravity == Gravity.center) {
+                xMessageView = (int) (targetRect.left - mMessageView.getWidth() / 2 + target.getWidth() / 2);
+            } else {
+                xMessageView = (int) (targetRect.right) - mMessageView.getWidth();
+            }
 
-        if (yMessageView < 0) {
-            yMessageView = 0;
-        }
+            if (isLandscape()) {
+                xMessageView -= getNavigationBarSize();
+            }
 
+            if (xMessageView + mMessageView.getWidth() > getWidth()) {
+                xMessageView = getWidth() - mMessageView.getWidth();
+            }
+            if (xMessageView < 0) {
+                xMessageView = 0;
+            }
+
+            //set message view bottom
+            if ((targetRect.top + (indicatorHeight)) > getHeight() / 2f) {
+                isTop = false;
+                yMessageView = (int) (targetRect.top - mMessageView.getHeight() - indicatorHeight);
+            }
+            //set message view top
+            else {
+                isTop = true;
+                yMessageView = (int) (targetRect.top + target.getHeight() + indicatorHeight);
+            }
+
+            if (yMessageView < 0) {
+                yMessageView = 0;
+            }
+        }
         return new Point(xMessageView, yMessageView);
     }
 
