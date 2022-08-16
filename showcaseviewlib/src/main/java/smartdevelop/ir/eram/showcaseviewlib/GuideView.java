@@ -60,10 +60,11 @@ public class GuideView extends FrameLayout {
     private final Paint paintCircleInner = new Paint();
     private final Paint targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Xfermode X_FER_MODE_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+    private final Path arrowPath = new Path();
 
     private final View target;
     private RectF targetRect;
-    private final Rect selfRect = new Rect();
+    private final Rect backgroundRect = new Rect();
 
     private final float density;
     private float stopY;
@@ -127,8 +128,6 @@ public class GuideView extends FrameLayout {
             )
         );
 
-        setMessageLocation(resolveMessageViewLocation());
-
         ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -137,8 +136,6 @@ public class GuideView extends FrameLayout {
                 } else {
                     getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
-
-                setMessageLocation(resolveMessageViewLocation());
 
                 if (target instanceof Targetable) {
                     targetRect = ((Targetable) target).boundingRect();
@@ -151,20 +148,29 @@ public class GuideView extends FrameLayout {
                         locationTarget[0] + target.getWidth(),
                         locationTarget[1] + target.getHeight()
                     );
+                    if (isLandscape()) {
+                        targetRect.offset(-getStatusBarHeight(), 0);
+                    }
                 }
 
-                selfRect.set(
+                backgroundRect.set(
                     getPaddingLeft(),
                     getPaddingTop(),
                     getWidth() - getPaddingRight(),
                     getHeight() - getPaddingBottom()
                 );
+                if (isLandscape()) {
+                    backgroundRect.offset(-getNavigationBarSize(), 0);
+                } else {
+                    backgroundRect.offset(0, -getNavigationBarSize());
+                }
 
+                isTop = !((targetRect.top + (indicatorHeight)) > getHeight() / 2f);
                 marginGuide = (int) (isTop ? marginGuide : -marginGuide);
+                setMessageLocation(resolveMessageViewLocation());
                 startYLineAndCircle = (isTop ? targetRect.bottom : targetRect.top) + marginGuide;
-                stopY = yMessageView + indicatorHeight;
+                stopY = yMessageView + indicatorHeight + (isTop ? -marginGuide : marginGuide);
                 startAnimationSize();
-                getViewTreeObserver().addOnGlobalLayoutListener(this);
             }
         };
         getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
@@ -176,25 +182,19 @@ public class GuideView extends FrameLayout {
                 0f,
                 circleIndicatorSizeFinal
             );
-            circleSizeAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    circleIndicatorSize = (float) circleSizeAnimator.getAnimatedValue();
-                    circleInnerIndicatorSize = (float) circleSizeAnimator.getAnimatedValue() - density;
-                    postInvalidate();
-                }
+            circleSizeAnimator.addUpdateListener(valueAnimator -> {
+                circleIndicatorSize = (float) circleSizeAnimator.getAnimatedValue();
+                circleInnerIndicatorSize = (float) circleSizeAnimator.getAnimatedValue() - density;
+                postInvalidate();
             });
 
             final ValueAnimator linePositionAnimator = ValueAnimator.ofFloat(
                 stopY,
                 startYLineAndCircle
             );
-            linePositionAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    startYLineAndCircle = (float) linePositionAnimator.getAnimatedValue();
-                    postInvalidate();
-                }
+            linePositionAnimator.addUpdateListener(valueAnimator -> {
+                startYLineAndCircle = (float) linePositionAnimator.getAnimatedValue();
+                postInvalidate();
             });
 
             linePositionAnimator.setDuration(SIZE_ANIMATION_DURATION);
@@ -234,13 +234,22 @@ public class GuideView extends FrameLayout {
         circleIndicatorSizeFinal = CIRCLE_INDICATOR_SIZE * density;
     }
 
-    private int getNavigationBarSize() {
-        Resources resources = getContext().getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            return resources.getDimensionPixelSize(resourceId);
+    public int getNavigationBarSize() {
+        Resources resources = getResources();
+        int id = resources.getIdentifier("navigation_bar_height_landscape", "dimen", "android");
+        if (id > 0) {
+            return resources.getDimensionPixelSize(id);
         }
         return 0;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 
     private boolean isLandscape() {
@@ -256,7 +265,7 @@ public class GuideView extends FrameLayout {
             selfPaint.setColor(BACKGROUND_COLOR);
             selfPaint.setStyle(Paint.Style.FILL);
             selfPaint.setAntiAlias(true);
-            canvas.drawRect(selfRect, selfPaint);
+            canvas.drawRect(backgroundRect, selfPaint);
 
             paintLine.setStyle(Paint.Style.FILL);
             paintLine.setColor(LINE_INDICATOR_COLOR);
@@ -277,25 +286,27 @@ public class GuideView extends FrameLayout {
 
             switch (pointerType) {
                 case circle:
-                    canvas.drawLine(x,startYLineAndCircle,x,stopY,paintLine);
+                    canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
                     canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
-                    canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
+                    canvas.drawCircle(
+                        x,
+                        startYLineAndCircle,
+                        circleInnerIndicatorSize,
+                        paintCircleInner
+                    );
                     break;
                 case arrow:
-                    canvas.drawLine(x,startYLineAndCircle,x,stopY,paintLine);
-                    Path path = new Path();
+                    canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
+                    arrowPath.reset();
                     if (isTop) {
-                        path.moveTo(x, startYLineAndCircle - (circleIndicatorSize * 2));
-                        path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
-                        path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
-                        path.close();
+                        arrowPath.moveTo(x, startYLineAndCircle - (circleIndicatorSize * 2));
                     } else {
-                        path.moveTo(x, startYLineAndCircle + (circleIndicatorSize * 2));
-                        path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
-                        path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
-                        path.close();
+                        arrowPath.moveTo(x, startYLineAndCircle + (circleIndicatorSize * 2));
                     }
-                    canvas.drawPath(path, paintCircle);
+                    arrowPath.lineTo(x + circleIndicatorSize, startYLineAndCircle);
+                    arrowPath.lineTo(x - circleIndicatorSize, startYLineAndCircle);
+                    arrowPath.close();
+                    canvas.drawPath(arrowPath, paintCircle);
                     break;
                 case none:
                     //draw no line and no pointer
@@ -362,7 +373,7 @@ public class GuideView extends FrameLayout {
                     break;
 
                 case outsideTargetAndMessage:
-                    if(!(targetRect.contains(x, y) || isViewContains(mMessageView, x, y))){
+                    if (!(targetRect.contains(x, y) || isViewContains(mMessageView, x, y))) {
                         dismiss();
                     }
             }
@@ -401,7 +412,7 @@ public class GuideView extends FrameLayout {
             xMessageView = (int) (targetRect.right) - mMessageView.getWidth();
         }
 
-        if (isLandscape()) {
+        if (isLandscape() && (xMessageView + mMessageView.getWidth()) > backgroundRect.right) {
             xMessageView -= getNavigationBarSize();
         }
 
@@ -436,7 +447,6 @@ public class GuideView extends FrameLayout {
             ViewGroup.LayoutParams.MATCH_PARENT
         ));
         this.setClickable(false);
-
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
         AlphaAnimation startAnimation = new AlphaAnimation(0.0f, 1.0f);
         startAnimation.setDuration(APPEARING_ANIMATION_DURATION);
@@ -662,6 +672,7 @@ public class GuideView extends FrameLayout {
             this.pointerType = pointerType;
             return this;
         }
+
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
@@ -711,4 +722,3 @@ public class GuideView extends FrameLayout {
         }
     }
 }
-
