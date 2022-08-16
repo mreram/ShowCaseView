@@ -98,19 +98,6 @@ public class GuideView extends FrameLayout {
         density = context.getResources().getDisplayMetrics().density;
         init();
 
-        if (view instanceof Targetable) {
-            targetRect = ((Targetable) view).boundingRect();
-        } else {
-            int[] locationTarget = new int[2];
-            target.getLocationOnScreen(locationTarget);
-            targetRect = new RectF(
-                locationTarget[0],
-                locationTarget[1],
-                locationTarget[0] + target.getWidth(),
-                locationTarget[1] + target.getHeight()
-            );
-        }
-
         mMessageView = new GuideMessageView(getContext());
         mMessageView.setPadding(
             messageViewPadding,
