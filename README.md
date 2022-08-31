@@ -131,6 +131,17 @@ new GuideView.Builder(MainActivity.this)
     .show();
 ```
 
+## Set shape/pointer type solid/filled
+```java
+new GuideView.Builder(this)
+    .setTitle("Guide Title Text")
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setTargetView(view)
+    .isShapeSolid(false) //optional - default is false
+    .build()
+    .show();
+```
+
 ### DismissType Attribute
 
 | Type | Description |
@@ -148,6 +159,14 @@ new GuideView.Builder(MainActivity.this)
 | circle | Show circle pointer towards targetView |
 | arrow | Show arrow pointer towards targetView |
 | none | Show no pointer or line towards targetView |
+
+
+### isShapeSolid Attribute
+
+| Type | Description |
+| ------ | ------ |
+| true | Show shape pointer as solid/filled |
+| false | Show shape pointer as not solid |
 
 
 ## Contribution :collision:

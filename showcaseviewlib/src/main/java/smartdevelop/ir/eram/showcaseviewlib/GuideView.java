@@ -89,6 +89,7 @@ public class GuideView extends FrameLayout {
     private DismissType dismissType;
     private PointerType pointerType;
     private final GuideMessageView mMessageView;
+    private boolean isShapeSolid;
 
     private GuideView(Context context, View view) {
         super(context);
@@ -100,19 +101,19 @@ public class GuideView extends FrameLayout {
 
         mMessageView = new GuideMessageView(getContext());
         mMessageView.setPadding(
-            messageViewPadding,
-            messageViewPadding,
-            messageViewPadding,
-            messageViewPadding
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding
         );
         mMessageView.setColor(Color.WHITE);
 
         addView(
-            mMessageView,
-            new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+                mMessageView,
+                new LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         );
 
         ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -130,10 +131,10 @@ public class GuideView extends FrameLayout {
                     int[] locationTarget = new int[2];
                     target.getLocationOnScreen(locationTarget);
                     targetRect = new RectF(
-                        locationTarget[0],
-                        locationTarget[1],
-                        locationTarget[0] + target.getWidth(),
-                        locationTarget[1] + target.getHeight()
+                            locationTarget[0],
+                            locationTarget[1],
+                            locationTarget[0] + target.getWidth(),
+                            locationTarget[1] + target.getHeight()
                     );
                     if (isLandscape()) {
                         targetRect.offset(-getStatusBarHeight(), 0);
@@ -141,10 +142,10 @@ public class GuideView extends FrameLayout {
                 }
 
                 backgroundRect.set(
-                    getPaddingLeft(),
-                    getPaddingTop(),
-                    getWidth() - getPaddingRight(),
-                    getHeight() - getPaddingBottom()
+                        getPaddingLeft(),
+                        getPaddingTop(),
+                        getWidth() - getPaddingRight(),
+                        getHeight() - getPaddingBottom()
                 );
                 if (isLandscape()) {
                     backgroundRect.offset(-getNavigationBarSize(), 0);
@@ -166,8 +167,8 @@ public class GuideView extends FrameLayout {
     private void startAnimationSize() {
         if (!isPerformedAnimationSize) {
             final ValueAnimator circleSizeAnimator = ValueAnimator.ofFloat(
-                0f,
-                circleIndicatorSizeFinal
+                    0f,
+                    circleIndicatorSizeFinal
             );
             circleSizeAnimator.addUpdateListener(valueAnimator -> {
                 circleIndicatorSize = (float) circleSizeAnimator.getAnimatedValue();
@@ -176,8 +177,8 @@ public class GuideView extends FrameLayout {
             });
 
             final ValueAnimator linePositionAnimator = ValueAnimator.ofFloat(
-                stopY,
-                startYLineAndCircle
+                    stopY,
+                    startYLineAndCircle
             );
             linePositionAnimator.addUpdateListener(valueAnimator -> {
                 startYLineAndCircle = (float) linePositionAnimator.getAnimatedValue();
@@ -259,28 +260,35 @@ public class GuideView extends FrameLayout {
             paintLine.setStrokeWidth(lineIndicatorWidthSize);
             paintLine.setAntiAlias(true);
 
-            paintCircle.setStyle(Paint.Style.STROKE);
+            if (isShapeSolid)
+                paintCircle.setStyle(Paint.Style.FILL);
+            else
+                paintCircle.setStyle(Paint.Style.STROKE);
             paintCircle.setColor(CIRCLE_INDICATOR_COLOR);
             paintCircle.setStrokeCap(Paint.Cap.ROUND);
             paintCircle.setStrokeWidth(strokeCircleWidth);
             paintCircle.setAntiAlias(true);
 
-            paintCircleInner.setStyle(Paint.Style.FILL);
-            paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
-            paintCircleInner.setAntiAlias(true);
-
+            if (!isShapeSolid) {
+                paintCircleInner.setStyle(Paint.Style.FILL);
+                paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
+                paintCircleInner.setAntiAlias(true);
+            }
             final float x = (targetRect.left / 2 + targetRect.right / 2);
 
             switch (pointerType) {
                 case circle:
                     canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
                     canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
-                    canvas.drawCircle(
-                        x,
-                        startYLineAndCircle,
-                        circleInnerIndicatorSize,
-                        paintCircleInner
-                    );
+
+                    // to remove solid & inner circle drawing
+                    if (!isShapeSolid)
+                        canvas.drawCircle(
+                                x,
+                                startYLineAndCircle,
+                                circleInnerIndicatorSize,
+                                paintCircleInner
+                        );
                     break;
                 case arrow:
                     canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
@@ -306,10 +314,10 @@ public class GuideView extends FrameLayout {
                 canvas.drawPath(((Targetable) target).guidePath(), targetPaint);
             } else {
                 canvas.drawRoundRect(
-                    targetRect,
-                    RADIUS_SIZE_TARGET_RECT,
-                    RADIUS_SIZE_TARGET_RECT,
-                    targetPaint
+                        targetRect,
+                        RADIUS_SIZE_TARGET_RECT,
+                        RADIUS_SIZE_TARGET_RECT,
+                        targetPaint
                 );
             }
         }
@@ -430,8 +438,8 @@ public class GuideView extends FrameLayout {
 
     public void show() {
         this.setLayoutParams(new ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
         ));
         this.setClickable(false);
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
@@ -477,6 +485,7 @@ public class GuideView extends FrameLayout {
         private Gravity gravity;
         private DismissType dismissType;
         private PointerType pointerType;
+        private boolean isShapeSolid;
         private final Context context;
         private Spannable contentSpan;
         private Typeface titleTypeFace, contentTypeFace;
@@ -660,11 +669,22 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        /**
+         * this method defining the type of pointer
+         *
+         * @param isShapeSolid should be true/false to fill the shape arrow -> To be filled/solid you must set this parameter to true
+         */
+        public Builder isShapeSolid(boolean isShapeSolid) {
+            this.isShapeSolid = isShapeSolid;
+            return this;
+        }
+
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
             guideView.dismissType = dismissType != null ? dismissType : DismissType.targetView;
             guideView.pointerType = pointerType != null ? pointerType : PointerType.circle;
+            guideView.isShapeSolid = isShapeSolid;
             float density = context.getResources().getDisplayMetrics().density;
 
             guideView.setTitle(title);
