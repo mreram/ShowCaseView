@@ -280,6 +280,7 @@ public class GuideView extends FrameLayout {
                 case circle:
                     canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
                     canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
+
                     // to remove solid & inner circle drawing
                     if (!isShapeSolid)
                         canvas.drawCircle(
