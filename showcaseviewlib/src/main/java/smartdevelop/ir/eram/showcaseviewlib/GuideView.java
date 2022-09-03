@@ -74,13 +74,11 @@ public class GuideView extends FrameLayout {
     private int yMessageView = 0;
     private int xMessageView = 0;
 
-    private float startXLineAndCircle;
     private float startYLineAndCircle;
     private float circleIndicatorSize = 0;
     private float circleIndicatorSizeFinal;
     private float circleInnerIndicatorSize = 0;
     private float lineIndicatorWidthSize;
-    private float lineIndicatorHeightSize;
     private int messageViewPadding;
     private float marginGuide;
     private float strokeCircleWidth;
@@ -239,7 +237,6 @@ public class GuideView extends FrameLayout {
 
     private void init() {
         lineIndicatorWidthSize = LINE_INDICATOR_WIDTH_SIZE * density;
-        lineIndicatorHeightSize = LINE_INDICATOR_WIDTH_SIZE * density;
         marginGuide = MARGIN_INDICATOR * density;
         indicatorHeight = INDICATOR_HEIGHT * density;
         indicatorWidth = INDICATOR_HEIGHT * density;
@@ -287,50 +284,50 @@ public class GuideView extends FrameLayout {
             paintCircleInner.setColor(CIRCLE_INNER_INDICATOR_COLOR);
             paintCircleInner.setAntiAlias(true);
 
-            float x = 0.0f;
+            float xOfCalloutLine = 0.0f;
             if (mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
-                x = (targetRect.top / 2 + targetRect.bottom / 2);
+                xOfCalloutLine = (targetRect.top / 2 + targetRect.bottom / 2);
             } else {
-                x = (targetRect.left / 2 + targetRect.right / 2);
+                xOfCalloutLine = (targetRect.left / 2 + targetRect.right / 2);
             }
 
 
             switch (pointerType) {
                 case circle:
                     if (mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
-                        canvas.drawLine(startYLineAndCircle, x, stopY, x, paintLine);
-                        canvas.drawCircle(startYLineAndCircle, x, circleIndicatorSize, paintCircle);
-                        canvas.drawCircle(startYLineAndCircle, x, circleInnerIndicatorSize, paintCircleInner);
+                        canvas.drawLine(startYLineAndCircle, xOfCalloutLine, stopY, xOfCalloutLine, paintLine);
+                        canvas.drawCircle(startYLineAndCircle, xOfCalloutLine, circleIndicatorSize, paintCircle);
+                        canvas.drawCircle(startYLineAndCircle, xOfCalloutLine, circleInnerIndicatorSize, paintCircleInner);
                     }
                     else {
-                        canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
-                        canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
-                        canvas.drawCircle(x, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
+                        canvas.drawLine(xOfCalloutLine, startYLineAndCircle, xOfCalloutLine, stopY, paintLine);
+                        canvas.drawCircle(xOfCalloutLine, startYLineAndCircle, circleIndicatorSize, paintCircle);
+                        canvas.drawCircle(xOfCalloutLine, startYLineAndCircle, circleInnerIndicatorSize, paintCircleInner);
                     }
 
                     break;
                 case arrow:
                     Path path = new Path();
                     if (mGravity == Gravity.sideauto || mGravity == Gravity.sidecenter) {
-                        canvas.drawLine(startYLineAndCircle, x, stopY, x, paintLine);
+                        canvas.drawLine(startYLineAndCircle, xOfCalloutLine, stopY, xOfCalloutLine, paintLine);
                         if (isLeft) {
-                            path.moveTo(startYLineAndCircle + (circleIndicatorSize * 2), x);
+                            path.moveTo(startYLineAndCircle + (circleIndicatorSize * 2), xOfCalloutLine);
                         } else {
-                            path.moveTo(startYLineAndCircle - (circleIndicatorSize * 2), x);
+                            path.moveTo(startYLineAndCircle - (circleIndicatorSize * 2), xOfCalloutLine);
                         }
-                        path.lineTo(startYLineAndCircle, x + circleIndicatorSize);
-                        path.lineTo(startYLineAndCircle, x - circleIndicatorSize);
+                        path.lineTo(startYLineAndCircle, xOfCalloutLine + circleIndicatorSize);
+                        path.lineTo(startYLineAndCircle, xOfCalloutLine - circleIndicatorSize);
                         path.close();
 
                     } else {
-                        canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
+                        canvas.drawLine(xOfCalloutLine, startYLineAndCircle, xOfCalloutLine, stopY, paintLine);
                         if (isTop) {
-                            path.moveTo(x, startYLineAndCircle - (circleIndicatorSize * 2));
+                            path.moveTo(xOfCalloutLine, startYLineAndCircle - (circleIndicatorSize * 2));
                         } else {
-                            path.moveTo(x, startYLineAndCircle + (circleIndicatorSize * 2));
+                            path.moveTo(xOfCalloutLine, startYLineAndCircle + (circleIndicatorSize * 2));
                         }
-                        path.lineTo(x + circleIndicatorSize, startYLineAndCircle);
-                        path.lineTo(x - circleIndicatorSize, startYLineAndCircle);
+                        path.lineTo(xOfCalloutLine + circleIndicatorSize, startYLineAndCircle);
+                        path.lineTo(xOfCalloutLine - circleIndicatorSize, startYLineAndCircle);
                         path.close();
                     }
                     canvas.drawPath(path, paintCircle);
