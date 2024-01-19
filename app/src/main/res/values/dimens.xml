@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="size_small">8dp</dimen>
+    <dimen name="size_xsmall">4dp</dimen>
+    <dimen name="size_medium">16dp</dimen>
+    <dimen name="size_large">24dp</dimen>
+
+    <dimen name="text_size_2">11sp</dimen>
+    <dimen name="text_size_3">14sp</dimen>
+    <dimen name="text_size_4" tools:ignore="UnusedResources">18sp</dimen>
+    <dimen name="text_size_body_lg">16sp</dimen>
+    <dimen name="text_size_body_lg2">19sp</dimen>
+    <dimen name="text_size_5">23sp</dimen>
+    <dimen name="text_size_7" tools:ignore="UnusedResources">32sp</dimen>
+
+    <!--  Guided Tour fixed size text values  -->
+    <dimen name="fixed_text_size_content">16dp</dimen>
+    <dimen name="fixed_text_size_title">19dp</dimen>
+    <dimen name="fixed_text_size_small">11dp</dimen>
+    <dimen name="fixed_text_size_medium">16dp</dimen>
+
+</resources>
