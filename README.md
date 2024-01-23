@@ -4,13 +4,6 @@
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=11) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-FlatShowCaseView-brightgreen.svg?style=flat)](https://android-arsenal.com/details/1/6713)
 [![awesome-android](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/JStumpp/awesome-android#gui)
 
-<p align="center">
-<img src="./screenshots/Screenshot_2018-01-24-16-41-38.png" width="200"/>
-<img src="./screenshots/Screenshot_2018-01-24-16-53-17.png" width="200"/>
-<img src="./screenshots/Screenshot_2018-01-24-16-52-03.png" width="200"/>
-
-</p>
-
 ## How to use:question:
 
 Sample usage in your activity
