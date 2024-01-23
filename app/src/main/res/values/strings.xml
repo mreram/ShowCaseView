@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ShowCaseView</string>
+    <string name="app_name">ShowCaseViewLib</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="exit">Exit</string>
 </resources>

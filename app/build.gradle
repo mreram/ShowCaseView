@@ -1,26 +1,85 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+group = 'com.github.mreram'
 android {
-    compileSdkVersion 30
+    compileSdk 33
+
     defaultConfig {
-        applicationId "smartdevelop.ir.eram.showcaseview"
-        minSdkVersion 14
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 26
+        targetSdkVersion 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    namespace 'org.northshore.showcaselib'
+
+    dataBinding {
+        enabled true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_18
+        targetCompatibility JavaVersion.VERSION_18
+    }
+
+    kotlinOptions {
+        jvmTarget = '18'
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+}
+
+task makeShowCaseView(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('build/outputs/')
+    include('classes.jar')
+    rename('classes.jar', 'showCaseViewLib.jar')
+    into('release/') //you can change this directory where you want to copy your .jar
+}
+task clearJar(type: Delete) {
+    delete 'build/libs/showCaseViewLib.jar'
+}
+makeShowCaseView.dependsOn(clearJar, build)
+
+project.ext {
+    constraint_layout_version = '2.1.4'
+    test_runner_version = '1.5.2'
+    test_rules_version = '1.5.0'
+    mockito_core_version = '4.4.0'
+    mockito_inline_version = '4.4.0'
+    espresso_core_version = '3.5.1'
+    arch_core_testing_version = '2.2.0'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation project(':showcaseviewlib')
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
 
+    configurations.all {
+        resolutionStrategy {
+            force 'commons-codec:commons-codec:1.13', 'commons-io:commons-io:2.7', 'com.google.guava:guava:32.0.1-android', 'com.google.guava:guava:32.0.1-jre', 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10', 'org.bouncycastle:bcprov-jdk18on:1.74'
+        }
+    }
+
+    testImplementation "org.mockito:mockito-core:$mockito_core_version"
+    testImplementation "org.mockito:mockito-inline:$mockito_inline_version"
+    testImplementation "androidx.arch.core:core-testing:$arch_core_testing_version"
+
+    androidTestImplementation "androidx.test:runner:$test_runner_version"
+    androidTestImplementation "androidx.test:rules:$test_rules_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
 }
