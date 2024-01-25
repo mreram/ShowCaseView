@@ -100,19 +100,19 @@ public class GuideView extends FrameLayout {
 
         mMessageView = new GuideMessageView(getContext());
         mMessageView.setPadding(
-            messageViewPadding,
-            messageViewPadding,
-            messageViewPadding,
-            messageViewPadding
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding,
+                messageViewPadding
         );
-        mMessageView.setColor(Color.WHITE);
+        mMessageView.setColor(Color.TRANSPARENT);
 
         addView(
-            mMessageView,
-            new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+                mMessageView,
+                new LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
         );
 
         ViewTreeObserver.OnGlobalLayoutListener layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -130,10 +130,10 @@ public class GuideView extends FrameLayout {
                     int[] locationTarget = new int[2];
                     target.getLocationOnScreen(locationTarget);
                     targetRect = new RectF(
-                        locationTarget[0],
-                        locationTarget[1],
-                        locationTarget[0] + target.getWidth(),
-                        locationTarget[1] + target.getHeight()
+                            locationTarget[0],
+                            locationTarget[1],
+                            locationTarget[0] + target.getWidth(),
+                            locationTarget[1] + target.getHeight()
                     );
                     if (isLandscape()) {
                         targetRect.offset(-getStatusBarHeight(), 0);
@@ -141,10 +141,10 @@ public class GuideView extends FrameLayout {
                 }
 
                 backgroundRect.set(
-                    getPaddingLeft(),
-                    getPaddingTop(),
-                    getWidth() - getPaddingRight(),
-                    getHeight() - getPaddingBottom()
+                        getPaddingLeft(),
+                        getPaddingTop(),
+                        getWidth() - getPaddingRight(),
+                        getHeight() - getPaddingBottom()
                 );
                 if (isLandscape()) {
                     backgroundRect.offset(-getNavigationBarSize(), 0);
@@ -166,8 +166,8 @@ public class GuideView extends FrameLayout {
     private void startAnimationSize() {
         if (!isPerformedAnimationSize) {
             final ValueAnimator circleSizeAnimator = ValueAnimator.ofFloat(
-                0f,
-                circleIndicatorSizeFinal
+                    0f,
+                    circleIndicatorSizeFinal
             );
             circleSizeAnimator.addUpdateListener(valueAnimator -> {
                 circleIndicatorSize = (float) circleSizeAnimator.getAnimatedValue();
@@ -176,8 +176,8 @@ public class GuideView extends FrameLayout {
             });
 
             final ValueAnimator linePositionAnimator = ValueAnimator.ofFloat(
-                stopY,
-                startYLineAndCircle
+                    stopY,
+                    startYLineAndCircle
             );
             linePositionAnimator.addUpdateListener(valueAnimator -> {
                 startYLineAndCircle = (float) linePositionAnimator.getAnimatedValue();
@@ -276,10 +276,10 @@ public class GuideView extends FrameLayout {
                     canvas.drawLine(x, startYLineAndCircle, x, stopY, paintLine);
                     canvas.drawCircle(x, startYLineAndCircle, circleIndicatorSize, paintCircle);
                     canvas.drawCircle(
-                        x,
-                        startYLineAndCircle,
-                        circleInnerIndicatorSize,
-                        paintCircleInner
+                            x,
+                            startYLineAndCircle,
+                            circleInnerIndicatorSize,
+                            paintCircleInner
                     );
                     break;
                 case arrow:
@@ -306,10 +306,10 @@ public class GuideView extends FrameLayout {
                 canvas.drawPath(((Targetable) target).guidePath(), targetPaint);
             } else {
                 canvas.drawRoundRect(
-                    targetRect,
-                    RADIUS_SIZE_TARGET_RECT,
-                    RADIUS_SIZE_TARGET_RECT,
-                    targetPaint
+                        targetRect,
+                        RADIUS_SIZE_TARGET_RECT,
+                        RADIUS_SIZE_TARGET_RECT,
+                        targetPaint
                 );
             }
         }
@@ -430,8 +430,8 @@ public class GuideView extends FrameLayout {
 
     public void show() {
         this.setLayoutParams(new ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
         ));
         this.setClickable(false);
         ((ViewGroup) ((Activity) getContext()).getWindow().getDecorView()).addView(this);
@@ -470,6 +470,14 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentTextSize(size);
     }
 
+    public void setTitleTextColor(int color) {
+        mMessageView.setTitleTextColor(color);
+    }
+
+    public void setContentTextColor(int color) {
+        mMessageView.setContentColor(color);
+    }
+
     public static class Builder {
 
         private View targetView;
@@ -483,6 +491,8 @@ public class GuideView extends FrameLayout {
         private GuideListener guideListener;
         private int titleTextSize;
         private int contentTextSize;
+        private int titleColor;
+        private int contentTextColor;
         private float lineIndicatorHeight;
         private float lineIndicatorWidthSize;
         private float circleIndicatorSize;
@@ -660,6 +670,25 @@ public class GuideView extends FrameLayout {
             return this;
         }
 
+        /**
+         * this method defining the type of pointer
+         *
+         * @param color should come from Color and cannot be Color.TRANSPARENT constant, example: Color.WHITE
+         */
+        public Builder setTitleTextColor(int color) {
+            this.titleColor = color;
+            return this;
+        }
+
+        /**
+         * this method defining the type of pointer
+         *
+         * @param color should come from Color and cannot be Color.TRANSPARENT constant, example: Color.WHITE
+         */
+        public Builder setContentTextColor(int color) {
+            this.contentTextColor = color;
+            return this;
+        }
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
@@ -703,6 +732,12 @@ public class GuideView extends FrameLayout {
             }
             if (strokeCircleWidth != 0) {
                 guideView.strokeCircleWidth = strokeCircleWidth * density;
+            }
+            if (titleColor != 0) {
+                guideView.setTitleTextColor(titleColor);
+            }
+            if (contentTextColor != 0) {
+                guideView.setContentTextColor(contentTextColor);
             }
 
             return guideView;

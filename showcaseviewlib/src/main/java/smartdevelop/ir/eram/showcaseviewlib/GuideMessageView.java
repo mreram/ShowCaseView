@@ -52,6 +52,7 @@ class GuideMessageView extends LinearLayout {
         mTitleTextView.setGravity(Gravity.CENTER);
         mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_TITLE_TEXT_SIZE);
         mTitleTextView.setTextColor(Color.BLACK);
+        mTitleTextView.setBackgroundColor(Color.TRANSPARENT);
         addView(
             mTitleTextView,
             new LayoutParams(
@@ -62,6 +63,7 @@ class GuideMessageView extends LinearLayout {
 
         mContentTextView = new TextView(context);
         mContentTextView.setTextColor(Color.BLACK);
+        mContentTextView.setBackgroundColor(Color.TRANSPARENT);
         mContentTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_CONTENT_TEXT_SIZE);
         mContentTextView.setPadding(padding, paddingBottom, padding, padding);
         mContentTextView.setGravity(Gravity.CENTER);
@@ -81,6 +83,16 @@ class GuideMessageView extends LinearLayout {
         }
         mTitleTextView.setText(title);
     }
+
+    public void setTitleTextColor(int color) {
+        mTitleTextView.setTextColor(color);
+    }
+
+    public void setContentColor(int color) {
+        mContentTextView.setTextColor(color);
+    }
+
+
 
     public void setContentText(String content) {
         mContentTextView.setText(content);
