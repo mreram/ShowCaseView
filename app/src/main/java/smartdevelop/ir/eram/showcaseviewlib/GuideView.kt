@@ -14,7 +14,6 @@ import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
 import android.graphics.RectF
 import android.graphics.Xfermode
-import android.text.Spannable
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -266,13 +265,15 @@ class GuideView(context: Context, private var targetView: View?, var model: Guid
             yMessageView = APPEARING_ANIMATION_DURATION
             return Point(xMessageView, yMessageView)
         }
-        xMessageView = when (model.gravity){
-             Gravity.START -> {
-                 EDGE_PADDING
-             }
-            Gravity.END -> {
-               resources.displayMetrics.widthPixels - EDGE_PADDING - binding.root.width
+        xMessageView = when (model.gravity) {
+            Gravity.START -> {
+                EDGE_PADDING
             }
+
+            Gravity.END -> {
+                resources.displayMetrics.widthPixels - EDGE_PADDING - binding.root.width
+            }
+
             else -> {
                 (targetRect!!.left - binding.root.width / 2 + targetView!!.width / 2).toInt()
             }
@@ -284,7 +285,7 @@ class GuideView(context: Context, private var targetView: View?, var model: Guid
             xMessageView = 0
         }
 
-        //set message view bottom
+        // set message view bottom
         if (targetRect!!.top + pointerSize > rootView.height / scaleFactor) {
             isTop = false
             yMessageView = (targetRect!!.top - binding.root.height - pointerSize * 2).toInt()
