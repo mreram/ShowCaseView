@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'maven-publish'
+    id 'org.jlleitschuh.gradle.ktlint'
 }
 
 group = 'org.northshore'
@@ -109,4 +110,9 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$test_runner_version"
     androidTestImplementation "androidx.test:rules:$test_rules_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
+}
+
+ktlint {
+    debug.set(true)
+
 }
