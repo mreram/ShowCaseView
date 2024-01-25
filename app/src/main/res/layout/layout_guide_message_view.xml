@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="kotlin.jvm.functions.Function0" />
+
+        <import type="kotlin.Unit" />
+
+        <variable
+            name="model"
+            type="smartdevelop.ir.eram.showcaseviewlib.GuideViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/size_small">
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/size_small"
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/size_xsmall"
+            android:src="@drawable/ic_close_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:fontFamily="@font/dm_sans_semibold"
+            android:text="@{model.title}"
+            android:textColor="@color/primary_color"
+            android:textFontWeight="700"
+            android:textSize="@dimen/fixed_text_size_title"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/message"
+            app:layout_constraintStart_toStartOf="@id/message"
+            app:layout_constraintTop_toBottomOf="@id/close"
+            tools:text="Menu" />
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginHorizontal="@dimen/size_large"
+            android:layout_marginVertical="@dimen/size_medium"
+            android:fontFamily="@font/dm_sans_regular"
+            android:maxWidth="300dp"
+            android:text="@{model.content}"
+            android:textColor="@color/black"
+            android:textSize="@dimen/fixed_text_size_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:text="A quick way to navigate to all NorthShoreConnect features" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/size_medium"
+            android:layout_marginBottom="@dimen/size_small"
+            android:orientation="horizontal"
+            app:bindVisibleOrGone="@{!model.isFinalScreen}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/message">
+
+            <TextView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="@dimen/size_small"
+                android:fontFamily="@font/dm_sans_regular"
+                android:text="@{model.leftButton}"
+                android:textColor="@color/primary_color"
+                android:textFontWeight="500"
+                android:textSize="@dimen/text_size_body_lg" />
+
+            <TextView
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="@dimen/size_small"
+                android:fontFamily="@font/dm_sans_regular"
+                android:text="@{model.rightButton}"
+                android:textColor="@color/primary_color"
+                android:textFontWeight="500"
+                android:textSize="@dimen/text_size_body_lg" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/size_medium"
+            android:layout_marginBottom="@dimen/size_small"
+            android:orientation="horizontal"
+            app:bindVisibleOrGone="@{model.isFinalScreen}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/message">
+
+            <TextView
+                android:id="@+id/backFromFinal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginHorizontal="@dimen/size_small"
+                android:fontFamily="@font/dm_sans_regular"
+                android:text="@string/back"
+                android:textColor="@color/primary_color"
+                android:textFontWeight="500"
+                android:textSize="@dimen/fixed_text_size_medium" />
+
+            <TextView
+                android:id="@+id/exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginStart="@dimen/size_small"
+                android:fontFamily="@font/dm_sans_regular"
+                android:text="@string/exit"
+                android:textColor="@color/primary_color"
+                android:textFontWeight="500"
+                android:textSize="@dimen/fixed_text_size_medium" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/guideTourExternalLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/size_medium"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_movie"
+            app:bindVisibleOrGone="@{model.isVideoScreen}"
+            app:layout_constraintBottom_toTopOf="@id/guidedTourClose"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/message"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/guidedTourClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginHorizontal="@dimen/size_small"
+            android:fontFamily="@font/dm_sans_regular"
+            android:text="@string/close"
+            android:textColor="@color/primary_color"
+            android:textFontWeight="500"
+            android:textSize="@dimen/fixed_text_size_medium"
+            app:bindVisibleOrGone="@{model.isVideoScreen}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
