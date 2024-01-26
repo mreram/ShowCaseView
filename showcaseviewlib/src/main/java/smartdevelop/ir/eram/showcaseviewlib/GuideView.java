@@ -53,6 +53,7 @@ public class GuideView extends FrameLayout {
     private static final int CIRCLE_INNER_INDICATOR_COLOR = 0xffcccccc;
     private static final int CIRCLE_INDICATOR_COLOR = Color.WHITE;
     private static final int LINE_INDICATOR_COLOR = Color.WHITE;
+    private static final int DEFAULT_MESSAGE_BACKGROUND_COLOR = Color.WHITE;
 
     private final Paint selfPaint = new Paint();
     private final Paint paintLine = new Paint();
@@ -105,7 +106,7 @@ public class GuideView extends FrameLayout {
                 messageViewPadding,
                 messageViewPadding
         );
-        mMessageView.setColor(Color.TRANSPARENT);
+        mMessageView.setColor(DEFAULT_MESSAGE_BACKGROUND_COLOR);
 
         addView(
                 mMessageView,
@@ -478,6 +479,10 @@ public class GuideView extends FrameLayout {
         mMessageView.setContentColor(color);
     }
 
+    public void setMessageBackgroundColor(int color) {
+        mMessageView.setColor(color);
+    }
+
     public static class Builder {
 
         private View targetView;
@@ -493,6 +498,7 @@ public class GuideView extends FrameLayout {
         private int contentTextSize;
         private int titleColor;
         private int contentTextColor;
+        private int messageBackgroundColor = -2;
         private float lineIndicatorHeight;
         private float lineIndicatorWidthSize;
         private float circleIndicatorSize;
@@ -689,6 +695,16 @@ public class GuideView extends FrameLayout {
             this.contentTextColor = color;
             return this;
         }
+
+        /**
+         * this method defining the type of pointer
+         *
+         * @param color should come from Color and cannot be -2 (no constant is assigned to this number), example: Color.TRANSPARENT
+         */
+        public Builder setMessageBackgroundColor(int color) {
+            this.messageBackgroundColor = color;
+            return this;
+        }
         public GuideView build() {
             GuideView guideView = new GuideView(context, targetView);
             guideView.mGravity = gravity != null ? gravity : Gravity.auto;
@@ -738,6 +754,9 @@ public class GuideView extends FrameLayout {
             }
             if (contentTextColor != 0) {
                 guideView.setContentTextColor(contentTextColor);
+            }
+            if (messageBackgroundColor != -2) {
+                guideView.setMessageBackgroundColor(messageBackgroundColor);
             }
 
             return guideView;

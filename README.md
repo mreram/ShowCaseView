@@ -131,6 +131,21 @@ new GuideView.Builder(MainActivity.this)
     .show();
 ```
 
+## Set Text and background color
+```java	
+new GuideView.Builder(MainActivity.this)
+    .setTitle("Guide Title Text")
+    .setTitleTextColor(Color.RED) // optional - default is Color.BLACK
+    .setContentText("Guide Description Text\n .....Guide Description Text\n .....Guide Description Text .....")
+    .setContentTextColor(Color.GREEN) // optional - default is Color.BLACK
+    .setMessageBackgroundColor(Color.BLACK) // optional - default is Color.WHITE. Can be Color.TRANSPARENT
+    .setGravity(Gravity.CENTER)
+    .setTargetView(view1)
+    .setDismissType(DismissType.outSide) //optional - default dismissible by TargetView
+    .build()
+    .show();
+```
+
 ### DismissType Attribute
 
 | Type | Description |
