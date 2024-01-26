@@ -1,5 +1,6 @@
 package ir.smartdevelop.eram.showcaseview;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -52,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
                             builder.setTargetView(view4).build();
                             break;
                         case R.id.view4:
-                            builder.setTargetView(view5).build();
+                            builder.setTargetView(view5).setContentTextColor(Color.GREEN).build();
                             break;
                         case R.id.view5:
-                            builder.setTargetView(view6).build();
+                            builder.setTargetView(view6).setTitleTextColor(Color.RED)
+                                    .setMessageBackgroundColor(Color.BLACK).build();
                             break;
                         case R.id.view6:
                             return;
