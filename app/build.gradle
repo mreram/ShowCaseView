@@ -48,6 +48,13 @@ android {
             returnDefaultValues = true
         }
     }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(18)
+            vendor = JvmVendorSpec.AMAZON
+        }
+    }
 }
 
 task makeShowCaseView(type: Copy) {
