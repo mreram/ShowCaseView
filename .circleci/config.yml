@@ -1,0 +1,60 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7.0
+
+commands:
+  add_sdk_to_properties:
+    steps:
+      - run:
+          name: Add to local properties
+          command: echo "sdk.dir=/Users/Nicholas01/Library/Android/sdk" > local.properties
+
+jobs:
+  build:
+    machine: true
+    resource_class: northshore-university-healthsystem/nick-macbook
+    steps:
+      - checkout
+      - add_sdk_to_properties
+      - run:
+          name: Run Linters
+          command: ./gradlew ktlintCheck --no-daemon
+          no_output_timeout: 1200s
+      - run:
+          name: Run Tests
+          command: ./gradlew test --no-daemon
+          no_output_timeout: 1200s
+      - run:
+          name: Build
+          command: ./gradlew assemble
+      - store_artifacts:
+          path: app/build/test-results
+          destination: test-results
+
+  deploy_lib:
+    machine: true
+    resource_class: northshore-university-healthsystem/nick-macbook
+    steps:
+      - run:
+          name: Publish library
+          command: ./gradlew publish
+
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: /^.*/
+      - deploy_lib:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
+
+
