@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.animation.AlphaAnimation
 import android.widget.FrameLayout
+import org.northshore.showcaselib.R
 import org.northshore.showcaselib.databinding.LayoutGuideMessageViewBinding
 import smartdevelop.ir.eram.showcaseviewlib.config.Gravity
 import smartdevelop.ir.eram.showcaseviewlib.listener.GuideListener
@@ -76,7 +77,9 @@ class GuideView(context: Context, private var targetView: View?, var model: Guid
         strokeWidth = STROKE_CIRCLE_INDICATOR_SIZE * density
         pointerSize = CIRCLE_INDICATOR_SIZE * density
 
-        selfPaint.color = BACKGROUND_COLOR
+        val darkBlue = resources.getColor(R.color.dark_blue_60_transparent, resources.newTheme())
+
+        selfPaint.color = darkBlue
         selfPaint.style = Paint.Style.FILL
         selfPaint.isAntiAlias = true
 
