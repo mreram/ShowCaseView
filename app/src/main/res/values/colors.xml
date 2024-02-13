@@ -4,4 +4,5 @@
     <color name="black">#000000</color>
     <color name="accent_900">#0078C1</color>
     <color name="primary_color">#235FF8</color>
+    <color name="dark_blue_60_transparent">#990B1B42</color>
 </resources>
